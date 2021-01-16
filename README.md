@@ -1,5 +1,7 @@
 # Mirid
-Meadow.Foundation driver and documentation validator and reporting tool
+Mirid is a .NET Core console application used for Meadow.Foundation driver and documentation validation and report generation. 
+
+Currently outputs data as CSVs in the bin folder.
 
 Work in progress 
 
