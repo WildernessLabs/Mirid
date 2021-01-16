@@ -8,12 +8,18 @@ namespace Mirid.Models
         public string DocsFileName { get; private set; }
         public string FullPath { get; private set; }
 
-        public bool HasOverride => lines?.Length > 0;
+        public bool HasOverride => string.IsNullOrWhiteSpace(text) == false;
+        public bool HasFritzing => text?.Contains("Fritzing.png") ?? false;
+        public bool HasWiringExample => text?.Contains("### Wiring Example") ?? false;
+        public bool HasCodeExample => text?.Contains("### Code Example") ?? false;
+        public bool HasPurchasing => text?.Contains("# Purchasing") ?? false;
+
+
 
         MFDriver driver;
         string documentationPath;
 
-        string[] lines;
+        string text;
 
 
         public MFDriverDocumentation(MFDriver driver, string docsPath)
@@ -34,7 +40,7 @@ namespace Mirid.Models
 
             if(File.Exists(FullPath))
             {
-                lines = File.ReadAllLines(FullPath); //ready for processing
+                text = File.ReadAllText(FullPath); //ready for processing
             }
         }
     }

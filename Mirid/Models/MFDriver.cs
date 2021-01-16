@@ -25,6 +25,14 @@ namespace Mirid.Models
         public bool HasTestSuite => false;
         [Index(7)]
         public bool HasDocOverride => Documentation?.HasOverride ?? false;
+        [Index(8)]
+        public bool HasFritzing => Documentation?.HasFritzing ?? false;
+        [Index(9)]
+        public bool HasCodeExample => Documentation?.HasCodeExample ?? false;
+        [Index(10)]
+        public bool HasWiringExample => Documentation?.HasWiringExample ?? false;
+        [Index(11)]
+        public bool HasPurchasing => Documentation?.HasPurchasing ?? false;
 
         [Ignore]
         public MFDriverProject DriverProject { get; private set; }
