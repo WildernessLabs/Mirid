@@ -78,13 +78,11 @@ namespace Mirid.Outputs
 
         static string GetPeripheralLink(string packageName)
         {
-            //  [Gp2D12](/ docs / api / Meadow.Foundation / Meadow.Foundation.Sensors.Distance.Gp2D12.html)
             var name = GetDriverNameFromPackage(packageName);
             var url = $"/docs/api/Meadow.Foundation/{packageName}.html";
 
             return $"[{name}]({url})";
         }
-
 
         public static void WritePeripheralTablesSimple(List<MFDriver> drivers)
         {

@@ -68,7 +68,8 @@ namespace Mirid.Models
             if (driverDir != null)
             {
                 var files = driverDir.GetFiles();
-                foreach (var file in files)
+                var filesSorted = files.OrderBy(f => f.Name);
+                foreach (var file in filesSorted)
                 {
                     CodeFiles.Add(new MFDriverCode(file));
                 }
