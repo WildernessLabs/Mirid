@@ -15,7 +15,6 @@ namespace Mirid.Models
         public bool HasPurchasing => text?.Contains("# Purchasing") ?? false;
 
 
-
         MFDriver driver;
         string documentationPath;
 

@@ -5,6 +5,7 @@ namespace Mirid.Models
     public class MFDriverCode
     {
         public int LineCount => lines?.Length ?? 0;
+        public string Name => Path.GetFileNameWithoutExtension(path);
 
         public string Namespace
         {

@@ -36,22 +36,21 @@ namespace Mirid.Models
 
         [Ignore]
         public MFDriverProject DriverProject { get; private set; }
-
         [Ignore]
         public MFDriverAssets Assets { get; private set; }
-
         [Ignore]
         public MFDriverDocumentation Documentation { get; private set; }
-
         [Ignore]
         public List<MFDriverCode> CodeFiles { get; private set; } = new List<MFDriverCode>();
-
 
         [Ignore]
         public string Namespace => CodeFiles.First().Namespace;
 
         [Ignore]
         public List<string> Samples { get; private set; } = new List<string>();
+
+        [Ignore]
+        public string Description => DriverProject?.Description ?? string.Empty;
 
 
         public MFDriver(FileInfo driverProjectFile)

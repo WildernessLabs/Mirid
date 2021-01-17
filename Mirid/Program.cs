@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Mirid.Models;
 using Mirid.Output;
+using Mirid.Outputs;
 
 namespace Mirid
 {
@@ -31,6 +32,8 @@ namespace Mirid
             drivers = drivers.OrderBy(x => x.PackageName).ToList();
 
             CsvOutput.WriteCSVs(drivers);
+            PeripheralDocsOutput.WritePeripheralTablesSimple(drivers);
+            PeripheralDocsOutput.WritePeripheralTables(drivers);
         }
     }
 }
