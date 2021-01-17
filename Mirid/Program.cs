@@ -10,17 +10,20 @@ namespace Mirid
 {
     class Program
     {
-        public static string MeadowFoundationPath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Peripherals";
-        public static string MeadowFoundationDocsPath = "../../../../../Documentation/docfx/api-override/Meadow.Foundation";
+        public static string MFPeripheralsPath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Peripherals";
+        public static string MFFrameworksPath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Libraries_and_Frameworks";
+        public static string MFDocsOverridePath = "../../../../../Documentation/docfx/api-override/Meadow.Foundation";
 
         static List<MFDriver> drivers = new List<MFDriver>();
+        static List<MFDriver> frameworks = new List<MFDriver>();
 
         static void Main(string[] args)
         {
             Console.Clear();
             Console.WriteLine("Hello Mirid!");
 
-            var projectFiles = FileCrawler.GetAllProjectsInFolders(MeadowFoundationPath);
+            //Drivers
+            var projectFiles = FileCrawler.GetAllProjectsInFolders(MFPeripheralsPath);
 
             var driverProjectFiles = FileCrawler.GetDriverProjects(projectFiles);
             
@@ -31,9 +34,24 @@ namespace Mirid
 
             drivers = drivers.OrderBy(x => x.PackageName).ToList();
 
-            CsvOutput.WriteCSVs(drivers);
+            CsvOutput.WriteCSV(drivers, "AllPeripherals.csv");
+            CsvOutput.WriteCSV(drivers.Where(d => d.IsTested == false).ToList(), "InProgressPeripherals.csv");
             PeripheralDocsOutput.WritePeripheralTablesSimple(drivers);
             PeripheralDocsOutput.WritePeripheralTables(drivers);
+
+            return;
+            //need to standardize the folder and naming convensions for the libs and frameworks first s
+
+            //Libraries and frameworks
+            var frameworkFiles = FileCrawler.GetAllProjectsInFolders(MFFrameworksPath);
+            var frameworkProjectFiles = FileCrawler.GetDriverProjects(frameworkFiles);
+
+            foreach (var file in frameworkProjectFiles)
+            {
+                frameworks.Add(new MFDriver(file));
+            }
+
+            CsvOutput.WriteCSV(frameworks, "AllFrameworks.csv");
         }
     }
 }

@@ -59,7 +59,7 @@ namespace Mirid.Outputs
                 {
                     WriteTableRow(GetStatusText(driver.IsTested),
                                         file.Name,
-                                        string.Empty,
+                                        $"{driver.SimpleName} driver",
                                         builder);
                 }
             }
@@ -116,7 +116,10 @@ namespace Mirid.Outputs
             {
                 return "<img src=\"https://img.shields.io/badge/Working-brightgreen\"/>";
             }
-            return "<img src=\"https://img.shields.io/badge/Blocked-red\"/>";
+            return "<img src=\"https://img.shields.io/badge/InProgress-yellow\"/>";
+
+     
+           // return "<img src=\"https://img.shields.io/badge/Blocked-red\"/>";
         }
 
         static void WriteTableHeader(StringBuilder builder)

@@ -9,6 +9,19 @@ namespace Mirid.Output
 {
     public static class CsvOutput
     {
+        public static void WriteCSV(List<MFDriver> drivers, string filename)
+        {
+            using (var writer = new StreamWriter(filename))
+            {
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(drivers);
+                }
+            }
+        }
+
+
+        /*
         public static void WriteCSVs(List<MFDriver> drivers)
         {
             using (var writer = new StreamWriter("AllDrivers.csv"))
@@ -34,6 +47,6 @@ namespace Mirid.Output
                     csv.WriteRecords(drivers.Where(d => d.IsTested == true));
                 }
             }
-        }
+        }*/
     }
 }

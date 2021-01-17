@@ -8,6 +8,9 @@ namespace Mirid.Models
 {
     public class MFDriver
     {
+        [Ignore]
+        public string SimpleName => PackageName.Split(".").LastOrDefault();
+
         //indexes for writing CSV
         [Index(0)]
         public string PackageName => DriverProject.PackageId;
@@ -84,7 +87,7 @@ namespace Mirid.Models
             }
 
             //Load documentation
-            Documentation = new MFDriverDocumentation(this, Program.MeadowFoundationDocsPath);
+            Documentation = new MFDriverDocumentation(this, Program.MFDocsOverridePath);
 
             //Load assets
              var parentDir = driverProjectFile.Directory.Parent.Parent;
