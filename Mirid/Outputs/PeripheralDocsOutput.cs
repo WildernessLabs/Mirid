@@ -21,14 +21,15 @@ namespace Mirid.Outputs
                 {
                     if(packagesWithMultipleDrivers.Count > 0)
                     {
+                        output.AppendLine();
                         WriteMultipleDriverTables(packagesWithMultipleDrivers, output);
                     }
 
                     packagesWithMultipleDrivers.Clear();
                     group = GetPeripheralGroup(driver.PackageName);
                     output.AppendLine();
-                    output.AppendLine();
                     output.AppendLine($"## {group}");
+                    output.AppendLine();
                     WriteTableHeader(output);
                 }
 

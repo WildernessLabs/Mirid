@@ -27,7 +27,5 @@ namespace Mirid
 
             return result.ToString();
         }
-
-    
     }
 }
