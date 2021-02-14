@@ -22,6 +22,7 @@ namespace Mirid
             Console.WriteLine("Hello Mirid!");
 
             RunDriverReport();
+            //UpdateProjects();
         }
 
         static void UpdateProjects()
@@ -35,7 +36,11 @@ namespace Mirid
 
             foreach(var proj in driverProjectFiles)
             {
-                ProjectWriter.AddUpdateProperty(proj, "Authors", "Wilderness Labs");
+                ProjectWriter.AddUpdateProperty(proj, "Authors", "Wilderness Labs, Inc");
+                ProjectWriter.AddUpdateProperty(proj, "Company", "Wilderness Labs, Inc");
+                ProjectWriter.AddUpdateProperty(proj, "PackageProjectUrl", "http://developer.wildernesslabs.co/Meadow/Meadow.Foundation/");
+                ProjectWriter.AddUpdateProperty(proj, "PackageIconUrl", "https://github.com/WildernessLabs/Meadow.Foundation/blob/master/Source/icon.png?raw=true");
+                ProjectWriter.AddUpdateProperty(proj, "RepositoryUrl", "https://github.com/WildernessLabs/Meadow.Foundation");
             }
 
             projectFiles = FileCrawler.GetAllProjectsInFolders(MFFrameworksPath);
@@ -44,7 +49,11 @@ namespace Mirid
 
             foreach (var proj in driverFrameworkFiles)
             {
-                ProjectWriter.AddUpdateProperty(proj, "Authors", "Wilderness Labs");
+                ProjectWriter.AddUpdateProperty(proj, "Authors", "Wilderness Labs, Inc");
+                ProjectWriter.AddUpdateProperty(proj, "Company", "Wilderness Labs, Inc");
+                ProjectWriter.AddUpdateProperty(proj, "PackageProjectUrl", "http://developer.wildernesslabs.co/Meadow/Meadow.Foundation/");
+                ProjectWriter.AddUpdateProperty(proj, "PackageIconUrl", "https://github.com/WildernessLabs/Meadow.Foundation/blob/master/Source/icon.png?raw=true");
+                ProjectWriter.AddUpdateProperty(proj, "RepositoryUrl", "https://github.com/WildernessLabs/Meadow.Foundation");
             }
         }
 
