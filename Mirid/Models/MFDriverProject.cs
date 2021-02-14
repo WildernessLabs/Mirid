@@ -10,6 +10,7 @@ namespace Mirid.Models
         public string Description { get; private set; }
         public string GeneratePackageOnBuild { get; private set; }
         public string Version { get; private set; }
+        public string Authors { get; private set; }
 
         //private
         string projectText;
@@ -28,6 +29,8 @@ namespace Mirid.Models
             if (string.IsNullOrWhiteSpace(CompanyName)) { return false; }
             if (string.IsNullOrWhiteSpace(Description)) { return false; }
             if (string.IsNullOrWhiteSpace(PackageId)) { return false; }
+            if (string.IsNullOrWhiteSpace(Authors)) { return false; }
+            if (string.IsNullOrWhiteSpace(Version)) { return false; }
 
             return true;
         }
@@ -41,8 +44,9 @@ namespace Mirid.Models
             PackageId = GetElement("PackageId");
             Description = GetElement("Description");
             GeneratePackageOnBuild = GetElement("GeneratePackageOnBuild");
+            Authors = GetElement("Authors");
 
-            if(string.IsNullOrWhiteSpace(PackageId))
+            if (string.IsNullOrWhiteSpace(PackageId))
             {
                 //parse the project name
                 PackageId = "Meadow.Foundation." + Path.GetFileNameWithoutExtension(fileInfo.Name);

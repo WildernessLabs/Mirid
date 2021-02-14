@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Mirid.Models;
 using Mirid.Output;
@@ -21,6 +20,38 @@ namespace Mirid
         {
             Console.Clear();
             Console.WriteLine("Hello Mirid!");
+
+            RunDriverReport();
+        }
+
+        static void UpdateProjects()
+        {
+            Console.WriteLine("Add Author to projects");
+
+            //Drivers
+            var projectFiles = FileCrawler.GetAllProjectsInFolders(MFPeripheralsPath);
+
+            var driverProjectFiles = FileCrawler.GetDriverProjects(projectFiles);
+
+            foreach(var proj in driverProjectFiles)
+            {
+                ProjectWriter.AddUpdateProperty(proj, "Authors", "Wilderness Labs");
+            }
+
+            projectFiles = FileCrawler.GetAllProjectsInFolders(MFFrameworksPath);
+
+            var driverFrameworkFiles = FileCrawler.GetDriverProjects(projectFiles);
+
+            foreach (var proj in driverFrameworkFiles)
+            {
+                ProjectWriter.AddUpdateProperty(proj, "Authors", "Wilderness Labs");
+            }
+        }
+
+        static void RunDriverReport()
+        { 
+            Console.Clear();
+            Console.WriteLine("Driver Report");
 
             //Drivers
             var projectFiles = FileCrawler.GetAllProjectsInFolders(MFPeripheralsPath);
