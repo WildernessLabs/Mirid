@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Mirid
 {
@@ -17,6 +18,11 @@ namespace Mirid
             {
                 return new FileInfo[0];
             }
+        }
+
+        static FileInfo GetFileInfo(string path)
+        {
+            return new FileInfo(path);
         }
 
         static FileInfo[] GetCsProjFiles(string path)

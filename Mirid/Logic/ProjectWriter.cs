@@ -5,6 +5,71 @@ namespace Mirid
 {
     class ProjectWriter
     {
+        public static bool AddReference(FileInfo project, string reference)
+        {
+            var lines = File.ReadAllLines(project.FullName).ToList();
+
+            //find references 
+            int indexItemGroup = -1;
+            int indexCloseProject = -1;
+            for (int i = 0; i < lines.Count; i++)
+            {
+                if (lines[i].Contains("<ProjectReference"))
+                {
+                    indexItemGroup = i - 1;
+                }
+                if (lines[i].Contains("</Project>"))
+                {
+                    indexCloseProject = i;
+                }
+            }
+
+            if (indexItemGroup == -1)
+            {
+                lines.Insert(indexCloseProject, $"  </ItemGroup>");
+                lines.Insert(indexCloseProject, $"  <ItemGroup>");
+                indexItemGroup = indexCloseProject;
+            }
+
+            //insert 
+            lines.Insert(indexItemGroup + 1, reference);
+
+            File.WriteAllLines(project.FullName, lines.ToArray());
+
+            return true;
+        }
+
+        public static bool AddReference(FileInfo project, FileInfo reference)
+        {
+            if(project == null || reference == null)
+            {
+                return false;
+            }
+
+            var relativePath = Path.GetRelativePath(Path.GetDirectoryName(project.FullName), reference.FullName);
+            return AddReference(project, $"    <ProjectReference Include=\"{relativePath}\"/>");
+        }
+
+        public static bool DeleteProperty(FileInfo file, string property)
+        {
+            //load project
+            var lines = File.ReadAllLines(file.FullName).ToList();
+
+            //find property
+            for (int i = 0; i < lines.Count; i++)
+            {
+                if (lines[i].Contains($"<{property}>"))
+                {
+                    lines.RemoveAt(i);
+                    break;
+                }
+            }
+
+            File.WriteAllLines(file.FullName, lines.ToArray());
+
+            return true;
+        }
+
         public static bool AddUpdateProperty(FileInfo file, string property, string value)
         {
             //load project
