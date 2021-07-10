@@ -12,6 +12,7 @@ namespace Mirid
             //find references 
             int indexItemGroup = -1;
             int indexCloseProject = -1;
+         
             for (int i = 0; i < lines.Count; i++)
             {
                 if (lines[i].Contains("<ProjectReference"))
@@ -38,6 +39,7 @@ namespace Mirid
 
             return true;
         }
+        
 
         public static bool AddReference(FileInfo project, FileInfo reference)
         {
@@ -48,6 +50,66 @@ namespace Mirid
 
             var relativePath = Path.GetRelativePath(Path.GetDirectoryName(project.FullName), reference.FullName);
             return AddReference(project, $"    <ProjectReference Include=\"{relativePath}\"/>");
+        }
+
+        public static bool AddNuget(FileInfo project, string packageName)
+        {
+            var lines = File.ReadAllLines(project.FullName).ToList();
+
+            //find references 
+            int indexItemGroup = -1;
+            int indexCloseProject = -1;
+
+            for (int i = 0; i < lines.Count; i++)
+            {
+                if (lines[i].Contains("<ProjectReference"))
+                {
+                    indexItemGroup = i - 1;
+                }
+                if (lines[i].Contains("</Project>"))
+                {
+                    indexCloseProject = i;
+                }
+            }
+
+            if (indexItemGroup == -1)
+            {
+                lines.Insert(indexCloseProject, $"  </ItemGroup>");
+                lines.Insert(indexCloseProject, $"  <ItemGroup>");
+                indexItemGroup = indexCloseProject;
+            }
+
+            var reference = $"   <PackageReference Include=\"{packageName}\" Version=\"0.*\" />";
+
+            //insert 
+            lines.Insert(indexItemGroup + 1, reference);
+
+            File.WriteAllLines(project.FullName, lines.ToArray());
+
+            return true;
+        }
+
+        public static bool RemoveReference(FileInfo project, FileInfo reference)
+        {
+            if (project == null || reference == null)
+            {
+                return false;
+            }
+
+            var lines = File.ReadAllLines(project.FullName).ToList();
+
+            //find references 
+            for (int i = 0; i < lines.Count; i++)
+            {
+                if (lines[i].Contains(reference.FullName))
+                {
+                    lines.RemoveAt(i);
+                }
+            }
+
+            File.WriteAllLines(project.FullName, lines.ToArray());
+
+            return true;
         }
 
         public static bool DeleteProperty(FileInfo file, string property)

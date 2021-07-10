@@ -26,9 +26,9 @@ namespace Mirid
             Console.WriteLine("Hello Mirid!");
 
             //RunDriverReport();
-            UpdateProjects();
+        //    UpdateProjects();
 
-        //    UpdateSamples();
+            UpdateSamples();
         }
 
         static void UpdateSamples()
@@ -43,7 +43,9 @@ namespace Mirid
 
             foreach (var proj in driverSamples)
             {
-                ProjectWriter.AddReference(proj, projectMCF7);
+                //   ProjectWriter.AddReference(proj, projectMCF7);
+                ProjectWriter.RemoveReference(proj, projectMCF7);
+                ProjectWriter.AddNuget(proj, "Meadow.F7");
                 ProjectWriter.AddUpdateProperty(proj, "CopyLocalLockFileAssemblies", "true");
                 ProjectWriter.AddUpdateProperty(proj, "Authors", "Wilderness Labs, Inc");
                 ProjectWriter.AddUpdateProperty(proj, "Company", "Wilderness Labs, Inc");
