@@ -8,7 +8,9 @@ namespace Mirid.Models
     {
         public bool HasDataSheet { get; private set; }
 
-        public int NumberOfSamples { get; private set; }
+        public int NumberOfSamples => (sampleDirectories == null)?0: sampleDirectories.GetDirectories().Count();
+
+        DirectoryInfo sampleDirectories;
 
         public MFDriverAssets(DirectoryInfo directory)
         {
@@ -22,12 +24,19 @@ namespace Mirid.Models
                 }
             }
 
-            var samplesDir = directory.GetDirectories("Samples").FirstOrDefault();
+            sampleDirectories = directory.GetDirectories("Samples").FirstOrDefault();
+        }
 
-            if (samplesDir != null)
+        public MFDriverSample GetSampleForName(string name)
+        {
+            var folder = sampleDirectories?.GetDirectories(name);
+
+            if (folder == null || folder.Length == 0)
             {
-                NumberOfSamples = samplesDir.GetDirectories().Count();
+                return null;
             }
+
+            return new MFDriverSample(folder[0]);
         }
     }
 }

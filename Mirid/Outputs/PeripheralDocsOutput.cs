@@ -7,17 +7,17 @@ namespace Mirid.Outputs
 {
     public static class PeripheralDocsOutput
     {
-        public static void WritePeripheralTables(List<MFDriver> drivers)
+        public static void WritePeripheralTables(List<MFNuget> nugets)
         {
             StringBuilder output = new StringBuilder();
             //we can assume we're in order
             string group = string.Empty;
 
-            List<MFDriver> packagesWithMultipleDrivers = new List<MFDriver>();
+            List<MFNuget> packagesWithMultipleDrivers = new List<MFNuget>();
 
-            foreach (var driver in drivers)
+            foreach (var nuget in nugets)
             {
-                if(group != GetPeripheralGroup(driver.PackageName))
+                if(group != GetPeripheralGroup(nuget.PackageName))
                 {
                     if(packagesWithMultipleDrivers.Count > 0)
                     {
@@ -26,40 +26,40 @@ namespace Mirid.Outputs
                     }
 
                     packagesWithMultipleDrivers.Clear();
-                    group = GetPeripheralGroup(driver.PackageName);
+                    group = GetPeripheralGroup(nuget.PackageName);
                     output.AppendLine();
                     output.AppendLine($"## {group}");
                     output.AppendLine();
                     WriteTableHeader(output);
                 }
 
-                if(driver.NumberOfDrivers > 1)
+                if(nuget.NumberOfDrivers > 1)
                 {
-                    packagesWithMultipleDrivers.Add(driver);
+                    packagesWithMultipleDrivers.Add(nuget);
                 }
 
-                WriteTableRow(GetStatusText(driver.IsTested),
-                    GetPeripheralLink(driver.PackageName),
-                    driver.Description,
+                WriteTableRow(GetStatusText(nuget.IsTested),
+                    GetPeripheralLink(nuget.PackageName),
+                    nuget.Description,
                     output);
             }
 
             File.WriteAllText("PeripheralTables.md", output.ToString());
         }
 
-        static void WriteMultipleDriverTables(List<MFDriver> drivers, StringBuilder builder)
+        static void WriteMultipleDriverTables(List<MFNuget> nugets, StringBuilder builder)
         {
-            foreach(var driver in drivers)
+            foreach(var nuget in nugets)
             {
                 builder.AppendLine();
-                builder.AppendLine($"### {GetDriverNameFromPackage(driver.PackageName)}");
+                builder.AppendLine($"### {GetDriverNameFromPackage(nuget.PackageName)}");
 
                 WriteTableHeader(builder);
 
-                foreach(var file in driver.CodeFiles)
+                foreach(var driver in nuget.Drivers)
                 {
-                    WriteTableRow(GetStatusText(driver.IsTested),
-                                        file.Name,
+                    WriteTableRow(GetStatusText(nuget.IsTested),
+                                        driver.Name,
                                         $"{driver.SimpleName} driver",
                                         builder);
                 }
@@ -85,17 +85,17 @@ namespace Mirid.Outputs
             return $"[{name}]({url})";
         }
 
-        public static void WritePeripheralTablesSimple(List<MFDriver> drivers)
+        public static void WritePeripheralTablesSimple(List<MFNuget> nugets)
         {
             StringBuilder output = new StringBuilder();
 
             WriteTableHeader(output);
 
-            foreach(var driver in drivers)
+            foreach(var nuget in nugets)
             {
-                WriteTableRow(GetStatusText(driver.IsTested),
-                    GetDriverNameFromPackage(driver.PackageName),
-                    driver.Description,
+                WriteTableRow(GetStatusText(nuget.IsTested),
+                    GetDriverNameFromPackage(nuget.PackageName),
+                    nuget.Description,
                     output);
             }
 

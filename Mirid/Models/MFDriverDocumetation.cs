@@ -32,7 +32,7 @@ namespace Mirid.Models
         public void ReadDocsFile()
         {
             //  var override = Path.Combine()
-            var simpleName = driver.PackageName.Split('.').LastOrDefault();
+            var simpleName = driver.SimpleName;
 
             DocsFileName = driver.Namespace + "." + simpleName + ".md";
             FullPath = Path.Combine(documentationPath, DocsFileName);

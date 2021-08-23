@@ -17,18 +17,18 @@ namespace Mirid
 
         public static string MCFullPath = "../../../../../Meadow.Core/Source/";
 
-        static List<MFDriver> drivers = new List<MFDriver>();
-        static List<MFDriver> frameworks = new List<MFDriver>();
+        static List<MFNuget> driverNugets = new List<MFNuget>();
+        static List<MFNuget> frameworkNugets = new List<MFNuget>();
 
         static void Main(string[] args)
         {
             Console.Clear();
             Console.WriteLine("Hello Mirid!");
 
-            //RunDriverReport();
+            RunDriverReport();
         //    UpdateProjects();
 
-            UpdateSamples();
+         //   UpdateSamples();
         }
 
         static void UpdateSamples()
@@ -98,15 +98,15 @@ namespace Mirid
             
             foreach(var file in driverProjectFiles)
             {
-                drivers.Add(new MFDriver(file));
+                driverNugets.Add(new MFNuget(file));
             }
 
-            drivers = drivers.OrderBy(x => x.PackageName).ToList();
+            driverNugets = driverNugets.OrderBy(x => x.PackageName).ToList();
 
-            CsvOutput.WriteCSV(drivers, "AllPeripherals.csv");
-            CsvOutput.WriteCSV(drivers.Where(d => d.IsTested == false).ToList(), "InProgressPeripherals.csv");
-            PeripheralDocsOutput.WritePeripheralTablesSimple(drivers);
-            PeripheralDocsOutput.WritePeripheralTables(drivers);
+            CsvOutput.WriteCSV(driverNugets, "AllPeripherals.csv");
+            CsvOutput.WriteCSV(driverNugets.Where(d => d.IsTested == false).ToList(), "InProgressPeripherals.csv");
+            PeripheralDocsOutput.WritePeripheralTablesSimple(driverNugets);
+            PeripheralDocsOutput.WritePeripheralTables(driverNugets);
 
             return;
             //need to standardize the folder and naming convensions for the libs and frameworks first s
@@ -117,10 +117,10 @@ namespace Mirid
 
             foreach (var file in frameworkProjectFiles)
             {
-                frameworks.Add(new MFDriver(file));
+                frameworkNugets.Add(new MFNuget(file));
             }
 
-            CsvOutput.WriteCSV(frameworks, "AllFrameworks.csv");
+            CsvOutput.WriteCSV(frameworkNugets, "AllFrameworks.csv");
         }
     }
 }

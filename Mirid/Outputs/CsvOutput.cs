@@ -9,7 +9,7 @@ namespace Mirid.Output
 {
     public static class CsvOutput
     {
-        public static void WriteCSV(List<MFDriver> drivers, string filename)
+        public static void WriteCSV(List<MFNuget> drivers, string filename)
         {
             using (var writer = new StreamWriter(filename))
             {

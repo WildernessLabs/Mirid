@@ -8,97 +8,22 @@ namespace Mirid.Models
 {
     public class MFDriver
     {
-        [Ignore]
-        public string SimpleName => PackageName.Split(".").LastOrDefault();
+        public string Name => driverCode.Name;
+        public string SimpleName => driverCode.Name.Split('.').LastOrDefault();
 
-        //indexes for writing CSV
-        [Index(0)]
-        public string PackageName => DriverProject.PackageId;
-        [Index(1)]
-        public int NumberOfDrivers => CodeFiles?.Count ?? 0;
-        [Index(2)]
-        public bool IsTested => DriverProject?.GeneratePackageOnBuild == "true";
-        [Index(3)]
-        public bool HasCompleteMetaData => DriverProject?.IsMetadataComplete() ?? false;
-        [Index(4)]
-        public bool HasDataSheet => Assets?.HasDataSheet ?? false;
-        [Index(5)]
-        public int NumberOfSamples => Assets?.NumberOfSamples ?? 0;
-        [Index(6)]
-        public bool HasTestSuite => false;
-        [Index(7)]
-        public bool HasDocOverride => Documentation?.HasOverride ?? false;
-        [Index(8)]
-        public bool HasFritzing => Documentation?.HasFritzing ?? false;
-        [Index(9)]
-        public bool HasCodeExample => Documentation?.HasCodeExample ?? false;
-        [Index(10)]
-        public bool HasWiringExample => Documentation?.HasWiringExample ?? false;
-        [Index(11)]
-        public bool HasPurchasing => Documentation?.HasPurchasing ?? false;
+        public string Namespace => driverCode.Namespace;
 
-        [Ignore]
-        public MFDriverProject DriverProject { get; private set; }
-        [Ignore]
-        public MFDriverAssets Assets { get; private set; }
-        [Ignore]
-        public MFDriverDocumentation Documentation { get; private set; }
-        [Ignore]
-        public List<MFDriverCode> CodeFiles { get; private set; } = new List<MFDriverCode>();
+        public string SnipSnop => driverSample?.GetSnipSnop();
+        public bool HasSnipSnop => !string.IsNullOrWhiteSpace(SnipSnop);
 
-        [Ignore]
-        public string Namespace => CodeFiles.First().Namespace;
+        MFDriverCode driverCode;
+        MFDriverSample driverSample;
 
-        [Ignore]
-        public List<string> Samples { get; private set; } = new List<string>();
-
-        [Ignore]
-        public string Description => DriverProject?.Description ?? string.Empty;
-
-
-        public MFDriver(FileInfo driverProjectFile)
+        public MFDriver(string driverFileName, MFDriverSample driverSample)
         {
-            if (File.Exists(driverProjectFile.FullName) == false)
-            {
-                throw new FileNotFoundException($"Driver project not found {driverProjectFile.FullName}");
-            }
+            driverCode = new MFDriverCode(driverFileName);
 
-            //load driver project (for metadata)
-            DriverProject = new MFDriverProject(driverProjectFile);
-
-            //load driver code
-            var driverDir = driverProjectFile.Directory.GetDirectories("Drivers").FirstOrDefault();
-            if (driverDir != null)
-            {
-                var files = driverDir.GetFiles();
-                var filesSorted = files.OrderBy(f => f.Name);
-                foreach (var file in filesSorted)
-                {
-                    CodeFiles.Add(new MFDriverCode(file));
-                }
-            }
-            else
-            {
-                var fileName = GetSimpleName(driverProjectFile) + ".cs";
-
-                var file = Path.Combine(driverProjectFile.DirectoryName, fileName);
-
-                CodeFiles.Add(new MFDriverCode(file));
-            }
-
-            //Load documentation
-            Documentation = new MFDriverDocumentation(this, Program.MFDocsOverridePath);
-
-            //Load assets
-             var parentDir = driverProjectFile.Directory.Parent.Parent;
-            Assets = new MFDriverAssets(parentDir);
-        }
-
-        static string GetSimpleName(FileInfo file)
-        {
-            var nameChunks = file.Name.Split('.');
-
-            return nameChunks[nameChunks.Length - 2];
+            this.driverSample = driverSample;
         }
     }
 }
