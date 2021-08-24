@@ -17,8 +17,8 @@ namespace Mirid
 
         public static string MCFullPath = "../../../../../Meadow.Core/Source/";
 
-        static List<MFNuget> driverNugets = new List<MFNuget>();
-        static List<MFNuget> frameworkNugets = new List<MFNuget>();
+        static List<MFPackage> driverNugets = new List<MFPackage>();
+        static List<MFPackage> frameworkNugets = new List<MFPackage>();
 
         static void Main(string[] args)
         {
@@ -98,13 +98,15 @@ namespace Mirid
             
             foreach(var file in driverProjectFiles)
             {
-                driverNugets.Add(new MFNuget(file));
+                driverNugets.Add(new MFPackage(file));
             }
 
             driverNugets = driverNugets.OrderBy(x => x.PackageName).ToList();
 
-            CsvOutput.WriteCSV(driverNugets, "AllPeripherals.csv");
-            CsvOutput.WriteCSV(driverNugets.Where(d => d.IsTested == false).ToList(), "InProgressPeripherals.csv");
+            CsvOutput.WritePackagesCSV(driverNugets, "AllPeripherals.csv");
+            CsvOutput.WriteDriversCSV(driverNugets, "AllDrivers.csv");
+
+            CsvOutput.WritePackagesCSV(driverNugets.Where(d => d.IsTested == false).ToList(), "InProgressPeripherals.csv");
             PeripheralDocsOutput.WritePeripheralTablesSimple(driverNugets);
             PeripheralDocsOutput.WritePeripheralTables(driverNugets);
 
@@ -117,10 +119,10 @@ namespace Mirid
 
             foreach (var file in frameworkProjectFiles)
             {
-                frameworkNugets.Add(new MFNuget(file));
+                frameworkNugets.Add(new MFPackage(file));
             }
 
-            CsvOutput.WriteCSV(frameworkNugets, "AllFrameworks.csv");
+            CsvOutput.WritePackagesCSV(frameworkNugets, "AllFrameworks.csv");
         }
     }
 }

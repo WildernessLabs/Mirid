@@ -9,8 +9,29 @@ namespace Mirid.Output
 {
     public static class CsvOutput
     {
-        public static void WriteCSV(List<MFNuget> drivers, string filename)
+        public static void WritePackagesCSV(List<MFPackage> packages, string filename)
         {
+            using (var writer = new StreamWriter(filename))
+            {
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(packages);
+                }
+            }
+        }
+
+        public static void WriteDriversCSV(List<MFPackage> packages, string filename)
+        {
+            var drivers = new List<MFDriver>();
+
+            foreach(var package in packages)
+            {
+                foreach(var d in package.Drivers)
+                {
+                    drivers.Add(d);
+                }
+            }
+
             using (var writer = new StreamWriter(filename))
             {
                 using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))

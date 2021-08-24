@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Mirid.Models
 {
-    public class MFNuget
+    public class MFPackage
     {
         [Ignore]
         public string SimpleName => PackageName.Split(".").LastOrDefault();
@@ -40,7 +40,7 @@ namespace Mirid.Models
         public bool HasSnipSnop => Drivers[0]?.HasSnipSnop ?? false;
 
         [Ignore]
-        public MFNugetProject NugetProject { get; private set; }
+        public MFPackageProject NugetProject { get; private set; }
         [Ignore]
         public List<MFDriver> Drivers { get; private set; } = new List<MFDriver>();
         [Ignore]
@@ -59,7 +59,7 @@ namespace Mirid.Models
         public string Description => NugetProject?.Description ?? string.Empty;
 
 
-        public MFNuget(FileInfo driverProjectFile)
+        public MFPackage(FileInfo driverProjectFile)
         {
             if (File.Exists(driverProjectFile.FullName) == false)
             {
@@ -67,7 +67,7 @@ namespace Mirid.Models
             }
 
             //load nuget project (for metadata)
-            NugetProject = new MFNugetProject(driverProjectFile);
+            NugetProject = new MFPackageProject(driverProjectFile);
 
             //Load assets
             var parentDir = driverProjectFile.Directory.Parent.Parent;

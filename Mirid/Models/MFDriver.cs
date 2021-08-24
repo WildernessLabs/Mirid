@@ -8,13 +8,22 @@ namespace Mirid.Models
 {
     public class MFDriver
     {
-        public string Name => driverCode.Name;
-        public string SimpleName => driverCode.Name.Split('.').LastOrDefault();
-
+        //indexes for writing CSV
+        [Index(0)]
         public string Namespace => driverCode.Namespace;
-
-        public string SnipSnop => driverSample?.GetSnipSnop();
+        [Index(1)]
+        public string Name => driverCode.Name;
+        [Index(2)]
+        public bool HasSample => driverSample != null;
+        [Index(3)]
         public bool HasSnipSnop => !string.IsNullOrWhiteSpace(SnipSnop);
+        [Ignore]
+        public string SimpleName => driverCode.Name.Split('.').LastOrDefault();
+        
+        [Ignore]
+        public string SnipSnop => driverSample?.GetSnipSnop();
+        
+        
 
         MFDriverCode driverCode;
         MFDriverSample driverSample;

@@ -2,7 +2,7 @@
 
 namespace Mirid.Models
 {
-    public class MFNugetProject
+    public class MFPackageProject
     {
         public string AssemblyName { get; private set; }
         public string CompanyName { get; private set; }
@@ -16,7 +16,7 @@ namespace Mirid.Models
         string projectText;
         FileInfo fileInfo;
 
-        public MFNugetProject(FileInfo fileInfo)
+        public MFPackageProject(FileInfo fileInfo)
         {
             this.fileInfo = fileInfo;
             LoadDriverText(fileInfo.FullName);

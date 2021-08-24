@@ -7,13 +7,13 @@ namespace Mirid.Outputs
 {
     public static class PeripheralDocsOutput
     {
-        public static void WritePeripheralTables(List<MFNuget> nugets)
+        public static void WritePeripheralTables(List<MFPackage> nugets)
         {
             StringBuilder output = new StringBuilder();
             //we can assume we're in order
             string group = string.Empty;
 
-            List<MFNuget> packagesWithMultipleDrivers = new List<MFNuget>();
+            List<MFPackage> packagesWithMultipleDrivers = new List<MFPackage>();
 
             foreach (var nuget in nugets)
             {
@@ -47,7 +47,7 @@ namespace Mirid.Outputs
             File.WriteAllText("PeripheralTables.md", output.ToString());
         }
 
-        static void WriteMultipleDriverTables(List<MFNuget> nugets, StringBuilder builder)
+        static void WriteMultipleDriverTables(List<MFPackage> nugets, StringBuilder builder)
         {
             foreach(var nuget in nugets)
             {
@@ -85,7 +85,7 @@ namespace Mirid.Outputs
             return $"[{name}]({url})";
         }
 
-        public static void WritePeripheralTablesSimple(List<MFNuget> nugets)
+        public static void WritePeripheralTablesSimple(List<MFPackage> nugets)
         {
             StringBuilder output = new StringBuilder();
 
