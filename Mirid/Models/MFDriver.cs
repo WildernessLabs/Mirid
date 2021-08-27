@@ -40,11 +40,14 @@ namespace Mirid.Models
         MFDriverSample driverSample;
         MFDriverDocumentation documentation;
 
+        string packageName;
         bool isPublished = false;
 
         public MFDriver(MFPackage package, string driverFileName, MFDriverSample driverSample)
         {
             driverCode = new MFDriverCode(driverFileName);
+
+            packageName = package.PackageName;
             isPublished = package.IsPublished;
 
             this.driverSample = driverSample;
@@ -55,7 +58,7 @@ namespace Mirid.Models
 
         public void UpdateDocHeader()
         {
-            documentation.UpdateDocHeader();
+            documentation.UpdateDocHeader(packageName);
         }
 
         public void UpdateSnipSnop()

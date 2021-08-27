@@ -113,7 +113,7 @@ namespace Mirid.Models
             File.WriteAllText(FullPath, text);
         }
 
-        public void UpdateDocHeader()
+        public void UpdateDocHeader(string packageName)
         {
             //Read the file - should aleady be done 
             if (text == null)
@@ -170,7 +170,7 @@ namespace Mirid.Models
             table.Add(String.Format("| Status | {0} |", driver.IsPublished ? Constants.WorkingBadgeHtml : Constants.InProgressBadgeHtml));
             var gitUrl = $"https://github.com/WildernessLabs/Meadow.Foundation/tree/master/Source/Meadow.Foundation.Peripherals/{simpleNamespace}";
             table.Add($"| Source code | [GitHub]({gitUrl}) |");
-            var nugetUrl = $"<a href=\"https://www.nuget.org/packages/Meadow.Foundation.{simpleNamespace}/\" target=\"_blank\"><img src=\"https://img.shields.io/nuget/v/Meadow.Foundation.{simpleNamespace}.svg?label=Meadow.Foundation.{simpleNamespace}\" /></a>"; 
+            var nugetUrl = $"<a href=\"https://www.nuget.org/packages/{packageName}/\" target=\"_blank\"><img src=\"https://img.shields.io/nuget/v/{packageName}.svg?label={packageName}\" /></a>"; 
             table.Add($"| NuGet package | {nugetUrl} |");
 
             //inject new rows at index 
