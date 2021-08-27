@@ -26,18 +26,8 @@ namespace Mirid.Models
         public int NumberOfSamples => Assets?.NumberOfSamples ?? 0;
         [Index(6)]
         public bool HasTestSuite => false;
-        [Index(7)]
-        public bool HasDocOverride => Documentation?.HasOverride ?? false;
-        [Index(8)]
-        public bool HasFritzing => Documentation?.HasFritzing ?? false;
-        [Index(9)]
-        public bool HasCodeExample => Documentation?.HasCodeExample ?? false;
-        [Index(10)]
-        public bool HasWiringExample => Documentation?.HasWiringExample ?? false;
-        [Index(11)]
-        public bool HasPurchasing => Documentation?.HasPurchasing ?? false;
-        [Index(12)]
-        public bool HasSnipSnop => Drivers[0]?.HasSnipSnop ?? false;
+
+
 
         [Ignore]
         public MFPackageProject NugetProject { get; private set; }
@@ -76,6 +66,7 @@ namespace Mirid.Models
             //load driver code
             var driverDir = driverProjectFile.Directory.GetDirectories("Drivers").FirstOrDefault();
 
+            //if the package contains multiple drivers
             if (driverDir != null)
             {
                 var files = driverDir.GetFiles();
@@ -83,22 +74,21 @@ namespace Mirid.Models
 
                 foreach (var file in filesSorted)
                 {   //trickery - removing the extension hacks off the end of the package name 
-                    var name = Path.GetFileNameWithoutExtension(driverProjectFile.Name) + "." + Path.GetFileNameWithoutExtension(file.Name) + "_Sample";
+                    var name = Path.GetFileNameWithoutExtension(file.Name) + "_Sample";
                     Drivers.Add(new MFDriver(file.FullName, Assets.GetSampleForName(name)));
                 }
             }
+            //if the package only contains one driver
             else
             {
                 var fileName = GetSimpleName(driverProjectFile.Name) + ".cs";
                 var file = Path.Combine(driverProjectFile.DirectoryName, fileName);
 
                 var fullName = Path.GetFileNameWithoutExtension(driverProjectFile.Name);
-                Drivers.Add(new MFDriver(file, Assets.GetSampleForName(fullName + "_Sample")));
+                Drivers.Add(new MFDriver(file, Assets.GetSampleForName(Path.GetFileNameWithoutExtension(file) + "_Sample")));
             }
 
-            //Load documentation
-            //ToDo
-            //Documentation = new MFDriverDocumentation(this, Program.MFDocsOverridePath);
+            
 
             
         }

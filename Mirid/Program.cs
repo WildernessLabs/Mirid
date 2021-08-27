@@ -25,7 +25,9 @@ namespace Mirid
             Console.Clear();
             Console.WriteLine("Hello Mirid!");
 
-            RunDriverReport();
+            UpdateDocsSnipSnops();
+
+           // RunDriverReport();
         //    UpdateProjects();
 
          //   UpdateSamples();
@@ -86,22 +88,26 @@ namespace Mirid
             }
         }
 
-        static void RunDriverReport()
-        { 
-            Console.Clear();
-            Console.WriteLine("Driver Report");
-
+        static void ReadPackageData()
+        {
             //Drivers
             var projectFiles = FileCrawler.GetAllProjectsInFolders(MFPeripheralsPath);
-
             var driverProjectFiles = FileCrawler.GetDriverProjects(projectFiles);
-            
-            foreach(var file in driverProjectFiles)
+
+            foreach (var file in driverProjectFiles)
             {
                 driverNugets.Add(new MFPackage(file));
             }
 
             driverNugets = driverNugets.OrderBy(x => x.PackageName).ToList();
+        }
+
+        static void RunDriverReport()
+        { 
+            Console.Clear();
+            Console.WriteLine("Driver Report");
+
+            ReadPackageData();
 
             CsvOutput.WritePackagesCSV(driverNugets, "AllPeripherals.csv");
             CsvOutput.WriteDriversCSV(driverNugets, "AllDrivers.csv");
@@ -123,6 +129,27 @@ namespace Mirid
             }
 
             CsvOutput.WritePackagesCSV(frameworkNugets, "AllFrameworks.csv");
+        }
+
+        static void UpdateDocsSnipSnops()
+        {
+            ReadPackageData();
+
+            //loop over all drivers .... so we need to extract every driver 
+            var drivers = new List<MFDriver>();
+
+            foreach (var package in driverNugets)
+            {
+                foreach (var d in package.Drivers)
+                {
+                    drivers.Add(d);
+                }
+            }
+
+            foreach(var driver in drivers)
+            {
+                driver.UpdateSnipSnop();
+            }
         }
     }
 }
