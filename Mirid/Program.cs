@@ -25,9 +25,11 @@ namespace Mirid
             Console.Clear();
             Console.WriteLine("Hello Mirid!");
 
-            UpdateDocsSnipSnops();
+            //  UpdatePeripheralDocs();
 
-           // RunDriverReport();
+            WritePeripheralTables();
+
+            RunDriverReport();
         //    UpdateProjects();
 
          //   UpdateSamples();
@@ -102,6 +104,17 @@ namespace Mirid
             driverNugets = driverNugets.OrderBy(x => x.PackageName).ToList();
         }
 
+        static void WritePeripheralTables()
+        {
+            Console.Clear();
+            Console.WriteLine("Driver Report");
+
+            ReadPackageData();
+
+            PeripheralDocsOutput.WritePeripheralTablesSimple(driverNugets);
+            PeripheralDocsOutput.WritePeripheralTables(driverNugets);
+        }
+
         static void RunDriverReport()
         { 
             Console.Clear();
@@ -112,9 +125,7 @@ namespace Mirid
             CsvOutput.WritePackagesCSV(driverNugets, "AllPeripherals.csv");
             CsvOutput.WriteDriversCSV(driverNugets, "AllDrivers.csv");
 
-            CsvOutput.WritePackagesCSV(driverNugets.Where(d => d.IsTested == false).ToList(), "InProgressPeripherals.csv");
-            PeripheralDocsOutput.WritePeripheralTablesSimple(driverNugets);
-            PeripheralDocsOutput.WritePeripheralTables(driverNugets);
+            CsvOutput.WritePackagesCSV(driverNugets.Where(d => d.IsPublished == false).ToList(), "InProgressPeripherals.csv");
 
             return;
             //need to standardize the folder and naming convensions for the libs and frameworks first s
@@ -131,7 +142,7 @@ namespace Mirid
             CsvOutput.WritePackagesCSV(frameworkNugets, "AllFrameworks.csv");
         }
 
-        static void UpdateDocsSnipSnops()
+        static void UpdatePeripheralDocs()
         {
             ReadPackageData();
 
@@ -149,6 +160,7 @@ namespace Mirid
             foreach(var driver in drivers)
             {
                 driver.UpdateSnipSnop();
+                driver.UpdateDocHeader();
             }
         }
     }

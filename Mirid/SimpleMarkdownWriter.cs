@@ -19,6 +19,7 @@ namespace Mirid
             return $"# {text}";
         }
 
+        //Don't think this is finished
         public static string GetTableRow(string[] text)
         {
             StringBuilder result = new StringBuilder();

@@ -17,7 +17,7 @@ namespace Mirid.Models
         [Index(1)]
         public int NumberOfDrivers => Drivers.Count();
         [Index(2)]
-        public bool IsTested => NugetProject?.GeneratePackageOnBuild == "true";
+        public bool IsPublished => NugetProject?.GeneratePackageOnBuild == "true";
         [Index(3)]
         public bool HasCompleteMetaData => NugetProject?.IsMetadataComplete() ?? false;
         [Index(4)]
@@ -75,7 +75,7 @@ namespace Mirid.Models
                 foreach (var file in filesSorted)
                 {   //trickery - removing the extension hacks off the end of the package name 
                     var name = Path.GetFileNameWithoutExtension(file.Name) + "_Sample";
-                    Drivers.Add(new MFDriver(file.FullName, Assets.GetSampleForName(name)));
+                    Drivers.Add(new MFDriver(this, file.FullName, Assets.GetSampleForName(name)));
                 }
             }
             //if the package only contains one driver
@@ -85,12 +85,8 @@ namespace Mirid.Models
                 var file = Path.Combine(driverProjectFile.DirectoryName, fileName);
 
                 var fullName = Path.GetFileNameWithoutExtension(driverProjectFile.Name);
-                Drivers.Add(new MFDriver(file, Assets.GetSampleForName(Path.GetFileNameWithoutExtension(file) + "_Sample")));
+                Drivers.Add(new MFDriver(this, file, Assets.GetSampleForName(Path.GetFileNameWithoutExtension(file) + "_Sample")));
             }
-
-            
-
-            
         }
 
         static string GetSimpleName(string Name)

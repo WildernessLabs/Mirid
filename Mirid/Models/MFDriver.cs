@@ -25,6 +25,8 @@ namespace Mirid.Models
         public bool HasWiringExample => documentation?.HasWiringExample ?? false;
         [Index(8)]
         public bool HasPurchasing => documentation?.HasPurchasing ?? false;
+        [Index(9)]
+        public bool IsPublished => isPublished;
 
 
 
@@ -38,14 +40,22 @@ namespace Mirid.Models
         MFDriverSample driverSample;
         MFDriverDocumentation documentation;
 
-        public MFDriver(string driverFileName, MFDriverSample driverSample)
+        bool isPublished = false;
+
+        public MFDriver(MFPackage package, string driverFileName, MFDriverSample driverSample)
         {
             driverCode = new MFDriverCode(driverFileName);
+            isPublished = package.IsPublished;
 
             this.driverSample = driverSample;
 
             //Load documentation
             documentation = new MFDriverDocumentation(this, Program.MFDocsOverridePath);
+        }
+
+        public void UpdateDocHeader()
+        {
+            documentation.UpdateDocHeader();
         }
 
         public void UpdateSnipSnop()

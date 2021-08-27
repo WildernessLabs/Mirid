@@ -38,7 +38,7 @@ namespace Mirid.Outputs
                     packagesWithMultipleDrivers.Add(nuget);
                 }
 
-                WriteTableRow(GetStatusText(nuget.IsTested),
+                WriteTableRow(GetStatusText(nuget.IsPublished),
                     GetPeripheralLink(nuget.PackageName),
                     nuget.Description,
                     output);
@@ -58,7 +58,7 @@ namespace Mirid.Outputs
 
                 foreach(var driver in nuget.Drivers)
                 {
-                    WriteTableRow(GetStatusText(nuget.IsTested),
+                    WriteTableRow(GetStatusText(nuget.IsPublished),
                                         driver.Name,
                                         $"{driver.SimpleName} driver",
                                         builder);
@@ -93,7 +93,7 @@ namespace Mirid.Outputs
 
             foreach(var nuget in nugets)
             {
-                WriteTableRow(GetStatusText(nuget.IsTested),
+                WriteTableRow(GetStatusText(nuget.IsPublished),
                     GetDriverNameFromPackage(nuget.PackageName),
                     nuget.Description,
                     output);
@@ -115,12 +115,9 @@ namespace Mirid.Outputs
         {
             if(isWorking)
             {
-                return "<img src=\"https://img.shields.io/badge/Working-brightgreen\"/>";
+                return Constants.WorkingBadgeHtml;
             }
-            return "<img src=\"https://img.shields.io/badge/InProgress-yellow\"/>";
-
-     
-           // return "<img src=\"https://img.shields.io/badge/Blocked-red\"/>";
+            return Constants.InProgressBadgeHtml;
         }
 
         static void WriteTableHeader(StringBuilder builder)

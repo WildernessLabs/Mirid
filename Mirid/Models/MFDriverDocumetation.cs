@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Mirid.Models
@@ -41,7 +43,7 @@ namespace Mirid.Models
             DocsFileName = driver.Namespace + "." + simpleName + ".md";
             FullPath = Path.Combine(documentationPath, DocsFileName);
 
-            if(File.Exists(FullPath))
+            if (File.Exists(FullPath))
             {
                 text = File.ReadAllText(FullPath); //ready for processing
             }
@@ -50,11 +52,11 @@ namespace Mirid.Models
         public void UpdateSnipSnop(string snippet)
         {
             //Read the file - should aleady be done 
-            if(text == null)
+            if (text == null)
             {
                 ReadDocsFile();
 
-                if(text == null)
+                if (text == null)
                 {
                     Console.WriteLine($"No docs override for {driver.Name}");
                     return;
@@ -70,7 +72,7 @@ namespace Mirid.Models
                 snipIndex = text.IndexOf("### Code Example");
                 int snopIndex = text.IndexOf("###", snipIndex + 1);
 
-                if(snopIndex == -1)
+                if (snopIndex == -1)
                 {
                     snopIndex = text.Length - 1;
                 }
@@ -80,7 +82,7 @@ namespace Mirid.Models
             else
             {   //where do we inject the code snippet??
                 snipIndex = text.IndexOf("###");
-                if(snipIndex == -1)
+                if (snipIndex == -1)
                 {
                     snipIndex = text.Length - 1;//EOF
                 }
@@ -109,6 +111,76 @@ namespace Mirid.Models
 
             //now that everything is stored in memory .... we need to update the docs file
             File.WriteAllText(FullPath, text);
+        }
+
+        public void UpdateDocHeader()
+        {
+            //Read the file - should aleady be done 
+            if (text == null)
+            {
+                ReadDocsFile();
+
+                if (text == null)
+                {
+                    Console.WriteLine($"No docs override for {driver.Name}");
+                    return;
+                }
+            }
+
+            //split by line
+            var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+
+            bool isTableStarted = false;
+            int tableLineStart = 0;
+            int tableLineEnd = 0;
+
+            for(int i = 0; i < lines.Count; i++)
+            {
+                //find first | 
+                if(isTableStarted == false && 
+                    lines[i].Length > 0 && 
+                    lines[i][0] == '|')
+                {
+                    isTableStarted = true;
+                    tableLineStart = i;
+                }
+                else if(isTableStarted == true && 
+                    lines[i].Length > 0 && 
+                    lines[i][0] == '|')
+                {
+                    tableLineEnd = i;
+                }
+                else if(isTableStarted == true)
+                {
+                    break;
+                }
+            }
+
+            //delete the header table
+            for(int i = 0; i < tableLineEnd - tableLineStart + 1; i++)
+            {
+                lines.RemoveAt(tableLineStart);
+            }
+
+            //create the table 
+            var table = new List<string>();
+
+            table.Add($"| {driver.SimpleName} | |");
+            table.Add($"|--------|--------|");
+            table.Add(String.Format("| Status | {0} |", driver.IsPublished ? Constants.WorkingBadgeHtml : Constants.InProgressBadgeHtml));
+            var gitUrl = $"https://github.com/WildernessLabs/Meadow.Foundation/tree/master/Source/Meadow.Foundation.Peripherals/{simpleNamespace}";
+            table.Add($"| Source code | [GitHub]({gitUrl}) |");
+            var nugetUrl = $"<a href=\"https://www.nuget.org/packages/Meadow.Foundation.{simpleNamespace}/\" target=\"_blank\"><img src=\"https://img.shields.io/nuget/v/Meadow.Foundation.{simpleNamespace}.svg?label=Meadow.Foundation.{simpleNamespace}\" /></a>"; 
+            table.Add($"| NuGet package | {nugetUrl} |");
+
+            //inject new rows at index 
+            for(int i = 0; i < table.Count; i++)
+            {
+                lines.Insert(tableLineStart + i, table[i]);
+            }
+
+            //now that everything is stored in memory .... we need to update the docs file
+            File.WriteAllLines(FullPath, lines);
         }
     }
 }
