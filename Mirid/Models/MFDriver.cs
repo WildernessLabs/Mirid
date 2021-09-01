@@ -18,14 +18,23 @@ namespace Mirid.Models
         [Index(4)]
         public bool HasDocOverride => documentation?.HasOverride ?? false;
         [Index(5)]
-        public bool HasFritzing => documentation?.HasFritzing ?? false;
+        public bool IsUIDCorrect 
+        {
+            get 
+            {
+                return string.Compare(documentation?.UID, Namespace + "." + SimpleName, true) == 0;
+            }
+        }
+        //documentation?.UID == (Namespace + "." + SimpleName);
         [Index(6)]
-        public bool HasCodeExample => documentation?.HasCodeExample ?? false;
+        public bool HasFritzing => documentation?.HasFritzing ?? false;
         [Index(7)]
-        public bool HasWiringExample => documentation?.HasWiringExample ?? false;
+        public bool HasCodeExample => documentation?.HasCodeExample ?? false;
         [Index(8)]
-        public bool HasPurchasing => documentation?.HasPurchasing ?? false;
+        public bool HasWiringExample => documentation?.HasWiringExample ?? false;
         [Index(9)]
+        public bool HasPurchasing => documentation?.HasPurchasing ?? false;
+        [Index(10)]
         public bool IsPublished => isPublished;
 
 
