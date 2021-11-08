@@ -80,7 +80,7 @@ namespace Mirid.Models
 
                 if (snopIndex == -1)
                 {
-                    snopIndex = text.Length - 1;
+                    snopIndex = text.Length;
                 }
 
                 text = text.Remove(snipIndex, snopIndex - snipIndex);

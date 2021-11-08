@@ -25,11 +25,11 @@ namespace Mirid
             Console.Clear();
             Console.WriteLine("Hello Mirid!");
 
-            //UpdatePeripheralDocs();
+            UpdatePeripheralDocs();
 
             //WritePeripheralTables();
 
-            RunDriverReport();
+        //    RunDriverReport();
         //    UpdateProjects();
 
          //   UpdateSamples();
@@ -160,7 +160,7 @@ namespace Mirid
             foreach(var driver in drivers)
             {
                 driver.UpdateSnipSnop();
-                driver.UpdateDocHeader();
+            //    driver.UpdateDocHeader();
             }
         }
     }
