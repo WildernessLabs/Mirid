@@ -180,6 +180,4 @@ namespace Mirid
             return true;
         }
     }
-
-    
 }

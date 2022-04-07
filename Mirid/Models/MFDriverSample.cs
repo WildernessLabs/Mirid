@@ -8,8 +8,8 @@ namespace Mirid.Models
         DirectoryInfo directoryInfo;
         FileInfo meadowAppFileInfo;
 
-        const string SNIP = "//<!—SNIP—>";
-        const string SNOP = "//<!—SNOP—>";
+        const string SNIP = "//<!=SNIP=>";
+        const string SNOP = "//<!=SNOP=>";
 
         public string Name => directoryInfo.Name;
 

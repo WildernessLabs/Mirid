@@ -7,12 +7,20 @@ namespace Mirid
 {
     public static class FileCrawler
     {
-        public static FileInfo[] GetAllProjectsInFolders(string path)
+        public static FileInfo[] GetAllProjectsInFolders(string path, bool filter = true)
         {
             //check if path exists first
             if (Directory.Exists(path))
             {
-                return GetCsProjFiles(path);
+                var files = GetCsProjFiles(path);
+                
+                if(filter)
+                {
+                    files = files.Where(f => !f.FullName.Contains("Test"))
+                                 .Where(f => !f.FullName.Contains("Utilities"))
+                                 .ToArray();
+                }
+                return files;
             }
             else
             {

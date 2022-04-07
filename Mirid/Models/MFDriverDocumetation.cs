@@ -38,7 +38,15 @@ namespace Mirid.Models
             var simpleName = driver.SimpleName;
 
             var index = "Meadow.Foundation.".Length;
-            simpleNamespace = driver.Namespace.Substring(index) + "." + driver.SimpleName;
+
+            if (driver.Namespace.Contains("Grove"))
+            {
+                simpleNamespace = driver.Name;
+            }
+            else
+            {
+                simpleNamespace = driver.Namespace.Substring(index) + "." + driver.SimpleName;
+            }
 
             DocsFileName = driver.Namespace + "." + simpleName + ".md";
             FullPath = Path.Combine(documentationPath, DocsFileName);
@@ -55,7 +63,7 @@ namespace Mirid.Models
             }
         }
 
-        public void UpdateSnipSnop(string snippet)
+        public void UpdateSnipSnop(string snippet, string githubUrl)
         {
             //Read the file - should aleady be done 
             if (text == null)
@@ -105,11 +113,8 @@ namespace Mirid.Models
             snipSnop.AppendLine();
 
             snipSnop.Append("[Sample project(s) available on GitHub](");
-            snipSnop.Append("https://github.com/WildernessLabs/Meadow.Foundation/tree/master/Source/Meadow.Foundation.Peripherals/");
-            snipSnop.Append($"{simpleNamespace}");
-            snipSnop.Append($"/Samples/");
-            snipSnop.Append($"{simpleNamespace}");
-            snipSnop.Append($"_Sample)");
+            snipSnop.Append(githubUrl);
+            snipSnop.Append($"{driver.Name})");
             snipSnop.AppendLine();
             snipSnop.AppendLine();
 
@@ -119,7 +124,7 @@ namespace Mirid.Models
             File.WriteAllText(FullPath, text);
         }
 
-        public void UpdateDocHeader(string packageName)
+        public void UpdateDocHeader(string packageName, string githubUrl)
         {
             //Read the file - should aleady be done 
             if (text == null)
@@ -174,7 +179,7 @@ namespace Mirid.Models
             table.Add($"| {driver.SimpleName} | |");
             table.Add($"|--------|--------|");
             table.Add(String.Format("| Status | {0} |", driver.IsPublished ? Constants.WorkingBadgeHtml : Constants.InProgressBadgeHtml));
-            var gitUrl = $"https://github.com/WildernessLabs/Meadow.Foundation/tree/master/Source/Meadow.Foundation.Peripherals/{simpleNamespace}";
+            var gitUrl = $"{githubUrl}{simpleNamespace}";
             table.Add($"| Source code | [GitHub]({gitUrl}) |");
             var nugetUrl = $"<a href=\"https://www.nuget.org/packages/{packageName}/\" target=\"_blank\"><img src=\"https://img.shields.io/nuget/v/{packageName}.svg?label={packageName}\" /></a>"; 
             table.Add($"| NuGet package | {nugetUrl} |");

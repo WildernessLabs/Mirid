@@ -52,7 +52,7 @@ namespace Mirid.Models
         string packageName;
         bool isPublished = false;
 
-        public MFDriver(MFPackage package, string driverFileName, MFDriverSample driverSample)
+        public MFDriver(MFPackage package, string driverFileName, MFDriverSample driverSample, string docsOverridePath)
         {
             driverCode = new MFDriverCode(driverFileName);
 
@@ -62,15 +62,15 @@ namespace Mirid.Models
             this.driverSample = driverSample;
 
             //Load documentation
-            documentation = new MFDriverDocumentation(this, Program.MFDocsOverridePath);
+            documentation = new MFDriverDocumentation(this, docsOverridePath);
         }
 
-        public void UpdateDocHeader()
+        public void UpdateDocHeader(string githubUrl)
         {
-            documentation.UpdateDocHeader(packageName);
+            documentation.UpdateDocHeader(packageName, githubUrl);
         }
 
-        public void UpdateSnipSnop()
+        public void UpdateSnipSnop(string githubUrl)
         {
             //check if we have a valid SnipSnop
             if (HasSnipSnop == false) return;
@@ -79,7 +79,7 @@ namespace Mirid.Models
             var snip = CleanSnipSnop(SnipSnop);
 
             //update the driver override file
-            documentation.UpdateSnipSnop(snip);
+            documentation.UpdateSnipSnop(snip, githubUrl);
         }
 
         string CleanSnipSnop(string snipSnop)
@@ -121,7 +121,7 @@ namespace Mirid.Models
             {
                 if (lines[i].Length < textStart) continue;
 
-                lines[i] = lines[i].Substring(textStart);
+                lines[i] = lines[i][textStart..];
             }
 
             return string.Join("\r\n", lines);

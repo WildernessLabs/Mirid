@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace Mirid.Models
 {
+    //ToDo re-eval this class name - DriverSet? ... 
     public class MFPackage
     {
         [Ignore]
@@ -49,7 +50,7 @@ namespace Mirid.Models
         public string Description => NugetProject?.Description ?? string.Empty;
 
 
-        public MFPackage(FileInfo driverProjectFile)
+        public MFPackage(FileInfo driverProjectFile, string docsOverridePath)
         {
             if (File.Exists(driverProjectFile.FullName) == false)
             {
@@ -60,7 +61,7 @@ namespace Mirid.Models
             NugetProject = new MFPackageProject(driverProjectFile);
 
             //Load assets
-            var parentDir = driverProjectFile.Directory.Parent.Parent;
+            var parentDir = driverProjectFile.Directory.Parent;
             Assets = new MFDriverAssets(parentDir);
 
             //load driver code
@@ -75,7 +76,7 @@ namespace Mirid.Models
                 foreach (var file in filesSorted)
                 {   //trickery - removing the extension hacks off the end of the package name 
                     var name = Path.GetFileNameWithoutExtension(file.Name) + "_Sample";
-                    Drivers.Add(new MFDriver(this, file.FullName, Assets.GetSampleForName(name)));
+                    Drivers.Add(new MFDriver(this, file.FullName, Assets.GetSampleForName(name), docsOverridePath));
                 }
             }
             //if the package only contains one driver
@@ -85,7 +86,10 @@ namespace Mirid.Models
                 var file = Path.Combine(driverProjectFile.DirectoryName, fileName);
 
                 var fullName = Path.GetFileNameWithoutExtension(driverProjectFile.Name);
-                Drivers.Add(new MFDriver(this, file, Assets.GetSampleForName(Path.GetFileNameWithoutExtension(file) + "_Sample")));
+                Drivers.Add(new MFDriver(this, 
+                                         file, 
+                                         Assets.GetSampleForName(Path.GetFileNameWithoutExtension(file) + "_Sample"),
+                                         docsOverridePath));
             }
         }
 
