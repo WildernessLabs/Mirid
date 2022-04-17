@@ -18,8 +18,8 @@ namespace Mirid.Models
         public bool HasCodeExample => text?.Contains("### Code Example") ?? false;
         public bool HasPurchasing => text?.Contains("# Purchasing") ?? false;
 
-        MFDriver driver;
-        string documentationPath;
+        readonly MFDriver driver;
+        readonly string documentationPath;
         string text;
         string simpleNamespace;
 
@@ -124,7 +124,7 @@ namespace Mirid.Models
             File.WriteAllText(FullPath, text);
         }
 
-        public void UpdateDocHeader(string packageName, string githubUrl)
+        public void UpdateDocHeader(string packageName, string githubUrl, bool includeNamespaceInGitHubUrl)
         {
             //Read the file - should aleady be done 
             if (text == null)
@@ -176,10 +176,21 @@ namespace Mirid.Models
             //create the table 
             var table = new List<string>();
 
+            string gitUrl;
+
+            if (includeNamespaceInGitHubUrl)
+            {
+                gitUrl = $"{githubUrl}{simpleNamespace}";
+            }
+            else
+            {
+                gitUrl = $"{githubUrl}{driver.Name}";
+            }
+
             table.Add($"| {driver.SimpleName} | |");
             table.Add($"|--------|--------|");
             table.Add(String.Format("| Status | {0} |", driver.IsPublished ? Constants.WorkingBadgeHtmlwStyle : Constants.InProgressBadgeHtmlwStyle));
-            var gitUrl = $"{githubUrl}{simpleNamespace}";
+            
             table.Add($"| Source code | [GitHub]({gitUrl}) |");
             var nugetUrl = $"<a href=\"https://www.nuget.org/packages/{packageName}/\" target=\"_blank\"><img src=\"https://img.shields.io/nuget/v/{packageName}.svg?label={packageName}\" /></a>"; 
             table.Add($"| NuGet package | {nugetUrl} |");

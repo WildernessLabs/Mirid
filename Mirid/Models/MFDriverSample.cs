@@ -18,6 +18,11 @@ namespace Mirid.Models
             this.directoryInfo = directoryInfo;
 
             meadowAppFileInfo = directoryInfo.GetFiles("MeadowApp.cs").FirstOrDefault();
+
+            if (meadowAppFileInfo == null)
+            {   //for non-Meadow app samples
+                meadowAppFileInfo = directoryInfo.GetFiles("Program.cs").FirstOrDefault();
+            }
         }
 
         public string GetSnipSnop()

@@ -24,7 +24,7 @@ namespace Mirid.Models
                 }
             }
 
-            sampleDirectories = directory.GetDirectories("Sample").FirstOrDefault();
+            sampleDirectories = directory.GetDirectories("Sample*").FirstOrDefault();
         }
 
         public MFDriverSample GetSampleForName(string name)

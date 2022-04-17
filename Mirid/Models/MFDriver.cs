@@ -65,9 +65,9 @@ namespace Mirid.Models
             documentation = new MFDriverDocumentation(this, docsOverridePath);
         }
 
-        public void UpdateDocHeader(string githubUrl)
+        public void UpdateDocHeader(string githubUrl, bool includeNamespaceInGitHubUrl)
         {
-            documentation.UpdateDocHeader(packageName, githubUrl);
+            documentation.UpdateDocHeader(packageName, githubUrl, includeNamespaceInGitHubUrl);
         }
 
         public void UpdateSnipSnop(string githubUrl)

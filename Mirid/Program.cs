@@ -23,13 +23,22 @@ namespace Mirid
         public static string MFGroveGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.Grove/tree/main/Source/";
 
         public static string MFFeatherwingPath = "../../../../../Meadow.Foundation.Featherwings/Source/";
-        public static string MFFeatherwingDocsOverridePath = "../../../../../Documentation/docfx/api-override/Meadow.Foundation.Featherwing";
-        public static string MFFeatherGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.FeatherWing/tree/main/Source/";
+        public static string MFFeatherwingDocsOverridePath = "../../../../../Documentation/docfx/api-override/Meadow.Foundation.Featherwings";
+        public static string MFFeatherGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.FeatherWings/tree/main/Source/";
 
         static void Main(string[] args)
         {
             Console.Clear();
             Console.WriteLine("Hello Mirid!");
+
+            Console.WriteLine("Load Meadow.Foundation frameworks doc set");
+            var frameworksDocSet = new MFDocSet("MFFrameworks",
+                MFSourcePath,
+                MFFrameworksPath,
+                MFDocsOverridePath,
+                MFFrameworksGitHubUrl);
+            Console.WriteLine($"Processed {frameworksDocSet.DriverPackages.Count} packages");
+            UpdatePeripheralDocs(frameworksDocSet, true);
 
             Console.WriteLine("Load Meadow.Foundation peripherals doc set");
             var peripheralsDocSet = new MFDocSet("MFPeripherals", 
@@ -37,32 +46,21 @@ namespace Mirid
                 MFPeripheralsPath, 
                 MFDocsOverridePath, 
                 MFGitHubUrl);
-
             Console.WriteLine($"Processed {peripheralsDocSet.DriverPackages.Count} packages");
-
-            Console.WriteLine("Load Meadow.Foundation frameworks doc set");
-            var frameworksDocSet = new MFDocSet("MFFrameworks", MFSourcePath, MFFrameworksPath, MFDocsOverridePath, MFFrameworksGitHubUrl);
-            Console.WriteLine($"Processed {peripheralsDocSet.DriverPackages.Count} packages");
-            UpdatePeripheralDocs(peripheralsDocSet);
+            //UpdatePeripheralDocs(peripheralsDocSet, true);
 
             Console.WriteLine("Load Meadow.Foundation.Grove doc set");
             var groveDocSet = new MFDocSet("MFGrove", MFSourcePath, MFGrovePath, MFGroveDocsOverridePath, MFGroveGitHubUrl);
             Console.WriteLine($"Processed {groveDocSet.DriverPackages.Count} packages");
-          //  UpdatePeripheralDocs(groveDocSet);
+            //UpdatePeripheralDocs(groveDocSet, false);
 
             Console.WriteLine("Load Meadow.Foundation.Featherwing doc set");
             var featherDocSet = new MFDocSet("MFFeatherWing", MFSourcePath, MFFeatherwingPath, MFFeatherwingDocsOverridePath, MFFeatherGitHubUrl);
             Console.WriteLine($"Processed {featherDocSet.DriverPackages.Count} packages");
-           // UpdatePeripheralDocs(featherDocSet);
+            //UpdatePeripheralDocs(featherDocSet, false);
 
-            //    UpdatePeripheralDocs();
-
-            //      WritePeripheralTables();
-
-            //    RunDriverReport();
-            //   UpdateProjects();
-
-            //   UpdateSamples();
+            // WritePeripheralTables();
+            // RunDriverReport();
         }
 
 
@@ -103,14 +101,14 @@ namespace Mirid
             */
         }
 
-        static void UpdatePeripheralDocs(MFDocSet docSet)
+        static void UpdatePeripheralDocs(MFDocSet docSet, bool includeNamespaceInGitHubUrl = true)
         {
             var drivers = docSet.DriverPackages.SelectMany(p => p.Drivers).ToList();
 
             foreach(var driver in drivers)
             {
                 driver.UpdateSnipSnop(docSet.GitHubUrl);
-                driver.UpdateDocHeader(docSet.GitHubUrl);
+                driver.UpdateDocHeader(docSet.GitHubUrl, includeNamespaceInGitHubUrl);
             }
         }
     }
