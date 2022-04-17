@@ -112,14 +112,7 @@ namespace Mirid.Outputs
         }
 
         static string GetStatusText(bool isWorking)
-        {
-            if(isWorking)
-            {
-                return Constants.WorkingBadgeHtml;
-            }
-            return Constants.InProgressBadgeHtml;
-        }
-
+            => isWorking ? Constants.WorkingBadgeHtml : Constants.InProgressBadgeHtml;
         static void WriteTableHeader(StringBuilder builder)
         {
             builder.AppendLine("| Status | Driver | Description |");

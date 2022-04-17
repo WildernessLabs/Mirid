@@ -178,7 +178,7 @@ namespace Mirid.Models
 
             table.Add($"| {driver.SimpleName} | |");
             table.Add($"|--------|--------|");
-            table.Add(String.Format("| Status | {0} |", driver.IsPublished ? Constants.WorkingBadgeHtml : Constants.InProgressBadgeHtml));
+            table.Add(String.Format("| Status | {0} |", driver.IsPublished ? Constants.WorkingBadgeHtmlwStyle : Constants.InProgressBadgeHtmlwStyle));
             var gitUrl = $"{githubUrl}{simpleNamespace}";
             table.Add($"| Source code | [GitHub]({gitUrl}) |");
             var nugetUrl = $"<a href=\"https://www.nuget.org/packages/{packageName}/\" target=\"_blank\"><img src=\"https://img.shields.io/nuget/v/{packageName}.svg?label={packageName}\" /></a>"; 
@@ -189,6 +189,9 @@ namespace Mirid.Models
             {
                 lines.Insert(tableLineStart + i, table[i]);
             }
+
+            //remove the trailing empty line
+            lines.RemoveAt(lines.Count - 1);
 
             //now that everything is stored in memory .... we need to update the docs file
             File.WriteAllLines(FullPath, lines);

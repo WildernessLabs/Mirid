@@ -22,7 +22,7 @@ namespace Mirid
         public static string MFGroveDocsOverridePath = "../../../../../Documentation/docfx/api-override/Meadow.Foundation.Grove";
         public static string MFGroveGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.Grove/tree/main/Source/";
 
-        public static string MFFeatherwingPath = "../../../../../Meadow.Foundation.Featherwing/Source/";
+        public static string MFFeatherwingPath = "../../../../../Meadow.Foundation.Featherwings/Source/";
         public static string MFFeatherwingDocsOverridePath = "../../../../../Documentation/docfx/api-override/Meadow.Foundation.Featherwing";
         public static string MFFeatherGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.FeatherWing/tree/main/Source/";
 
@@ -43,6 +43,7 @@ namespace Mirid
             Console.WriteLine("Load Meadow.Foundation frameworks doc set");
             var frameworksDocSet = new MFDocSet("MFFrameworks", MFSourcePath, MFFrameworksPath, MFDocsOverridePath, MFFrameworksGitHubUrl);
             Console.WriteLine($"Processed {peripheralsDocSet.DriverPackages.Count} packages");
+            UpdatePeripheralDocs(peripheralsDocSet);
 
             Console.WriteLine("Load Meadow.Foundation.Grove doc set");
             var groveDocSet = new MFDocSet("MFGrove", MFSourcePath, MFGrovePath, MFGroveDocsOverridePath, MFGroveGitHubUrl);
@@ -52,7 +53,7 @@ namespace Mirid
             Console.WriteLine("Load Meadow.Foundation.Featherwing doc set");
             var featherDocSet = new MFDocSet("MFFeatherWing", MFSourcePath, MFFeatherwingPath, MFFeatherwingDocsOverridePath, MFFeatherGitHubUrl);
             Console.WriteLine($"Processed {featherDocSet.DriverPackages.Count} packages");
-            UpdatePeripheralDocs(featherDocSet);
+           // UpdatePeripheralDocs(featherDocSet);
 
             //    UpdatePeripheralDocs();
 
