@@ -44,17 +44,22 @@ namespace Mirid.Models
         
         [Ignore]
         public string SnipSnop => driverSample?.GetSnipSnop();
-        
-        MFDriverCode driverCode;
-        MFDriverSample driverSample;
-        MFDriverDocumentation documentation;
 
-        string packageName;
-        bool isPublished = false;
+        readonly MFDriverCode driverCode;
+        readonly MFDriverSample driverSample;
+        readonly MFDriverDocumentation documentation;
+
+        readonly string packageName;
+        readonly bool isPublished = false;
 
         public MFDriver(MFPackage package, string driverFileName, MFDriverSample driverSample, string docsOverridePath)
+            : this(package, new MFDriverCode(driverFileName), driverSample, docsOverridePath)
         {
-            driverCode = new MFDriverCode(driverFileName);
+        }
+
+        public MFDriver(MFPackage package, MFDriverCode code, MFDriverSample driverSample, string docsOverridePath)
+        {
+            driverCode = code;
 
             packageName = package.PackageName;
             isPublished = package.IsPublished;

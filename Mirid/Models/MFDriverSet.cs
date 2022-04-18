@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Mirid.Models
 {
-    public class MFDocSet
+    public class MFDriverSet
     {
         public string DocSetName { get; private set; }
 
@@ -23,9 +23,9 @@ namespace Mirid.Models
 
 
         //list of driver packages - all-the-things: driver, sample, doc, etc.
-        public List<MFPackage> DriverPackages { get; private set; } = new List<MFPackage>();
+        public List<MFPackage> DriverPackages { get; protected set; } = new List<MFPackage>();
 
-        public MFDocSet(string name, 
+        public MFDriverSet(string name, 
             string MFSourcePath, 
             string driverSourcePath, 
             string docsOverridePath,
@@ -41,7 +41,7 @@ namespace Mirid.Models
             ReadPackageData(DriverSetSourcePath, DocsOverridePath);
         }
 
-        void ReadPackageData(string peripheralsPath, string docsOverridePath)
+        protected virtual void ReadPackageData(string peripheralsPath, string docsOverridePath)
         {
             //Drivers
             var projectFiles = FileCrawler.GetAllProjectsInFolders(peripheralsPath, true);

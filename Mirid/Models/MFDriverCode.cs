@@ -19,8 +19,7 @@ namespace Mirid.Models
             }
         }
         string _namespace;
-
-        string path;
+        readonly string path;
 
         string[] lines;
 

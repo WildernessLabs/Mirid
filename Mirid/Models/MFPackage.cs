@@ -29,22 +29,21 @@ namespace Mirid.Models
         public bool HasTestSuite => false;
 
 
-
         [Ignore]
-        public MFPackageProject NugetProject { get; private set; }
+        public MFPackageProject NugetProject { get; protected set; }
         [Ignore]
-        public List<MFDriver> Drivers { get; private set; } = new List<MFDriver>();
+        public List<MFDriver> Drivers { get; protected set; } = new List<MFDriver>();
         [Ignore]
-        public MFDriverAssets Assets { get; private set; }
+        public MFDriverAssets Assets { get; protected set; }
         [Ignore]
-        public MFDriverDocumentation Documentation { get; private set; }
+        public MFDriverDocumentation Documentation { get; protected set; }
 
 
         [Ignore]
         public string Namespace => Drivers.First().Namespace;
 
         [Ignore] //ToDo LINQ expression from driver list - count of drivers that have samples 
-        public List<string> Samples { get; private set; } = new List<string>();
+        public List<string> Samples { get; protected set; } = new List<string>();
 
         [Ignore]
         public string Description => NugetProject?.Description ?? string.Empty;
@@ -52,6 +51,11 @@ namespace Mirid.Models
 
         public MFPackage(FileInfo driverProjectFile, string docsOverridePath)
         {
+            LoadDriverResouces(driverProjectFile, docsOverridePath);
+        }
+
+        protected virtual void LoadDriverResouces(FileInfo driverProjectFile, string docsOverridePath)
+        {    
             if (File.Exists(driverProjectFile.FullName) == false)
             {
                 throw new FileNotFoundException($"Driver project not found {driverProjectFile.FullName}");
@@ -93,7 +97,7 @@ namespace Mirid.Models
             }
         }
 
-        static string GetSimpleName(string Name)
+        protected static string GetSimpleName(string Name)
         {
             var nameChunks = Name.Split('.');
 
