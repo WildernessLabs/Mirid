@@ -16,10 +16,8 @@ namespace Mirid.Models
 
         //docfx API override folder for drivers
         public string DocsOverridePath { get; private set; }
-
         
         public string GitHubUrl { get; private set; }
-
 
 
         //list of driver packages - all-the-things: driver, sample, doc, etc.

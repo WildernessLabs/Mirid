@@ -37,7 +37,11 @@ namespace Mirid.Models
         [Index(10)]
         public bool IsPublished => isPublished;
 
+        [Ignore]
+        public string FilePath => driverCode.Path;
 
+        [Ignore]
+        public string SamplePath => driverSample.DirectoryInfo.FullName;
 
         [Ignore]
         public string SimpleName => driverCode.Name.Split('.').LastOrDefault();
@@ -70,9 +74,9 @@ namespace Mirid.Models
             documentation = new MFDriverDocumentation(this, docsOverridePath);
         }
 
-        public void UpdateDocHeader(string githubUrl, bool includeNamespaceInGitHubUrl)
+        public void UpdateDocHeader(string githubUrl)
         {
-            documentation.UpdateDocHeader(packageName, githubUrl, includeNamespaceInGitHubUrl);
+            documentation.UpdateDocHeader(packageName, githubUrl);
         }
 
         public void UpdateSnipSnop(string githubUrl)

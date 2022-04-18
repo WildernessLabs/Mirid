@@ -5,17 +5,17 @@ namespace Mirid.Models
 {
     public class MFDriverSample
     {
-        DirectoryInfo directoryInfo;
+        public DirectoryInfo DirectoryInfo { get; protected set; }
         FileInfo meadowAppFileInfo;
 
         const string SNIP = "//<!=SNIP=>";
         const string SNOP = "//<!=SNOP=>";
 
-        public string Name => directoryInfo.Name;
+        public string Name => DirectoryInfo.Name;
 
         public MFDriverSample(DirectoryInfo directoryInfo)
         {
-            this.directoryInfo = directoryInfo;
+            this.DirectoryInfo = directoryInfo;
 
             meadowAppFileInfo = directoryInfo.GetFiles("MeadowApp.cs").FirstOrDefault();
 

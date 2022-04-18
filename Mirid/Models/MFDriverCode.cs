@@ -5,7 +5,9 @@ namespace Mirid.Models
     public class MFDriverCode
     {
         public int LineCount => lines?.Length ?? 0;
-        public string Name => Path.GetFileNameWithoutExtension(path);
+        public string Name => System.IO.Path.GetFileNameWithoutExtension(Path);
+
+        public string Path { get; protected set; }
 
         public string Namespace
         {
@@ -19,18 +21,18 @@ namespace Mirid.Models
             }
         }
         string _namespace;
-        readonly string path;
+        
 
         string[] lines;
 
         public MFDriverCode(FileInfo driverFile)
         {
-            ReadCodeFile(path = driverFile.FullName);
+            ReadCodeFile(Path = driverFile.FullName);
         }
 
         public MFDriverCode(string filePath)
         {
-            ReadCodeFile(path = filePath);
+            ReadCodeFile(Path = filePath);
         }
 
         void ReadCodeFile(string filePath)

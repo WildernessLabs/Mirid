@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using Mirid.Models;
 using Mirid.Output;
@@ -16,7 +17,7 @@ namespace Mirid
 
         public static string MFPeripheralsPath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Peripherals";
         public static string MFDocsOverridePath = "../../../../../Documentation/docfx/api-override/Meadow.Foundation";
-        public static string MFGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation/tree/master/Source/Meadow.Foundation.Peripherals/";
+        public static string MFGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation/tree/main/Source/Meadow.Foundation.Peripherals/";
 
         public static string MFFrameworksPath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Libraries_and_Frameworks";
         public static string MFFrameworksGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation/tree/main/Source/Meadow.Foundation.Libraries_and_Frameworks/";
@@ -36,48 +37,45 @@ namespace Mirid
 
             Console.WriteLine("Load Meadow.Foundation.Core peripherals driver set");
             var coreDriverSet = new MFCoreDriverSet(
-                name: "MFCorePerihperals",
+                name: "M.F.Core Peripherals",
                 MFSourcePath: MFSourcePath,
                 driverSourcePath: MFCorePerihperalsPath,
                 docsOverridePath: MFDocsOverridePath,
                 githubUrl: MFCoreGitHubUrl);
             Console.WriteLine($"Processed {coreDriverSet.DriverPackages.Count} packages");
-            UpdatePeripheralDocs(coreDriverSet, true);
-            return;
-
+            UpdatePeripheralDocs(coreDriverSet);
 
             Console.WriteLine("Load Meadow.Foundation frameworks driver set");
-            var frameworksDriverSet = new MFDriverSet("MFFrameworks",
+            var frameworksDriverSet = new MFDriverSet("M.F. Frameworks",
                 MFSourcePath,
                 MFFrameworksPath,
                 MFDocsOverridePath,
                 MFFrameworksGitHubUrl);
             Console.WriteLine($"Processed {frameworksDriverSet.DriverPackages.Count} packages");
-            UpdatePeripheralDocs(frameworksDriverSet, true);
+            UpdatePeripheralDocs(frameworksDriverSet);
 
             Console.WriteLine("Load Meadow.Foundation peripherals driver set");
-            var peripheralsDriverSet = new MFDriverSet("MFPeripherals", 
+            var peripheralsDriverSet = new MFDriverSet("M.F. Peripherals", 
                 MFSourcePath, 
                 MFPeripheralsPath, 
                 MFDocsOverridePath, 
                 MFGitHubUrl);
             Console.WriteLine($"Processed {peripheralsDriverSet.DriverPackages.Count} packages");
-            //UpdatePeripheralDocs(peripheralsDocSet, true);
+            UpdatePeripheralDocs(peripheralsDriverSet);
 
             Console.WriteLine("Load Meadow.Foundation.Grove driver set");
-            var groveDriverSet = new MFDriverSet("MFGrove", MFSourcePath, MFGrovePath, MFGroveDocsOverridePath, MFGroveGitHubUrl);
+            var groveDriverSet = new MFDriverSet("M.F. Grove", MFSourcePath, MFGrovePath, MFGroveDocsOverridePath, MFGroveGitHubUrl);
             Console.WriteLine($"Processed {groveDriverSet.DriverPackages.Count} packages");
-            //UpdatePeripheralDocs(groveDocSet, false);
+            UpdatePeripheralDocs(groveDriverSet);
 
             Console.WriteLine("Load Meadow.Foundation.Featherwing doc set");
-            var featherDriverSet = new MFDriverSet("MFFeatherWing", MFSourcePath, MFFeatherwingPath, MFFeatherwingDocsOverridePath, MFFeatherGitHubUrl);
+            var featherDriverSet = new MFDriverSet("M.F. FeatherWings", MFSourcePath, MFFeatherwingPath, MFFeatherwingDocsOverridePath, MFFeatherGitHubUrl);
             Console.WriteLine($"Processed {featherDriverSet.DriverPackages.Count} packages");
-            //UpdatePeripheralDocs(featherDocSet, false);
+            UpdatePeripheralDocs(featherDriverSet);
 
             // WritePeripheralTables();
             // RunDriverReport();
         }
-
 
         static void WritePeripheralTables(MFDriverSet docSet)
         {
@@ -116,15 +114,74 @@ namespace Mirid
             */
         }
 
-        static void UpdatePeripheralDocs(MFDriverSet docSet, bool includeNamespaceInGitHubUrl = true)
+        static void UpdatePeripheralDocs(MFDriverSet driverSet)
         {
-            var drivers = docSet.DriverPackages.SelectMany(p => p.Drivers).ToList();
+            int count = 0;
+
+            foreach(var package in driverSet.DriverPackages)
+            {
+                foreach (var driver in package.Drivers)
+                {
+                    count++;
+
+                    if (driver.HasDocOverride == false)
+                    {
+                        Console.WriteLine($"No docs override for {driver.Name}");
+                        continue;
+                    }
+
+                    var relativePath = Path.GetRelativePath(driverSet.DriverSetSourcePath, Path.GetDirectoryName(driver.FilePath));
+                    //driver folder hack
+                    if(Path.GetFileName(relativePath) == "Driver") //treats the last folder name as a file
+                    {
+                        relativePath = Path.GetDirectoryName(relativePath);
+                    }
+
+                    var uri = new Uri(driverSet.GitHubUrl);
+                    var projUri = new Uri(uri, relativePath);
+
+                    driver.UpdateDocHeader($"{projUri}");
+
+                    if (driver.HasSample)
+                    {
+                        relativePath = Path.GetRelativePath(driverSet.DriverSetSourcePath, driver.SamplePath);
+                        uri = new Uri(driverSet.GitHubUrl);
+                        var sampleUri = new Uri(uri, relativePath);
+
+                        driver.UpdateSnipSnop($"{sampleUri}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"No sample found for {driver.Name}");
+                    }
+                }
+            }
+
+            Console.WriteLine($"Found {count} drivers in {driverSet.DocSetName}");
+
+            /*
+             * 
+            var drivers = driverSet.DriverPackages.SelectMany(p => p.Drivers).ToList();
 
             foreach(var driver in drivers)
             {
-                driver.UpdateSnipSnop(docSet.GitHubUrl);
-                driver.UpdateDocHeader(docSet.GitHubUrl, includeNamespaceInGitHubUrl);
-            }
+                if(driver.HasSample)
+                {
+                    var relativePath = Path.GetRelativePath(driverSet.DriverSetSourcePath, driver.SamplePath);
+                    var uri = new Uri(driverSet.GitHubUrl);
+                    var sampleUri = new Uri(uri, relativePath);
+
+                    driver.UpdateSnipSnop($"{sampleUri}");
+                }
+
+              //generate source Uri
+                var relativePath = Path.GetRelativePath(docSet.DriverSetSourcePath, driver.FilePath);
+                relativePath = Path.GetDirectoryName(relativePath);
+                var uri = new Uri(docSet.GitHubUrl);
+                var sourceUri = new Uri(uri, relativePath); 
+
+                driver.UpdateDocHeader($"{driverSet.GitHubUrl}");  
+            }*/
         }
     }
 }

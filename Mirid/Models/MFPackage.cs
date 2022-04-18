@@ -48,9 +48,14 @@ namespace Mirid.Models
         [Ignore]
         public string Description => NugetProject?.Description ?? string.Empty;
 
+        [Ignore]
+        public DirectoryInfo ProjectDirectory {get; protected set; }
+
 
         public MFPackage(FileInfo driverProjectFile, string docsOverridePath)
         {
+            ProjectDirectory = driverProjectFile.Directory;
+
             LoadDriverResouces(driverProjectFile, docsOverridePath);
         }
 

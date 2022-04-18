@@ -72,7 +72,6 @@ namespace Mirid.Models
 
                 if (text == null)
                 {
-                    Console.WriteLine($"No docs override for {driver.Name}");
                     return;
                 }
             }
@@ -112,9 +111,9 @@ namespace Mirid.Models
             snipSnop.AppendLine("```");
             snipSnop.AppendLine();
 
-            snipSnop.Append("[Sample project(s) available on GitHub](");
-            snipSnop.Append(githubUrl);
-            snipSnop.Append($"{driver.Name})");
+            snipSnop.Append($"[Sample project(s) available on GitHub]({githubUrl})");
+         //   snipSnop.Append(githubUrl);
+         //   snipSnop.Append($"{driver.Name})");
             snipSnop.AppendLine();
             snipSnop.AppendLine();
 
@@ -124,7 +123,7 @@ namespace Mirid.Models
             File.WriteAllText(FullPath, text);
         }
 
-        public void UpdateDocHeader(string packageName, string githubUrl, bool includeNamespaceInGitHubUrl)
+        public void UpdateDocHeader(string packageName, string githubUrl)
         {
             //Read the file - should aleady be done 
             if (text == null)
@@ -133,7 +132,6 @@ namespace Mirid.Models
 
                 if (text == null)
                 {
-                    Console.WriteLine($"No docs override for {driver.Name}");
                     return;
                 }
             }
@@ -176,8 +174,7 @@ namespace Mirid.Models
             //create the table 
             var table = new List<string>();
 
-            string gitUrl;
-
+            /*
             if (includeNamespaceInGitHubUrl)
             {
                 gitUrl = $"{githubUrl}{simpleNamespace}";
@@ -185,13 +182,13 @@ namespace Mirid.Models
             else
             {
                 gitUrl = $"{githubUrl}{driver.Name}";
-            }
+            }*/
 
             table.Add($"| {driver.SimpleName} | |");
             table.Add($"|--------|--------|");
             table.Add(String.Format("| Status | {0} |", driver.IsPublished ? Constants.WorkingBadgeHtmlwStyle : Constants.InProgressBadgeHtmlwStyle));
             
-            table.Add($"| Source code | [GitHub]({gitUrl}) |");
+            table.Add($"| Source code | [GitHub]({githubUrl}) |");
             var nugetUrl = $"<a href=\"https://www.nuget.org/packages/{packageName}/\" target=\"_blank\"><img src=\"https://img.shields.io/nuget/v/{packageName}.svg?label={packageName}\" /></a>"; 
             table.Add($"| NuGet package | {nugetUrl} |");
 
