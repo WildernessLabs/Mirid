@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Mirid.Models;
@@ -29,61 +30,92 @@ namespace Mirid
         public static string MFFeatherwingPath = "../../../../../Meadow.Foundation.Featherwings/Source/";
         public static string MFFeatherwingDocsOverridePath = "../../../../../Documentation/docfx/api-override/Meadow.Foundation.Featherwings";
         public static string MFFeatherGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.FeatherWings/tree/main/Source/";
+      
+        static readonly Dictionary<string, MFDriverSet> driverSets = new Dictionary<string, MFDriverSet>();
+
+        static readonly string CORE_PERIPHERALS = "Core Peripherals";
+        static readonly string LIBRARIES_AND_FRAMEWORKS = "Libraries and Frameworks";
+        static readonly string EXTERNAL_PERIPHERALS = "External Peripherals";
+        static readonly string FEATHERWINGS = "FeatherWings";
+        static readonly string SEEED_STUDIO_GROVE = "Seeed Studio Grove";
 
         static void Main(string[] args)
         {
             Console.Clear();
             Console.WriteLine("Hello Mirid!");
 
-            Console.WriteLine("Load Meadow.Foundation.Core peripherals driver set");
+            LoadDriverSets();
+
+            // UpdateDocs(); 
+
+            WritePeripheralTables(driverSets.Values.ToList());
+            // RunDriverReport();
+        }
+
+        static void UpdateDocs()
+        {
+            UpdatePeripheralDocs(driverSets[CORE_PERIPHERALS]);
+            UpdatePeripheralDocs(driverSets[LIBRARIES_AND_FRAMEWORKS]);
+            UpdatePeripheralDocs(driverSets[EXTERNAL_PERIPHERALS]);
+            UpdatePeripheralDocs(driverSets[FEATHERWINGS]);
+            UpdatePeripheralDocs(driverSets[SEEED_STUDIO_GROVE]);
+        }
+
+        static void LoadDriverSets()
+        { 
+            Console.WriteLine($"Load {CORE_PERIPHERALS} driver set");
             var coreDriverSet = new MFCoreDriverSet(
-                name: "M.F.Core Peripherals",
+                name: CORE_PERIPHERALS,
                 MFSourcePath: MFSourcePath,
                 driverSourcePath: MFCorePerihperalsPath,
                 docsOverridePath: MFDocsOverridePath,
                 githubUrl: MFCoreGitHubUrl);
             Console.WriteLine($"Processed {coreDriverSet.DriverPackages.Count} packages");
-            UpdatePeripheralDocs(coreDriverSet);
+            
 
-            Console.WriteLine("Load Meadow.Foundation frameworks driver set");
-            var frameworksDriverSet = new MFDriverSet("M.F. Frameworks",
+            Console.WriteLine($"Load {LIBRARIES_AND_FRAMEWORKS} driver set");
+            var frameworksDriverSet = new MFDriverSet(LIBRARIES_AND_FRAMEWORKS,
                 MFSourcePath,
                 MFFrameworksPath,
                 MFDocsOverridePath,
                 MFFrameworksGitHubUrl);
             Console.WriteLine($"Processed {frameworksDriverSet.DriverPackages.Count} packages");
-            UpdatePeripheralDocs(frameworksDriverSet);
 
-            Console.WriteLine("Load Meadow.Foundation peripherals driver set");
-            var peripheralsDriverSet = new MFDriverSet("M.F. Peripherals", 
+
+            Console.WriteLine($"Load {EXTERNAL_PERIPHERALS} driver set");
+            var peripheralsDriverSet = new MFDriverSet(EXTERNAL_PERIPHERALS, 
                 MFSourcePath, 
                 MFPeripheralsPath, 
                 MFDocsOverridePath, 
                 MFGitHubUrl);
             Console.WriteLine($"Processed {peripheralsDriverSet.DriverPackages.Count} packages");
-            UpdatePeripheralDocs(peripheralsDriverSet);
 
-            Console.WriteLine("Load Meadow.Foundation.Grove driver set");
-            var groveDriverSet = new MFDriverSet("M.F. Grove", MFSourcePath, MFGrovePath, MFGroveDocsOverridePath, MFGroveGitHubUrl);
+
+            Console.WriteLine($"Load {SEEED_STUDIO_GROVE} driver set");
+            var groveDriverSet = new MFDriverSet(SEEED_STUDIO_GROVE, MFSourcePath, MFGrovePath, MFGroveDocsOverridePath, MFGroveGitHubUrl);
             Console.WriteLine($"Processed {groveDriverSet.DriverPackages.Count} packages");
-            UpdatePeripheralDocs(groveDriverSet);
 
-            Console.WriteLine("Load Meadow.Foundation.Featherwing doc set");
-            var featherDriverSet = new MFDriverSet("M.F. FeatherWings", MFSourcePath, MFFeatherwingPath, MFFeatherwingDocsOverridePath, MFFeatherGitHubUrl);
+
+            Console.WriteLine($"Load {FEATHERWINGS} driver set");
+            var featherDriverSet = new MFDriverSet(FEATHERWINGS, MFSourcePath, MFFeatherwingPath, MFFeatherwingDocsOverridePath, MFFeatherGitHubUrl);
             Console.WriteLine($"Processed {featherDriverSet.DriverPackages.Count} packages");
-            UpdatePeripheralDocs(featherDriverSet);
+  
 
-            // WritePeripheralTables();
-            // RunDriverReport();
+            //common location so we can turn em off and on ... order counts
+            driverSets.Add(CORE_PERIPHERALS, coreDriverSet);
+            driverSets.Add(LIBRARIES_AND_FRAMEWORKS, frameworksDriverSet);
+            driverSets.Add(EXTERNAL_PERIPHERALS, peripheralsDriverSet);
+            driverSets.Add(SEEED_STUDIO_GROVE, groveDriverSet);
+            driverSets.Add(FEATHERWINGS, featherDriverSet);
         }
 
-        static void WritePeripheralTables(MFDriverSet docSet)
+        static void WritePeripheralTables(List<MFDriverSet> driverSets)
         {
             Console.Clear();
             Console.WriteLine("Driver Report");
 
-            PeripheralDocsOutput.WritePeripheralTablesSimple(docSet.DriverPackages);
-            PeripheralDocsOutput.WritePeripheralTables(docSet.DriverPackages);
+          //  PeripheralDocsOutput.WritePeripheralTablesSimple(docSet.DriverPackages);
+            PeripheralDocsOutput.WritePeripheralTables(driverSets);
         }
 
         //ToDo - rework in the context of doc sets
@@ -157,7 +189,7 @@ namespace Mirid
                 }
             }
 
-            Console.WriteLine($"Found {count} drivers in {driverSet.DocSetName}");
+            Console.WriteLine($"Found {count} drivers in {driverSet.SetName}");
 
             /*
              * 

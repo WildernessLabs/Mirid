@@ -6,7 +6,7 @@ namespace Mirid.Models
 {
     public class MFDriverSet
     {
-        public string DocSetName { get; private set; }
+        public string SetName { get; private set; }
 
         public string MeadowFoundationSourcePath { get; private set; }
 
@@ -29,7 +29,7 @@ namespace Mirid.Models
             string docsOverridePath,
             string githubUrl)
         {
-            DocSetName = name;
+            SetName = name;
             MeadowFoundationSourcePath = MFSourcePath;
             DriverSetSourcePath = driverSourcePath;
             DocsOverridePath = docsOverridePath;

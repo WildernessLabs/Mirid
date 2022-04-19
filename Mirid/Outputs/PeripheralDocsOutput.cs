@@ -7,17 +7,40 @@ namespace Mirid.Outputs
 {
     public static class PeripheralDocsOutput
     {
-        public static void WritePeripheralTables(List<MFPackage> nugets)
+        public static void WritePeripheralTables(List<MFDriverSet> driverSets)
         {
             StringBuilder output = new StringBuilder();
+
+            foreach(var driverSet in driverSets)
+            {
+                output.AppendLine($"# {driverSet.SetName}");
+
+                WritePeripheralPackages(driverSet.DriverPackages, output);
+            }
+
+            File.WriteAllText("PeripheralTablesCombined.md", output.ToString());
+        }
+
+
+        public static void WritePeripheralTables(List<MFPackage> packages)
+        {
+            StringBuilder output = new StringBuilder();
+
+            WritePeripheralPackages(packages, output);
+
+            File.WriteAllText("PeripheralTables.md", output.ToString());
+        }
+
+        static void WritePeripheralPackages(List<MFPackage> packages, StringBuilder output)
+        {
             //we can assume we're in order
             string group = string.Empty;
 
             List<MFPackage> packagesWithMultipleDrivers = new List<MFPackage>();
 
-            foreach (var nuget in nugets)
+            foreach (var package in packages)
             {
-                if(group != GetPeripheralGroup(nuget.PackageName))
+                if(group != GetPeripheralGroup(package.PackageName))
                 {
                     if(packagesWithMultipleDrivers.Count > 0)
                     {
@@ -26,25 +49,30 @@ namespace Mirid.Outputs
                     }
 
                     packagesWithMultipleDrivers.Clear();
-                    group = GetPeripheralGroup(nuget.PackageName);
+                    group = GetPeripheralGroup(package.PackageName);
                     output.AppendLine();
                     output.AppendLine($"## {group}");
                     output.AppendLine();
                     WriteTableHeader(output);
                 }
 
-                if(nuget.NumberOfDrivers > 1)
+                if(package.NumberOfDrivers > 1)
                 {
-                    packagesWithMultipleDrivers.Add(nuget);
+                    packagesWithMultipleDrivers.Add(package);
                 }
 
-                WriteTableRow(GetStatusText(nuget.IsPublished),
-                    GetPeripheralLink(nuget.PackageName),
-                    nuget.Description,
+                WriteTableRow(GetStatusText(package.IsPublished),
+                    GetPeripheralLink(package.PackageName),
+                    package.Description,
                     output);
             }
 
-            File.WriteAllText("PeripheralTables.md", output.ToString());
+            //catch
+            if (packagesWithMultipleDrivers.Count > 0)
+            {
+                output.AppendLine();
+                WriteMultipleDriverTables(packagesWithMultipleDrivers, output);
+            }
         }
 
         static void WriteMultipleDriverTables(List<MFPackage> nugets, StringBuilder builder)
@@ -69,6 +97,11 @@ namespace Mirid.Outputs
         public static string GetPeripheralGroup(string package)
         {
             var text = package.Split(".");
+
+            if(text.Length < 3)
+            {
+                return package;
+            }
 
             if(string.Compare(text[2], "Sensors") == 0)
             {
@@ -104,6 +137,9 @@ namespace Mirid.Outputs
 
         static string GetDriverNameFromPackage(string package)
         {
+            if (package == "Meadow.Foundation")
+                return package;
+
             if(package.Contains("Meadow.Foundation"))
             {
                 return package.Substring("Meadow.Foundation.".Length);
