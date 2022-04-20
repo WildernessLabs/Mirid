@@ -46,9 +46,9 @@ namespace Mirid
 
             LoadDriverSets();
 
-            // UpdateDocs(); 
+            UpdateDocs(); 
 
-            WritePeripheralTables(driverSets.Values.ToList());
+           // WritePeripheralTables(driverSets.Values.ToList());
             // RunDriverReport();
         }
 

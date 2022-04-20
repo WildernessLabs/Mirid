@@ -65,17 +65,6 @@ namespace Mirid.Models
 
         public void UpdateSnipSnop(string snippet, string githubUrl)
         {
-            //Read the file - should aleady be done 
-            if (text == null)
-            {
-                ReadDocsFile();
-
-                if (text == null)
-                {
-                    return;
-                }
-            }
-
             int snipIndex;
 
             //Find the code snippet 
@@ -121,21 +110,13 @@ namespace Mirid.Models
 
             //now that everything is stored in memory .... we need to update the docs file
             File.WriteAllText(FullPath, text);
+
+            //reload
+            ReadDocsFile();
         }
 
         public void UpdateDocHeader(string packageName, string githubUrl)
         {
-            //Read the file - should aleady be done 
-            if (text == null)
-            {
-                ReadDocsFile();
-
-                if (text == null)
-                {
-                    return;
-                }
-            }
-
             //split by line
             var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
@@ -189,7 +170,7 @@ namespace Mirid.Models
             table.Add(String.Format("| Status | {0} |", driver.IsPublished ? Constants.WorkingBadgeHtmlwStyle : Constants.InProgressBadgeHtmlwStyle));
             
             table.Add($"| Source code | [GitHub]({githubUrl}) |");
-            var nugetUrl = $"<a href=\"https://www.nuget.org/packages/{packageName}/\" target=\"_blank\"><img src=\"https://img.shields.io/nuget/v/{packageName}.svg?label={packageName}\" /></a>"; 
+            var nugetUrl = $"<a href=\"https://www.nuget.org/packages/{packageName}/\" target=\"_blank\"><img src=\"https://img.shields.io/nuget/v/{packageName}.svg?label={packageName}\" alt=\"NuGet Gallery for {driver.Name}\" /></a>"; 
             table.Add($"| NuGet package | {nugetUrl} |");
 
             //inject new rows at index 
@@ -203,6 +184,9 @@ namespace Mirid.Models
 
             //now that everything is stored in memory .... we need to update the docs file
             File.WriteAllLines(FullPath, lines);
+
+            //reload 
+            ReadDocsFile();
         }
     }
 }

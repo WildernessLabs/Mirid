@@ -1,20 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Mirid
+﻿namespace Mirid
 {
     public static class Constants
     {
-        public static string BlockedBadgeHtml => "<img src=\"https://img.shields.io/badge/Blocked-red\"/>";
-        public static string InProgressBadgeHtml => "<img src=\"https://img.shields.io/badge/InProgress-yellow\"/>  ";
-        public static string WorkingBadgeHtml => "<img src=\"https://img.shields.io/badge/Working-brightgreen\"/>";
+        public static string BlockedBadgeHtml => $"<img src=\"{blockedBadgeLink}\" alt=\"{blockedAltText}\" />";
+        public static string InProgressBadgeHtml => $"<img src=\"{inProgressBadgeLink}\" alt=\"{inProgressAltText}\" />";
+        public static string WorkingBadgeHtml => $"<img src=\"{workingBadgeLink}\" alt=\"{workingAltText}\" />";
 
-        //yeah this is pretty lazy - ToDo
-        public static string BlockedBadgeHtmlwStyle => "<img src=\"https://img.shields.io/badge/Blocked-red\" style=\"width: auto; height: -webkit-fill-available;\" />";
-        public static string InProgressBadgeHtmlwStyle => "<img src=\"https://img.shields.io/badge/InProgress-yellow\" style=\"width: auto; height: -webkit-fill-available;\" />";
-        public static string WorkingBadgeHtmlwStyle => "<img src=\"https://img.shields.io/badge/Working-brightgreen\" style=\"width: auto; height: -webkit-fill-available;\" />";
+        public static string BlockedBadgeHtmlwStyle => $"<img src=\"{blockedBadgeLink}\" style=\"{headerStyle}\" alt=\"{blockedAltText}\" />";
+        public static string InProgressBadgeHtmlwStyle => $"<img src=\"{inProgressBadgeLink}\" style=\"{headerStyle}\" alt=\"{inProgressAltText}\" />";
+        public static string WorkingBadgeHtmlwStyle => $"<img src=\"{workingBadgeLink}\" style=\"{headerStyle}\" alt=\"{workingAltText}\" />";
 
-        public static string DocHeaderBadgeStyle => " style=\"width: auto; height: -webkit-fill-available;\"";
+
+        static readonly string headerStyle = "width: auto; height: -webkit-fill-available;";
+
+        static readonly string blockedBadgeLink = "https://img.shields.io/badge/Blocked-red";
+        static readonly string inProgressBadgeLink = "https://img.shields.io/badge/InProgress-yellow";
+        static readonly string workingBadgeLink = "https://img.shields.io/badge/Working-brightgreen";
+
+        static readonly string blockedAltText = "Status badge: blocked";
+        static readonly string inProgressAltText = "Status badge: in-progress";
+        static readonly string workingAltText = "Status badge: working";
     }
 }
