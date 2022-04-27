@@ -5,7 +5,7 @@ This is an internal Wilderness Labs tool with minimal support, minimal documenat
 
 Currently outputs data as CSVs in the bin folder.
 
-Work in progress 
+Work in progress. 
 
 ## To Use
 1. Clone this repo
