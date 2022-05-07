@@ -16,8 +16,11 @@ namespace Mirid.Models
         [Index(3)]
         public bool HasSnipSnop => !string.IsNullOrWhiteSpace(SnipSnop);
         [Index(4)]
-        public bool HasDocOverride => documentation?.HasOverride ?? false;
+        public bool HasDatasheet => false;
+
         [Index(5)]
+        public bool HasDocOverride => documentation?.HasOverride ?? false;
+        [Index(6)]
         public bool IsUIDCorrect 
         {
             get 
@@ -26,19 +29,22 @@ namespace Mirid.Models
             }
         }
         //documentation?.UID == (Namespace + "." + SimpleName);
-        [Index(6)]
-        public bool HasFritzing => documentation?.HasFritzing ?? false;
         [Index(7)]
-        public bool HasCodeExample => documentation?.HasCodeExample ?? false;
+        public bool HasFritzing => documentation?.HasFritzing ?? false;
         [Index(8)]
-        public bool HasWiringExample => documentation?.HasWiringExample ?? false;
+        public bool HasCodeExample => documentation?.HasCodeExample ?? false;
         [Index(9)]
-        public bool HasPurchasing => documentation?.HasPurchasing ?? false;
+        public bool HasWiringExample => documentation?.HasWiringExample ?? false;
         [Index(10)]
+        public bool HasPurchasing => documentation?.HasPurchasing ?? false;
+        [Index(11)]
         public bool IsPublished => isPublished;
 
         [Ignore]
         public string FilePath => driverCode.Path;
+
+        [Ignore]
+        public string DatasheetPath => "";
 
         [Ignore]
         public string SamplePath => driverSample.DirectoryInfo.FullName;
@@ -74,9 +80,9 @@ namespace Mirid.Models
             documentation = new MFDriverDocumentation(this, docsOverridePath);
         }
 
-        public void UpdateDocHeader(string githubUrl)
+        public void UpdateDocHeader(string githubCodeUrl, string githubDatasheetUrl = "")
         {
-            documentation.UpdateDocHeader(packageName, githubUrl);
+            documentation.UpdateDocHeader(packageName, githubCodeUrl, githubDatasheetUrl);
         }
 
         public void UpdateSnipSnop(string githubUrl)

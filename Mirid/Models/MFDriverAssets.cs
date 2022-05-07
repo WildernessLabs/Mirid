@@ -6,30 +6,25 @@ namespace Mirid.Models
 {
     public class MFDriverAssets
     {
-        public bool HasDataSheet { get; private set; }
+        public int NumberOfDatasheets => (datasheetsDirectory == null) ? 0 : datasheetsDirectory.GetFiles().Count();
 
-        public int NumberOfSamples => (sampleDirectories == null)?0: sampleDirectories.GetDirectories().Count();
+        public string DatasheetPath => $"{datasheetsDirectory}";
 
-        DirectoryInfo sampleDirectories;
+        public int NumberOfSamples => (samplesDirectory == null)?0: samplesDirectory.GetDirectories().Count();
+
+        readonly DirectoryInfo samplesDirectory;
+        readonly DirectoryInfo datasheetsDirectory;
 
         public MFDriverAssets(DirectoryInfo directory)
         {
-            var datasheetDir = directory.GetDirectories("Datasheet*").FirstOrDefault();
+            datasheetsDirectory = directory.GetDirectories("Datasheet*", SearchOption.AllDirectories).FirstOrDefault();
 
-            if (datasheetDir != null)
-            {
-                if (datasheetDir.GetFiles().Count() > 0)
-                {
-                    HasDataSheet = true;
-                }
-            }
-
-            sampleDirectories = directory.GetDirectories("Sample*").FirstOrDefault();
+            samplesDirectory = directory.GetDirectories("Sample*").FirstOrDefault();
         }
 
         public MFDriverSample GetSampleForName(string name)
         {
-            var folder = sampleDirectories?.GetDirectories(name);
+            var folder = samplesDirectory?.GetDirectories(name);
 
             if (folder == null || folder.Length == 0)
             {

@@ -30,7 +30,13 @@ namespace Mirid
         public static string MFFeatherwingPath = "../../../../../Meadow.Foundation.Featherwings/Source/";
         public static string MFFeatherwingDocsOverridePath = "../../../../../Documentation/docfx/api-override/Meadow.Foundation.Featherwings";
         public static string MFFeatherGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.FeatherWings/tree/main/Source/";
-      
+
+        public static string MFMikroBusPath = "../../../../../Meadow.Foundation.mikroBUS/Source/";
+        public static string MFMikroBusDocsOverridePath = "../../../../../Documentation/docfx/api-override/Meadow.Foundation.MikroBus";
+        public static string MFMikroBusGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.MikroBus/tree/main/Source/";
+
+
+
         static readonly Dictionary<string, MFDriverSet> driverSets = new Dictionary<string, MFDriverSet>();
 
         static readonly string CORE_PERIPHERALS = "Core Peripherals";
@@ -38,6 +44,7 @@ namespace Mirid
         static readonly string EXTERNAL_PERIPHERALS = "External Peripherals";
         static readonly string FEATHERWINGS = "FeatherWings";
         static readonly string SEEED_STUDIO_GROVE = "Seeed Studio Grove";
+        static readonly string MIKROBUS = "mikroBUS";
 
         static void Main(string[] args)
         {
@@ -54,11 +61,12 @@ namespace Mirid
 
         static void UpdateDocs()
         {
-            UpdatePeripheralDocs(driverSets[CORE_PERIPHERALS]);
-            UpdatePeripheralDocs(driverSets[LIBRARIES_AND_FRAMEWORKS]);
-            UpdatePeripheralDocs(driverSets[EXTERNAL_PERIPHERALS]);
-            UpdatePeripheralDocs(driverSets[FEATHERWINGS]);
-            UpdatePeripheralDocs(driverSets[SEEED_STUDIO_GROVE]);
+            //    UpdatePeripheralDocs(driverSets[CORE_PERIPHERALS]);
+            //    UpdatePeripheralDocs(driverSets[LIBRARIES_AND_FRAMEWORKS]);
+            //    UpdatePeripheralDocs(driverSets[EXTERNAL_PERIPHERALS]);
+            //    UpdatePeripheralDocs(driverSets[FEATHERWINGS]);
+            //    UpdatePeripheralDocs(driverSets[SEEED_STUDIO_GROVE]);
+            //UpdatePeripheralDocs(driverSets[MIKROBUS]);
         }
 
         static void LoadDriverSets()
@@ -99,7 +107,12 @@ namespace Mirid
             Console.WriteLine($"Load {FEATHERWINGS} driver set");
             var featherDriverSet = new MFDriverSet(FEATHERWINGS, MFSourcePath, MFFeatherwingPath, MFFeatherwingDocsOverridePath, MFFeatherGitHubUrl);
             Console.WriteLine($"Processed {featherDriverSet.DriverPackages.Count} packages");
-  
+
+
+            Console.WriteLine($"Load {MIKROBUS} driver set");
+            var mikroBusDriverSet = new MFDriverSet(MIKROBUS, MFSourcePath, MFMikroBusPath, MFMikroBusDocsOverridePath, MFMikroBusGitHubUrl);
+            Console.WriteLine($"Processed {mikroBusDriverSet.DriverPackages.Count} packages");
+
 
             //common location so we can turn em off and on ... order counts
             driverSets.Add(CORE_PERIPHERALS, coreDriverSet);
@@ -107,6 +120,7 @@ namespace Mirid
             driverSets.Add(EXTERNAL_PERIPHERALS, peripheralsDriverSet);
             driverSets.Add(SEEED_STUDIO_GROVE, groveDriverSet);
             driverSets.Add(FEATHERWINGS, featherDriverSet);
+            driverSets.Add(MIKROBUS, mikroBusDriverSet);
         }
 
         static void WritePeripheralTables(List<MFDriverSet> driverSets)
@@ -170,9 +184,18 @@ namespace Mirid
                     }
 
                     var uri = new Uri(driverSet.GitHubUrl);
-                    var projUri = new Uri(uri, relativePath);
+                    var githubCodeUri = new Uri(uri, relativePath);
 
-                    driver.UpdateDocHeader($"{projUri}");
+                    string githubDatasheetUrl = String.Empty;
+                    if(!string.IsNullOrWhiteSpace(package.Assets.DatasheetPath))
+                    {
+                        relativePath = Path.GetRelativePath(driverSet.DriverSetSourcePath, package.Assets.DatasheetPath);
+                        uri = new Uri(driverSet.GitHubUrl);
+                        var githubDatasheetUri = new Uri(uri, relativePath);
+                        githubDatasheetUrl = $"{githubDatasheetUri}";
+                    }
+
+                    driver.UpdateDocHeader($"{githubCodeUri}", githubDatasheetUrl);
 
                     if (driver.HasSample)
                     {

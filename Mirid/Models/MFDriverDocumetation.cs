@@ -45,7 +45,7 @@ namespace Mirid.Models
             }
             else
             {
-                simpleNamespace = driver.Namespace.Substring(index) + "." + driver.SimpleName;
+                simpleNamespace = driver.Namespace[index..] + "." + driver.SimpleName;
             }
 
             DocsFileName = driver.Namespace + "." + simpleName + ".md";
@@ -115,7 +115,7 @@ namespace Mirid.Models
             ReadDocsFile();
         }
 
-        public void UpdateDocHeader(string packageName, string githubUrl)
+        public void UpdateDocHeader(string packageName, string githubCodeUrl, string githubDatasheetUrl = null)
         {
             //split by line
             var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
@@ -153,28 +153,25 @@ namespace Mirid.Models
             }
 
             //create the table 
-            var table = new List<string>();
-
-            /*
-            if (includeNamespaceInGitHubUrl)
+            var table = new List<string>
             {
-                gitUrl = $"{githubUrl}{simpleNamespace}";
+                $"| {driver.SimpleName} | |",
+                $"|--------|--------|",
+                string.Format("| Status | {0} |", driver.IsPublished ? Constants.WorkingBadgeHtmlwStyle : Constants.InProgressBadgeHtmlwStyle),
+
+                $"| Source code | [GitHub]({githubCodeUrl}) |"
+            };
+
+            if (!string.IsNullOrWhiteSpace(githubDatasheetUrl))
+            {
+                table.Add($"| Datasheet(s) | [GitHub]({githubDatasheetUrl}) |");
             }
-            else
-            {
-                gitUrl = $"{githubUrl}{driver.Name}";
-            }*/
 
-            table.Add($"| {driver.SimpleName} | |");
-            table.Add($"|--------|--------|");
-            table.Add(String.Format("| Status | {0} |", driver.IsPublished ? Constants.WorkingBadgeHtmlwStyle : Constants.InProgressBadgeHtmlwStyle));
-            
-            table.Add($"| Source code | [GitHub]({githubUrl}) |");
             var nugetUrl = $"<a href=\"https://www.nuget.org/packages/{packageName}/\" target=\"_blank\"><img src=\"https://img.shields.io/nuget/v/{packageName}.svg?label={packageName}\" alt=\"NuGet Gallery for {driver.Name}\" /></a>"; 
             table.Add($"| NuGet package | {nugetUrl} |");
 
             //inject new rows at index 
-            for(int i = 0; i < table.Count; i++)
+            for (int i = 0; i < table.Count; i++)
             {
                 lines.Insert(tableLineStart + i, table[i]);
             }

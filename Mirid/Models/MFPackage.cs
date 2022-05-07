@@ -22,7 +22,7 @@ namespace Mirid.Models
         [Index(3)]
         public bool HasCompleteMetaData => NugetProject?.IsMetadataComplete() ?? false;
         [Index(4)]
-        public bool HasDataSheet => Assets?.HasDataSheet ?? false;
+        public bool HasDataSheet => (Assets?.NumberOfDatasheets ?? 0) > 0;
         [Index(5)]
         public int NumberOfSamples => Assets?.NumberOfSamples ?? 0;
         [Index(6)]
