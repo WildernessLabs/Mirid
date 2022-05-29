@@ -78,7 +78,7 @@ namespace Mirid
                 driverSourcePath: MFCorePerihperalsPath,
                 docsOverridePath: MFDocsOverridePath,
                 githubUrl: MFCoreGitHubUrl);
-            Console.WriteLine($"Processed {coreDriverSet.DriverPackages.Count} packages");
+            Console.WriteLine($"Processed {coreDriverSet.DriverPackages.Count} packages with {GetDriverCount(coreDriverSet)} drivers");
             
 
             Console.WriteLine($"Load {LIBRARIES_AND_FRAMEWORKS} driver set");
@@ -87,7 +87,7 @@ namespace Mirid
                 MFFrameworksPath,
                 MFDocsOverridePath,
                 MFFrameworksGitHubUrl);
-            Console.WriteLine($"Processed {frameworksDriverSet.DriverPackages.Count} packages");
+            Console.WriteLine($"Processed {frameworksDriverSet.DriverPackages.Count} packages with {GetDriverCount(frameworksDriverSet)} drivers");
 
 
             Console.WriteLine($"Load {EXTERNAL_PERIPHERALS} driver set");
@@ -96,22 +96,22 @@ namespace Mirid
                 MFPeripheralsPath, 
                 MFDocsOverridePath, 
                 MFGitHubUrl);
-            Console.WriteLine($"Processed {peripheralsDriverSet.DriverPackages.Count} packages");
+            Console.WriteLine($"Processed {peripheralsDriverSet.DriverPackages.Count} packages with {GetDriverCount(peripheralsDriverSet)} drivers");
 
 
             Console.WriteLine($"Load {SEEED_STUDIO_GROVE} driver set");
             var groveDriverSet = new MFDriverSet(SEEED_STUDIO_GROVE, MFSourcePath, MFGrovePath, MFGroveDocsOverridePath, MFGroveGitHubUrl);
-            Console.WriteLine($"Processed {groveDriverSet.DriverPackages.Count} packages");
+            Console.WriteLine($"Processed {groveDriverSet.DriverPackages.Count} packages with {GetDriverCount(groveDriverSet)} drivers");
 
 
             Console.WriteLine($"Load {FEATHERWINGS} driver set");
             var featherDriverSet = new MFDriverSet(FEATHERWINGS, MFSourcePath, MFFeatherwingPath, MFFeatherwingDocsOverridePath, MFFeatherGitHubUrl);
-            Console.WriteLine($"Processed {featherDriverSet.DriverPackages.Count} packages");
+            Console.WriteLine($"Processed {featherDriverSet.DriverPackages.Count} packages with {GetDriverCount(featherDriverSet)} drivers");
 
 
             Console.WriteLine($"Load {MIKROBUS} driver set");
             var mikroBusDriverSet = new MFDriverSet(MIKROBUS, MFSourcePath, MFMikroBusPath, MFMikroBusDocsOverridePath, MFMikroBusGitHubUrl);
-            Console.WriteLine($"Processed {mikroBusDriverSet.DriverPackages.Count} packages");
+            Console.WriteLine($"Processed {mikroBusDriverSet.DriverPackages.Count} packages packages with {GetDriverCount(mikroBusDriverSet)} drivers");
 
 
             //common location so we can turn em off and on ... order counts
@@ -121,6 +121,25 @@ namespace Mirid
             driverSets.Add(SEEED_STUDIO_GROVE, groveDriverSet);
             driverSets.Add(FEATHERWINGS, featherDriverSet);
             driverSets.Add(MIKROBUS, mikroBusDriverSet);
+
+            int total = 0;
+            foreach(var d in driverSets.Values)
+            {
+                total += GetDriverCount(d);
+            }
+
+            Console.WriteLine($"Found {total} drivers");
+        }
+
+        static int GetDriverCount(MFDriverSet driverSet)
+        {
+            int count = 0;
+
+            foreach(var p in driverSet.DriverPackages)
+            {
+                count += p.NumberOfDrivers;
+            }
+            return count;
         }
 
         static void WritePeripheralTables(List<MFDriverSet> driverSets)
