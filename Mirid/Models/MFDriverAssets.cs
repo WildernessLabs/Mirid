@@ -17,7 +17,7 @@ namespace Mirid.Models
 
         public MFDriverAssets(DirectoryInfo directory)
         {
-            datasheetsDirectory = directory.GetDirectories("Datasheet*", SearchOption.AllDirectories).FirstOrDefault();
+            datasheetsDirectory = directory.GetDirectories("Datasheet*", SearchOption.TopDirectoryOnly).FirstOrDefault();
 
             samplesDirectory = directory.GetDirectories("Sample*").FirstOrDefault();
         }

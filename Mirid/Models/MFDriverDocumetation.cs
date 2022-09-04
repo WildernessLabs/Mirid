@@ -167,7 +167,7 @@ namespace Mirid.Models
                 table.Add($"| Datasheet(s) | [GitHub]({githubDatasheetUrl}) |");
             }
 
-            var nugetUrl = $"<a href=\"https://www.nuget.org/packages/{packageName}/\" target=\"_blank\"><img src=\"https://img.shields.io/nuget/v/{packageName}.svg?label={packageName}\" alt=\"NuGet Gallery for {driver.Name}\" /></a>"; 
+            var nugetUrl = $"<a href=\"https://www.nuget.org/packages/{packageName}/\" target=\"_blank\"><img src=\"https://img.shields.io/nuget/v/{packageName}.svg?label={packageName}\" alt=\"NuGet Gallery for {packageName}\" /></a>"; 
             table.Add($"| NuGet package | {nugetUrl} |");
 
             //inject new rows at index 

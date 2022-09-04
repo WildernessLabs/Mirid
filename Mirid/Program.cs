@@ -55,18 +55,18 @@ namespace Mirid
 
             UpdateDocs(); 
 
-           // WritePeripheralTables(driverSets.Values.ToList());
-            // RunDriverReport();
+            WritePeripheralTables(driverSets.Values.ToList());
+            //RunDriverReport();
         }
 
         static void UpdateDocs()
         {
-            //    UpdatePeripheralDocs(driverSets[CORE_PERIPHERALS]);
-            //    UpdatePeripheralDocs(driverSets[LIBRARIES_AND_FRAMEWORKS]);
-            //    UpdatePeripheralDocs(driverSets[EXTERNAL_PERIPHERALS]);
-            //    UpdatePeripheralDocs(driverSets[FEATHERWINGS]);
-            //    UpdatePeripheralDocs(driverSets[SEEED_STUDIO_GROVE]);
-            //UpdatePeripheralDocs(driverSets[MIKROBUS]);
+            UpdatePeripheralDocs(driverSets[CORE_PERIPHERALS]);
+            UpdatePeripheralDocs(driverSets[LIBRARIES_AND_FRAMEWORKS]);
+            UpdatePeripheralDocs(driverSets[EXTERNAL_PERIPHERALS]);
+        //    UpdatePeripheralDocs(driverSets[FEATHERWINGS]);
+        //    UpdatePeripheralDocs(driverSets[SEEED_STUDIO_GROVE]);
+        //    UpdatePeripheralDocs(driverSets[MIKROBUS]);
         }
 
         static void LoadDriverSets()
@@ -144,8 +144,7 @@ namespace Mirid
 
         static void WritePeripheralTables(List<MFDriverSet> driverSets)
         {
-            Console.Clear();
-            Console.WriteLine("Driver Report");
+            Console.WriteLine("Write Peripheral Tables");
 
           //  PeripheralDocsOutput.WritePeripheralTablesSimple(docSet.DriverPackages);
             PeripheralDocsOutput.WritePeripheralTables(driverSets);
@@ -206,7 +205,8 @@ namespace Mirid
                     var githubCodeUri = new Uri(uri, relativePath);
 
                     string githubDatasheetUrl = String.Empty;
-                    if(!string.IsNullOrWhiteSpace(package.Assets.DatasheetPath))
+                    if(package.HasDataSheet && 
+                       !string.IsNullOrWhiteSpace(package.Assets.DatasheetPath))
                     {
                         relativePath = Path.GetRelativePath(driverSet.DriverSetSourcePath, package.Assets.DatasheetPath);
                         uri = new Uri(driverSet.GitHubUrl);

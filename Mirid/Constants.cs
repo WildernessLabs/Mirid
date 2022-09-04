@@ -2,9 +2,9 @@
 {
     public static class Constants
     {
-        public static string BlockedBadgeHtml => $"<img src=\"{blockedBadgeLink}\" alt=\"{blockedAltText}\" />";
-        public static string InProgressBadgeHtml => $"<img src=\"{inProgressBadgeLink}\" alt=\"{inProgressAltText}\" />";
-        public static string WorkingBadgeHtml => $"<img src=\"{workingBadgeLink}\" alt=\"{workingAltText}\" />";
+        public static string BlockedBadgeHtml => $"<img alt=\"{blockedAltText}\" src=\"{blockedBadgeLink}\"/>";
+        public static string InProgressBadgeHtml => $"<img alt=\"{inProgressAltText}\" src=\"{inProgressBadgeLink}\"/>";
+        public static string WorkingBadgeHtml => $"<img alt=\"{workingAltText}\" src=\"{workingBadgeLink}\"/>";
 
         public static string BlockedBadgeHtmlwStyle => $"<img src=\"{blockedBadgeLink}\" style=\"{headerStyle}\" alt=\"{blockedAltText}\" />";
         public static string InProgressBadgeHtmlwStyle => $"<img src=\"{inProgressBadgeLink}\" style=\"{headerStyle}\" alt=\"{inProgressAltText}\" />";
