@@ -25,41 +25,43 @@ namespace ReferenceSwitcher
             //get the Meadow.Foundation project files 
             var mfProjFiles = GetCsProjFiles(MFSourcePath);
 
-
-
-
-
-            //SwitchToDeveloperMode(projectFiles);
-
             //Meadow.Foundation switch 
-            //   SwitchToPublishingMode(projectsToUpdate: mfProjFiles, 
-            //                         projectsToReference: mcProjFiles);
+         //   SwitchToPublishingMode(projectsToUpdate: mfProjFiles, 
+         //                            projectsToReference: mcProjFiles);
+
+          //  SwitchToDeveloperMode(projectsToUpdate: mfProjFiles,
+          //                        projectsToReference: mcProjFiles);
+
+           
+            /* This should be a one-time operation 
+             * After the driver is published along with the backing Meadow.Foundation package
+             * We shouldn't need to switch back to local refs unless we're signifigantly changing the backing driver */
 
             //Meadow.Foundation.Featherwings switch 
             //get the Meadow.Foundation.Featherwings project files 
             var mffProjFiles = GetCsProjFiles(MFFeatherwingPath);
 
-            SwitchToPublishingMode(projectsToUpdate: mffProjFiles, 
-                                   projectsToReference: mfProjFiles);
-            SwitchToPublishingMode(projectsToUpdate: mffProjFiles,
-                                   projectsToReference: mcProjFiles);
+          //  SwitchToPublishingMode(projectsToUpdate: mffProjFiles, projectsToReference: mfProjFiles);
+            SwitchToDeveloperMode(projectsToUpdate: mffProjFiles, projectsToReference: mcProjFiles);
+            SwitchToDeveloperMode(projectsToUpdate: mffProjFiles, projectsToReference: mfProjFiles);
 
             //Meadow.Foundation.Grove switch 
             //get the Meadow.Foundation.Featherwings project files 
             var mfgProjFiles = GetCsProjFiles(MFGrovePath);
 
-            SwitchToPublishingMode(projectsToUpdate: mfgProjFiles,
-                                   projectsToReference: mfProjFiles);
-            SwitchToPublishingMode(projectsToUpdate: mfgProjFiles,
-                                   projectsToReference: mcProjFiles);
+         //   SwitchToPublishingMode(projectsToUpdate: mfgProjFiles, projectsToReference: mfProjFiles);
+            SwitchToDeveloperMode(projectsToUpdate: mfgProjFiles, projectsToReference: mcProjFiles);
+            SwitchToDeveloperMode(projectsToUpdate: mfgProjFiles, projectsToReference: mfProjFiles);
 
             //Meadow.Foundation.MikroBus switch 
             //get the Meadow.Foundation.Featherwings project files 
-           /* var mfmbProjFiles = GetCsProjFiles(MFMikroBusPath);
-            SwitchToPublishingMode(projectsToUpdate: mfmbProjFiles,
-                                   projectsToReference: mfProjFiles);
-            SwitchToPublishingMode(projectsToUpdate: mfmbProjFiles,
-                                   projectsToReference: mcProjFiles);*/
+            var mfmbProjFiles = GetCsProjFiles(MFMikroBusPath);
+         //   SwitchToPublishingMode(projectsToUpdate: mfmbProjFiles, projectsToReference: mfProjFiles);
+            SwitchToDeveloperMode(projectsToUpdate: mfmbProjFiles, projectsToReference: mcProjFiles);
+            SwitchToDeveloperMode(projectsToUpdate: mfmbProjFiles, projectsToReference: mfProjFiles);
+
+
+
         }
 
         static void SwitchToPublishingMode(FileInfo[] projectsToUpdate, FileInfo[] projectsToReference)
@@ -89,9 +91,9 @@ namespace ReferenceSwitcher
             }
         }
 
-        static void SwitchToDeveloperMode(FileInfo[] files)
+        static void SwitchToDeveloperMode(FileInfo[] projectsToUpdate, FileInfo[] projectsToReference)
         {
-            foreach (var f in files)
+            foreach (var f in projectsToUpdate)
             {
                 Console.WriteLine($"Found {f.Name}");
                 var packageIds = GetListOfNugetReferencesInProject(f);
@@ -99,7 +101,7 @@ namespace ReferenceSwitcher
                 foreach (var id in packageIds)
                 {
                     //get the csproj file info that maps to the referenced nuget package
-                    var nugetProj = GetFileForPackageId(files, id);
+                    var nugetProj = GetFileForPackageId(projectsToReference, id);
 
                     if (nugetProj == null)
                     {   //likely means it's referencng and external nuget package
@@ -315,6 +317,12 @@ namespace ReferenceSwitcher
                     {
                         int firstQuote = line.IndexOf("\"");
                         int secondQuote = line.IndexOf("\"", firstQuote + 1);
+
+                        if(firstQuote == -1 || secondQuote == -1)
+                        {
+                            Console.WriteLine("malformed xml in " + fileInfo.Name);
+                            break;
+                        }
 
                         var packageName = line.Substring(firstQuote + 1, secondQuote - firstQuote - 1);
 
