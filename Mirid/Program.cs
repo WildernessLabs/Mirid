@@ -64,9 +64,9 @@ namespace Mirid
             UpdatePeripheralDocs(driverSets[CORE_PERIPHERALS]);
             UpdatePeripheralDocs(driverSets[LIBRARIES_AND_FRAMEWORKS]);
             UpdatePeripheralDocs(driverSets[EXTERNAL_PERIPHERALS]);
-        //    UpdatePeripheralDocs(driverSets[FEATHERWINGS]);
-        //    UpdatePeripheralDocs(driverSets[SEEED_STUDIO_GROVE]);
-        //    UpdatePeripheralDocs(driverSets[MIKROBUS]);
+            UpdatePeripheralDocs(driverSets[FEATHERWINGS]);
+            UpdatePeripheralDocs(driverSets[SEEED_STUDIO_GROVE]);
+            UpdatePeripheralDocs(driverSets[MIKROBUS]);
         }
 
         static void LoadDriverSets()
@@ -196,10 +196,15 @@ namespace Mirid
 
                     var relativePath = Path.GetRelativePath(driverSet.DriverSetSourcePath, Path.GetDirectoryName(driver.FilePath));
                     //driver folder hack
-                    if(Path.GetFileName(relativePath) == "Driver") //treats the last folder name as a file
+                    if (Path.GetFileName(relativePath) == "Drivers") //treats the last folder name as a file
                     {
                         relativePath = Path.GetDirectoryName(relativePath);
                     }
+                    if (Path.GetFileName(relativePath) == "Driver") //treats the last folder name as a file
+                    {
+                        relativePath = Path.GetDirectoryName(relativePath);
+                    }
+
 
                     var uri = new Uri(driverSet.GitHubUrl);
                     var githubCodeUri = new Uri(uri, relativePath);

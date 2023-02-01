@@ -5,7 +5,9 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mirid", "Mirid\Mirid.csproj", "{F0637684-D6DF-423C-A4B7-8C0644BEEFEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReferenceSwitcher", "ReferenceSwitcher\ReferenceSwitcher.csproj", "{5918D3B0-2827-42CC-B0F4-DCC6FE35AD29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReferenceSwitcher", "ReferenceSwitcher\ReferenceSwitcher.csproj", "{5918D3B0-2827-42CC-B0F4-DCC6FE35AD29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionGen", "ActionGen\ActionGen.csproj", "{4E8ED977-0F7C-4B89-B7CB-C8BEFEC8597A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{5918D3B0-2827-42CC-B0F4-DCC6FE35AD29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5918D3B0-2827-42CC-B0F4-DCC6FE35AD29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5918D3B0-2827-42CC-B0F4-DCC6FE35AD29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E8ED977-0F7C-4B89-B7CB-C8BEFEC8597A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E8ED977-0F7C-4B89-B7CB-C8BEFEC8597A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E8ED977-0F7C-4B89-B7CB-C8BEFEC8597A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E8ED977-0F7C-4B89-B7CB-C8BEFEC8597A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
