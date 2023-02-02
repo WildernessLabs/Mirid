@@ -1,70 +1,157 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http.Headers;
 
 namespace ReferenceSwitcher
 {
     class Program
     {
         //ToDo update to a command line arg
-        public static string MCSourcePath = "../../../../../Meadow.Core/Source/";
-        public static string MFSourcePath = "../../../../../Meadow.Foundation/Source/";
-        public static string MFPeripheralsPath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Peripherals";
+        public static string MeadowContractsSourcePath = "../../../../../Meadow.Contracts/Source/";
+        public static string MeadowModbusSourcePath = "../../../../../Meadow.Modbus/src/";
+        public static string MeadowLoggingSourcePath = "../../../../../Meadow.Logging/Source/";
+        public static string MeadowUnitsSourcePath = "../../../../../Meadow.Units/Source/";
+        public static string MeadowMQTTSourcePath = "../../../../../MQTTnet/Source/MQTTnet/";
 
-        public static string MFGrovePath = "../../../../../Meadow.Foundation.Grove/Source/";
-        public static string MFFeatherwingPath = "../../../../../Meadow.Foundation.Featherwings/Source/";
-        public static string MFMikroBusPath = "../../../../../Meadow.Foundation.mikroBUS/Source/";
+        public static string MeadowCoreSourcePath = "../../../../../Meadow.Core/Source/";
+        public static string MeadowFoundationCoreSourcePath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Core";
+        public static string MeadowFoundationSourcePath = "../../../../../Meadow.Foundation/Source/";
+        public static string MeadowFoundationPeripheralsPath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Peripherals";
+
+        public static string MeadowFoundationGrovePath = "../../../../../Meadow.Foundation.Grove/Source/";
+        public static string MeadowFoundationFeatherwingPath = "../../../../../Meadow.Foundation.Featherwings/Source/";
+        public static string MeadowFoundationMikroBusPath = "../../../../../Meadow.Foundation.mikroBUS/Source/";
+
+        // zero dependancy nugets
+        static FileInfo[]? MeadowMQTTProjects;
+        static FileInfo[]? MeadowUnitsProjects;
+        static FileInfo[]? MeadowLoggingProjects;
+        
+        static FileInfo[]? MeadowContractsProjects;
+
+        static FileInfo[]? MeadowModbusProjects;
+        static FileInfo[]? MeadowCoreProjects;
+
+        static FileInfo[]? MeadowFoundationProjects;
+        static FileInfo[]? MeadowFoundationCoreProjects;
+        static FileInfo[]? MeadowFoundationGroveProjects;
+        static FileInfo[]? MeadowFoundationMikroBusProjects;
+        static FileInfo[]? MeadowFoundationFeatherwingsProjects;
 
         static void Main(string[] args)
         {
             Console.WriteLine("Hello Meadow developers!");
 
-            //get the Meadow.Core project files 
-            var mcProjFiles = GetCsProjFiles(MCSourcePath);
+            LoadProjects();
 
-            //get the Meadow.Foundation project files 
-            var mfProjFiles = GetCsProjFiles(MFSourcePath);
+            return;
 
-            //Meadow.Foundation switch 
-         //   SwitchToPublishingMode(projectsToUpdate: mfProjFiles, 
-         //                            projectsToReference: mcProjFiles);
+            //toggle methods below for various repos
 
-          //  SwitchToDeveloperMode(projectsToUpdate: mfProjFiles,
-          //                        projectsToReference: mcProjFiles);
+            SwitchMeadowFoundationCore(publish: true);
 
-           
-            /* This should be a one-time operation 
-             * After the driver is published along with the backing Meadow.Foundation package
-             * We shouldn't need to switch back to local refs unless we're signifigantly changing the backing driver */
+            SwitchMeadowFoundation(publish: true);
 
-            //Meadow.Foundation.Featherwings switch 
-            //get the Meadow.Foundation.Featherwings project files 
-            var mffProjFiles = GetCsProjFiles(MFFeatherwingPath);
+            SwitchMeadowFoundationGrove(publish: true);
 
-          //  SwitchToPublishingMode(projectsToUpdate: mffProjFiles, projectsToReference: mfProjFiles);
-            SwitchToDeveloperMode(projectsToUpdate: mffProjFiles, projectsToReference: mcProjFiles);
-            SwitchToDeveloperMode(projectsToUpdate: mffProjFiles, projectsToReference: mfProjFiles);
+            SwitchMeadowFoundationFeatherwings(publish: true);
 
-            //Meadow.Foundation.Grove switch 
-            //get the Meadow.Foundation.Featherwings project files 
-            var mfgProjFiles = GetCsProjFiles(MFGrovePath);
-
-         //   SwitchToPublishingMode(projectsToUpdate: mfgProjFiles, projectsToReference: mfProjFiles);
-            SwitchToDeveloperMode(projectsToUpdate: mfgProjFiles, projectsToReference: mcProjFiles);
-            SwitchToDeveloperMode(projectsToUpdate: mfgProjFiles, projectsToReference: mfProjFiles);
-
-            //Meadow.Foundation.MikroBus switch 
-            //get the Meadow.Foundation.Featherwings project files 
-            var mfmbProjFiles = GetCsProjFiles(MFMikroBusPath);
-         //   SwitchToPublishingMode(projectsToUpdate: mfmbProjFiles, projectsToReference: mfProjFiles);
-            SwitchToDeveloperMode(projectsToUpdate: mfmbProjFiles, projectsToReference: mcProjFiles);
-            SwitchToDeveloperMode(projectsToUpdate: mfmbProjFiles, projectsToReference: mfProjFiles);
-
-
-
+            SwitchMeadowFoundationMikroBus(publish: true);
         }
 
-        static void SwitchToPublishingMode(FileInfo[] projectsToUpdate, FileInfo[] projectsToReference)
+        static void LoadProjects()
+        {
+            MeadowMQTTProjects = GetCsProjFiles(MeadowMQTTSourcePath);
+
+            MeadowUnitsProjects = GetCsProjFiles(MeadowUnitsSourcePath);
+            MeadowLoggingProjects = GetCsProjFiles(MeadowLoggingSourcePath);
+            MeadowContractsProjects = GetCsProjFiles(MeadowContractsSourcePath);
+            MeadowModbusProjects = GetCsProjFiles(MeadowModbusSourcePath);
+
+            MeadowCoreProjects = GetCsProjFiles(MeadowCoreSourcePath);
+
+            MeadowFoundationProjects = GetCsProjFiles(MeadowFoundationSourcePath);
+
+            MeadowFoundationCoreProjects = GetCsProjFiles(MeadowFoundationCoreSourcePath);
+
+            MeadowFoundationGroveProjects = GetCsProjFiles(MeadowFoundationGrovePath);
+            MeadowFoundationMikroBusProjects = GetCsProjFiles(MeadowFoundationMikroBusPath);
+            MeadowFoundationFeatherwingsProjects = GetCsProjFiles(MeadowFoundationFeatherwingPath);
+        }
+
+        static void SwitchRepo(IEnumerable<FileInfo> projectsToUpdate, IEnumerable<FileInfo>[] projectsToReference, bool publish)
+        {
+            foreach(var collection in projectsToReference)
+            {
+                if (publish)
+                {
+                    SwitchToPublishingMode(projectsToUpdate, collection);
+                }
+                else
+                {
+                    SwitchToDeveloperMode(projectsToUpdate, collection);
+                }
+            }
+        }
+
+        static void SwitchMeadowModbus(bool publish)
+        {
+            SwitchRepo(MeadowModbusProjects,
+                new IEnumerable<FileInfo>[] { MeadowLoggingProjects, MeadowContractsProjects },
+                publish);
+        }
+
+        static void SwitchMeadowContracts(bool publish)
+        {
+            SwitchRepo(MeadowModbusProjects,
+                new IEnumerable<FileInfo>[] { MeadowLoggingProjects, MeadowUnitsProjects },
+                publish);
+        }
+
+        static void SwitchMeadowCore(bool publish)
+        {
+            SwitchRepo(MeadowFoundationProjects,
+                new IEnumerable<FileInfo>[] { MeadowMQTTProjects, MeadowContractsProjects },
+                publish);
+        }
+
+        static void SwitchMeadowFoundationCore(bool publish)
+        {
+            SwitchRepo(MeadowFoundationCoreProjects,
+                new IEnumerable<FileInfo>[] { MeadowCoreProjects },
+                publish);
+        }
+
+        static void SwitchMeadowFoundation(bool publish)
+        {
+            SwitchRepo(MeadowFoundationProjects,
+                new IEnumerable<FileInfo>[] { MeadowFoundationCoreProjects, MeadowCoreProjects, MeadowModbusProjects },
+                publish);
+        }
+
+        static void SwitchMeadowFoundationFeatherwings(bool publish)
+        {
+            SwitchRepo(MeadowFoundationFeatherwingsProjects,
+                new IEnumerable<FileInfo>[] { MeadowFoundationProjects, MeadowCoreProjects },
+                publish);
+        }
+
+        static void SwitchMeadowFoundationMikroBus(bool publish)
+        {
+            SwitchRepo(MeadowFoundationMikroBusProjects,
+                new IEnumerable<FileInfo>[] { MeadowFoundationProjects, MeadowCoreProjects },
+                publish);
+        }
+
+        static void SwitchMeadowFoundationGrove(bool publish)
+        {
+            SwitchRepo(MeadowFoundationGroveProjects,
+                new IEnumerable<FileInfo>[] { MeadowFoundationProjects, MeadowCoreProjects }, 
+                publish);
+        }
+
+        static void SwitchToPublishingMode(IEnumerable<FileInfo> projectsToUpdate, IEnumerable<FileInfo> projectsToReference)
         {
             Console.WriteLine("Developer mode");
 
@@ -91,7 +178,7 @@ namespace ReferenceSwitcher
             }
         }
 
-        static void SwitchToDeveloperMode(FileInfo[] projectsToUpdate, FileInfo[] projectsToReference)
+        static void SwitchToDeveloperMode(IEnumerable<FileInfo> projectsToUpdate, IEnumerable<FileInfo> projectsToReference)
         {
             foreach (var f in projectsToUpdate)
             {
@@ -113,7 +200,7 @@ namespace ReferenceSwitcher
             }
         }
 
-        static FileInfo GetFileInfoForProjectName(string projectName, FileInfo[] files)
+        static FileInfo GetFileInfoForProjectName(string projectName, IEnumerable<FileInfo> files)
         {
             foreach (var f in files)
             {
@@ -236,7 +323,7 @@ namespace ReferenceSwitcher
             return null;
         }
 
-        static FileInfo GetFileForPackageId(FileInfo[] fileInfos, string packageId)
+        static FileInfo GetFileForPackageId(IEnumerable<FileInfo> fileInfos, string packageId)
         {
             foreach (var f in fileInfos)
             {

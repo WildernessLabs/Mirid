@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mirid", "Mirid\Mirid.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReferenceSwitcher", "ReferenceSwitcher\ReferenceSwitcher.csproj", "{5918D3B0-2827-42CC-B0F4-DCC6FE35AD29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionGen", "ActionGen\ActionGen.csproj", "{4E8ED977-0F7C-4B89-B7CB-C8BEFEC8597A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActionGen", "ActionGen\ActionGen.csproj", "{4E8ED977-0F7C-4B89-B7CB-C8BEFEC8597A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{320E7477-3F1E-4B1D-A5CD-F332D0CACD33}"
+	ProjectSection(SolutionItems) = preProject
+		Release_steps.md = Release_steps.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
