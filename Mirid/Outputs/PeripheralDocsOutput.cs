@@ -13,7 +13,7 @@ namespace Mirid.Outputs
 
             foreach(var driverSet in driverSets)
             {
-                output.AppendLine($"# {driverSet.SetName}");
+                output.AppendLine($"## {driverSet.SetName}");
 
                 WritePeripheralPackages(driverSet.DriverPackages, output);
             }
@@ -51,7 +51,7 @@ namespace Mirid.Outputs
                     packagesWithMultipleDrivers.Clear();
                     group = GetPeripheralGroup(package.PackageName);
                     output.AppendLine();
-                    output.AppendLine($"## {group}");
+                    output.AppendLine($"### {group}");
                     output.AppendLine();
                     WriteTableHeader(output);
                 }
@@ -62,7 +62,7 @@ namespace Mirid.Outputs
                 }
 
                 WriteTableRow(GetStatusText(package.IsPublished),
-                    GetPeripheralLink(package.PackageName),
+                    GetPeripheralLink(package.PackageName, package.Drivers.Count > 1),
                     package.Description,
                     output);
             }
@@ -77,18 +77,50 @@ namespace Mirid.Outputs
 
         static void WriteMultipleDriverTables(List<MFPackage> nugets, StringBuilder builder)
         {
+            string GetDriverType(MFPackage nuget) 
+            {
+                var packageCategories = nuget.PackageName.Split('.');
+                var type = packageCategories[packageCategories.Length - 2].TrimEnd('s');
+                switch(type) 
+                {
+                    case "Display":
+                        return "display";
+                    case "ADC":
+                        return "analog digital converter";
+                    case "Hid":
+                        return "HID";
+                    case "IOExpander":
+                        return "IO expander";
+                    default:
+                        return type.ToLower();
+                        
+                             
+
+                }
+            }
+
+            string GetDriverUrl(MFDriver driver)
+            {
+                return $"/docs/api/Meadow.Foundation/{driver.Namespace}.{driver.Name}.html";
+            }
+
             foreach(var nuget in nugets)
             {
+                var driverType = GetDriverType(nuget);
+
                 builder.AppendLine();
-                builder.AppendLine($"### {GetDriverNameFromPackage(nuget.PackageName)}");
+                builder.AppendLine($"#### {GetDriverNameFromPackage(nuget.PackageName)}");
+                builder.AppendLine();
 
                 WriteTableHeader(builder);
 
                 foreach(var driver in nuget.Drivers)
                 {
+                    var driverUrl = GetDriverUrl(driver);
+
                     WriteTableRow(GetStatusText(nuget.IsPublished),
-                                        driver.Name,
-                                        $"{driver.SimpleName} driver",
+                                        $"[{driver.Name}]({driverUrl})",
+                                        $"{driver.SimpleName} {driverType} driver",
                                         builder);
                 }
             }
@@ -110,10 +142,12 @@ namespace Mirid.Outputs
             return text[2];
         }
 
-        static string GetPeripheralLink(string packageName)
+        static string GetPeripheralLink(string packageName, bool hasMultipleDrivers)
         {
             var name = GetDriverNameFromPackage(packageName);
-            var url = $"/docs/api/Meadow.Foundation/{packageName}.html";
+            var postFix = hasMultipleDrivers?"Base":string.Empty;
+            
+            var url = $"/docs/api/Meadow.Foundation/{packageName}{postFix}.html";
 
             return $"[{name}]({url})";
         }
