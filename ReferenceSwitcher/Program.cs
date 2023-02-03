@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net.Http.Headers;
 
 namespace ReferenceSwitcher
 {
+    enum Projects
+    {
+        All,
+        Drivers,
+        Samples
+    }
+
     class Program
     {
         //ToDo update to a command line arg
@@ -23,6 +29,9 @@ namespace ReferenceSwitcher
         public static string MeadowFoundationFeatherwingPath = "../../../../../Meadow.Foundation.Featherwings/Source/";
         public static string MeadowFoundationMikroBusPath = "../../../../../Meadow.Foundation.mikroBUS/Source/";
 
+        public static string MeadowProjectLabPath = "../../../../../Meadow.ProjectLab/Source/";
+
+
         // zero dependancy nugets
         static FileInfo[]? MeadowMQTTProjects;
         static FileInfo[]? MeadowUnitsProjects;
@@ -33,11 +42,14 @@ namespace ReferenceSwitcher
         static FileInfo[]? MeadowModbusProjects;
         static FileInfo[]? MeadowCoreProjects;
 
-        static FileInfo[]? MeadowFoundationProjects;
+        static FileInfo[]? MeadowFoundationDriverProjects;
+        static FileInfo[]? MeadowFoundationSampleProjects;
         static FileInfo[]? MeadowFoundationCoreProjects;
         static FileInfo[]? MeadowFoundationGroveProjects;
         static FileInfo[]? MeadowFoundationMikroBusProjects;
         static FileInfo[]? MeadowFoundationFeatherwingsProjects;
+
+        static FileInfo[]? MeadowProjectLabProjects;
 
         static void Main(string[] args)
         {
@@ -45,19 +57,27 @@ namespace ReferenceSwitcher
 
             LoadProjects();
 
-            return;
 
             //toggle methods below for various repos
 
-            SwitchMeadowFoundationCore(publish: true);
+            //SwitchMeadowContracts(publish: true);
 
-            SwitchMeadowFoundation(publish: true);
+            //SwitchMeadowModbus(publish: true);
 
-            SwitchMeadowFoundationGrove(publish: true);
+            //SwitchMeadowCore(publish: true);
+            
 
-            SwitchMeadowFoundationFeatherwings(publish: true);
+            //SwitchMeadowFoundationCore(publish: true);
 
-            SwitchMeadowFoundationMikroBus(publish: true);
+            SwitchMeadowFoundation(publish: false);
+
+            //SwitchMeadowFoundationGrove(publish: true);
+
+            //SwitchMeadowFoundationFeatherwings(publish: true);
+
+            //SwitchMeadowFoundationMikroBus(publish: true);
+
+            //SwitchMeadowProjectLab(publish: false);
         }
 
         static void LoadProjects()
@@ -71,13 +91,16 @@ namespace ReferenceSwitcher
 
             MeadowCoreProjects = GetCsProjFiles(MeadowCoreSourcePath);
 
-            MeadowFoundationProjects = GetCsProjFiles(MeadowFoundationSourcePath);
+            MeadowFoundationDriverProjects = GetCsProjFiles(MeadowFoundationSourcePath, Projects.Drivers);
+            MeadowFoundationSampleProjects = GetCsProjFiles(MeadowFoundationSourcePath, Projects.Samples);
 
-            MeadowFoundationCoreProjects = GetCsProjFiles(MeadowFoundationCoreSourcePath);
+            MeadowFoundationCoreProjects = GetCsProjFiles(MeadowFoundationCoreSourcePath, Projects.Drivers);
 
-            MeadowFoundationGroveProjects = GetCsProjFiles(MeadowFoundationGrovePath);
-            MeadowFoundationMikroBusProjects = GetCsProjFiles(MeadowFoundationMikroBusPath);
-            MeadowFoundationFeatherwingsProjects = GetCsProjFiles(MeadowFoundationFeatherwingPath);
+            MeadowFoundationGroveProjects = GetCsProjFiles(MeadowFoundationGrovePath, Projects.All);
+            MeadowFoundationMikroBusProjects = GetCsProjFiles(MeadowFoundationMikroBusPath, Projects.All);
+            MeadowFoundationFeatherwingsProjects = GetCsProjFiles(MeadowFoundationFeatherwingPath, Projects.All);
+
+            MeadowProjectLabProjects = GetCsProjFiles(MeadowProjectLabPath, Projects.All);
         }
 
         static void SwitchRepo(IEnumerable<FileInfo> projectsToUpdate, IEnumerable<FileInfo>[] projectsToReference, bool publish)
@@ -111,7 +134,7 @@ namespace ReferenceSwitcher
 
         static void SwitchMeadowCore(bool publish)
         {
-            SwitchRepo(MeadowFoundationProjects,
+            SwitchRepo(MeadowCoreProjects,
                 new IEnumerable<FileInfo>[] { MeadowMQTTProjects, MeadowContractsProjects },
                 publish);
         }
@@ -125,29 +148,44 @@ namespace ReferenceSwitcher
 
         static void SwitchMeadowFoundation(bool publish)
         {
-            SwitchRepo(MeadowFoundationProjects,
-                new IEnumerable<FileInfo>[] { MeadowFoundationCoreProjects, MeadowCoreProjects, MeadowModbusProjects },
+            SwitchRepo(MeadowFoundationDriverProjects,
+                new IEnumerable<FileInfo>[] { MeadowFoundationDriverProjects, 
+                                              MeadowFoundationCoreProjects, 
+                                              MeadowModbusProjects },
+                publish);
+
+            SwitchRepo(MeadowFoundationSampleProjects,
+                new IEnumerable<FileInfo>[] { MeadowCoreProjects },
                 publish);
         }
 
         static void SwitchMeadowFoundationFeatherwings(bool publish)
         {
             SwitchRepo(MeadowFoundationFeatherwingsProjects,
-                new IEnumerable<FileInfo>[] { MeadowFoundationProjects, MeadowCoreProjects },
+                new IEnumerable<FileInfo>[] { MeadowFoundationDriverProjects, MeadowCoreProjects },
                 publish);
         }
 
         static void SwitchMeadowFoundationMikroBus(bool publish)
         {
             SwitchRepo(MeadowFoundationMikroBusProjects,
-                new IEnumerable<FileInfo>[] { MeadowFoundationProjects, MeadowCoreProjects },
+                new IEnumerable<FileInfo>[] { MeadowFoundationDriverProjects, MeadowCoreProjects },
                 publish);
         }
 
         static void SwitchMeadowFoundationGrove(bool publish)
         {
             SwitchRepo(MeadowFoundationGroveProjects,
-                new IEnumerable<FileInfo>[] { MeadowFoundationProjects, MeadowCoreProjects }, 
+                new IEnumerable<FileInfo>[] { MeadowFoundationDriverProjects, MeadowCoreProjects }, 
+                publish);
+        }
+
+        static void SwitchMeadowProjectLab(bool publish)
+        {
+            SwitchRepo(MeadowProjectLabProjects,
+                new IEnumerable<FileInfo>[] { MeadowFoundationDriverProjects, 
+                                              MeadowCoreProjects, 
+                                              MeadowModbusProjects},
                 publish);
         }
 
@@ -281,9 +319,28 @@ namespace ReferenceSwitcher
             File.WriteAllLines(fileInfoToModify.FullName, newLines.ToArray());
         }
 
-        static FileInfo[] GetCsProjFiles(string path)
+        static FileInfo[] GetCsProjFiles(string path, Projects projectsType = Projects.Drivers)
         {
-            return (new DirectoryInfo(path)).GetFiles("*.csproj", SearchOption.AllDirectories);
+            var files = (new DirectoryInfo(path)).GetFiles("*.csproj", SearchOption.AllDirectories);
+
+            var filteredFiles = new List<FileInfo>();
+
+            foreach(var file in files) 
+            {
+                if(projectsType == Projects.Drivers &&
+                    (file.DirectoryName.Contains("Sample") || file.DirectoryName.Contains("sample")))
+                {
+                    continue;
+                }
+                if (projectsType == Projects.Samples &&
+                    (!file.DirectoryName.Contains("Sample") && !file.DirectoryName.Contains("sample")))
+                {
+                    continue;
+                }
+                filteredFiles.Add(file);
+            }
+
+            return filteredFiles.ToArray();
         }
 
         static Tuple<string, string> GetNugetInfoFromFileInfo(FileInfo file)

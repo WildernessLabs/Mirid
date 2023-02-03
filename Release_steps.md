@@ -59,13 +59,4 @@
 10. Release Meadow.Foundation.FeatherWings
 - wait for Meadow.Foundation packages to publish
 
-
-
-
-
-
-
-
-Release Meadow.Foundation.Core  <- does this buy us anything??
-Then Meadow.Core
-Then M.F. Peripherals 
+11. Release ProjectLab
