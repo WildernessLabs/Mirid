@@ -8,6 +8,8 @@
 	- create a new release on GitHub and publish (kicks off workflow to publish nuget)
 	- switch to local refs
 
+MQTT (if needed) ... or delete
+
 3. Release Meadow Contracts 
 	- wait for Units and Logging nugets to publish
 	- nugetize develop with wildcard versions
