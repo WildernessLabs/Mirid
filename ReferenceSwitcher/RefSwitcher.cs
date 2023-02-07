@@ -6,6 +6,136 @@ namespace ReferenceSwitcher
 {
     public partial class RefSwitcher
     {
+        public void SwitchToPublishingMode(IEnumerable<FileInfo> projectsToUpdate, IEnumerable<FileInfo> projectsToReference)
+        {
+            Console.WriteLine("Developer mode");
+
+            //loop over every project we want to update
+            foreach (var f in projectsToUpdate)
+            {
+                Console.WriteLine($"Found {f.Name}");
+
+                //find all of the local refs in that project
+                var referencedProjects = GetListOfProjectReferencesInProject(f);
+
+                foreach (var p in referencedProjects)
+                {
+                    var refProjFileInfo = GetFileInfoForProjectName(p, projectsToReference);
+
+                    if (refProjFileInfo == null)
+                    {   //referenced project outside of foundation (probably core)
+                        continue;
+                    }
+
+                    //time to change the file
+                    ReplaceLocalRefWithNugetRef(f, p, refProjFileInfo);
+                }
+            }
+        }
+
+        public void SwitchToDeveloperMode(IEnumerable<FileInfo> projectsToUpdate, IEnumerable<FileInfo> projectsToReference)
+        {
+            foreach (var f in projectsToUpdate)
+            {
+                Console.WriteLine($"Found {f.Name}");
+                var packageIds = GetListOfNugetReferencesInProject(f);
+
+                foreach (var id in packageIds)
+                {
+                    //get the csproj file info that maps to the referenced nuget package
+                    var nugetProj = GetFileForPackageId(projectsToReference, id);
+
+                    if (nugetProj == null)
+                    {   //likely means it's referencng and external nuget package
+                        continue;
+                    }
+
+                    ReplaceNugetRefWithLocalRef(f, id, nugetProj);
+                }
+            }
+        }
+
+        public void ReplaceNugetRefWithLocalRef(FileInfo fileInfoToModify, string packageId, FileInfo fileInfoToReference)
+        {
+            var lines = File.ReadAllLines(fileInfoToModify.FullName);
+
+            var newLines = new List<string>();
+
+            foreach (var line in lines)
+            {
+                //skip the line we're removing
+                if (line.Contains("PackageReference") && line.Contains($"\"{packageId}\""))
+                {
+                    var path = Path.GetRelativePath(fileInfoToModify.DirectoryName, fileInfoToReference.DirectoryName);
+
+                    path = Path.Combine(path, Path.GetFileName(fileInfoToReference.FullName));
+
+                    string newLine = $"    <ProjectReference Include=\"{path}";
+
+                    newLine = newLine.Replace("/", "\\") + "\" />";
+                    newLines.Add(newLine);
+                }
+                else
+                {
+                    newLines.Add(line);
+                }
+            }
+
+            File.WriteAllLines(fileInfoToModify.FullName, newLines.ToArray());
+        }
+
+        public FileInfo GetFileInfoForProjectName(string projectName, IEnumerable<FileInfo> files)
+        {
+            foreach (var f in files)
+            {
+                var name = Path.GetFileName(f.FullName);
+
+                if (Path.GetFileName(f.FullName) == projectName)
+                {
+                    return f;
+                }
+            }
+
+            return null;
+        }
+
+        public void ReplaceLocalRefWithNugetRef(FileInfo fileInfoToModify, string fileName, FileInfo fileInfoToReference)
+        {
+            var lines = File.ReadAllLines(fileInfoToModify.FullName);
+
+            var newLines = new List<string>();
+
+            Console.WriteLine($"ReplaceLocalRef: {fileName}");
+
+            foreach (var line in lines)
+            {
+                //skip the line we're removing
+                if (line.Contains("ProjectReference") && line.Contains($"\\{fileName}\""))
+                {
+                    var nugetInfo = GetNugetInfoFromFileInfo(fileInfoToReference);
+
+                    if (nugetInfo == null)   //if it's null it's missing meta data
+                    {                       //which means it's not published
+                        newLines.Add(line);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Nuget: {nugetInfo.Item1} Version: {nugetInfo.Item2}");
+
+                        string newLine = $"    <PackageReference Include=\"{nugetInfo.Item1}\" Version=\"0.*\" />";
+
+                        newLines.Add(newLine);
+                    }
+                }
+                else
+                {
+                    newLines.Add(line);
+                }
+            }
+
+            File.WriteAllLines(fileInfoToModify.FullName, newLines.ToArray());
+        }
+
         List<string> GetListOfProjectReferencesInProject(FileInfo fileInfo)
         {
             var projects = new List<string>();
@@ -78,135 +208,10 @@ namespace ReferenceSwitcher
             return nugets;
         }
 
-        public void SwitchToPublishingMode(IEnumerable<FileInfo> projectsToUpdate, IEnumerable<FileInfo> projectsToReference)
-        {
-            Console.WriteLine("Developer mode");
+        
+        
 
-            //loop over every project we want to update
-            foreach (var f in projectsToUpdate)
-            {
-                Console.WriteLine($"Found {f.Name}");
-
-                //find all of the local refs in that project
-                var referencedProjects = GetListOfProjectReferencesInProject(f);
-
-                foreach (var p in referencedProjects)
-                {
-                    var refProjFileInfo = GetFileInfoForProjectName(p, projectsToReference);
-
-                    if (refProjFileInfo == null)
-                    {   //referenced project outside of foundation (probably core)
-                        continue;
-                    }
-
-                    //time to change the file
-                    ReplaceLocalRefWithNugetRef(f, p, refProjFileInfo);
-                }
-            }
-        }
-
-        public void SwitchToDeveloperMode(IEnumerable<FileInfo> projectsToUpdate, IEnumerable<FileInfo> projectsToReference)
-        {
-            foreach (var f in projectsToUpdate)
-            {
-                Console.WriteLine($"Found {f.Name}");
-                var packageIds = GetListOfNugetReferencesInProject(f);
-
-                foreach (var id in packageIds)
-                {
-                    //get the csproj file info that maps to the referenced nuget package
-                    var nugetProj = GetFileForPackageId(projectsToReference, id);
-
-                    if (nugetProj == null)
-                    {   //likely means it's referencng and external nuget package
-                        continue;
-                    }
-
-                    ReplaceNugetRefWithLocalRef(f, id, nugetProj);
-                }
-            }
-        }
-
-        public FileInfo GetFileInfoForProjectName(string projectName, IEnumerable<FileInfo> files)
-        {
-            foreach (var f in files)
-            {
-                var name = Path.GetFileName(f.FullName);
-
-                if (Path.GetFileName(f.FullName) == projectName)
-                {
-                    return f;
-                }
-            }
-
-            return null;
-        }
-
-        public void ReplaceLocalRefWithNugetRef(FileInfo fileInfoToModify, string fileName, FileInfo fileInfoToReference)
-        {
-            var lines = File.ReadAllLines(fileInfoToModify.FullName);
-
-            var newLines = new List<string>();
-
-            Console.WriteLine($"ReplaceLocalRef: {fileName}");
-
-            foreach (var line in lines)
-            {
-                //skip the line we're removing
-                if (line.Contains("ProjectReference") && line.Contains($"\\{fileName}\""))
-                {
-                    var nugetInfo = GetNugetInfoFromFileInfo(fileInfoToReference);
-
-                    if (nugetInfo == null)   //if it's null it's missing meta data
-                    {                       //which means it's not published
-                        newLines.Add(line);
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Nuget: {nugetInfo.Item1} Version: {nugetInfo.Item2}");
-
-                        string newLine = $"    <PackageReference Include=\"{nugetInfo.Item1}\" Version=\"0.*\" />";
-
-                        newLines.Add(newLine);
-                    }
-                }
-                else
-                {
-                    newLines.Add(line);
-                }
-            }
-
-            File.WriteAllLines(fileInfoToModify.FullName, newLines.ToArray());
-        }
-
-        public void ReplaceNugetRefWithLocalRef(FileInfo fileInfoToModify, string packageId, FileInfo fileInfoToReference)
-        {
-            var lines = File.ReadAllLines(fileInfoToModify.FullName);
-
-            var newLines = new List<string>();
-
-            foreach (var line in lines)
-            {
-                //skip the line we're removing
-                if (line.Contains("PackageReference") && line.Contains($"\"{packageId}\""))
-                {
-                    var path = Path.GetRelativePath(fileInfoToModify.DirectoryName, fileInfoToReference.DirectoryName);
-
-                    path = Path.Combine(path, Path.GetFileName(fileInfoToReference.FullName));
-
-                    string newLine = $"    <ProjectReference Include=\"{path}";
-
-                    newLine = newLine.Replace("/", "\\") + "\" />";
-                    newLines.Add(newLine);
-                }
-                else
-                {
-                    newLines.Add(line);
-                }
-            }
-
-            File.WriteAllLines(fileInfoToModify.FullName, newLines.ToArray());
-        }
+        
 
         public Tuple<string, string> GetNugetInfoFromFileInfo(FileInfo file)
         {
@@ -262,7 +267,7 @@ namespace ReferenceSwitcher
                             break;
                         }
 
-                        if (line.Contains("PackageId") && line.Contains(packageId))
+                        if (line.Contains("PackageId") && line.Contains($">{packageId}<"))
                         {
                             return f;
                         }

@@ -6,13 +6,15 @@ namespace ReferenceSwitcher
 {
     public class RepoLoader
     {
-        public Repo LoadRepo(string name, string path)
+        string pathHack = "../../../../../";
+
+        public Repo LoadRepo(string name, string path, Projects projectType = Projects.All)
         {
             var repo = new Repo()
             {
                 Name = name,
                 Path = path,
-                ProjectFiles = GetCsProjFiles(path),
+                ProjectFiles = GetCsProjFiles(Path.Combine(pathHack, path), projectType),
             };
             return repo;
         }

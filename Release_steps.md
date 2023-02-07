@@ -1,6 +1,8 @@
 1. Release Meadow Units (trigger on main using a new release in GitHub)
+	- nugetize
  	- merge to main
 	- create a new release on GitHub and publish (kicks off workflow to publish nuget)
+	- denugetize
 
 2. Release Meadow Logging (if needed) 
 	- nugetize
