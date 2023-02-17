@@ -85,6 +85,11 @@ namespace Mirid.Models
             documentation.UpdateDocHeader(packageName, githubCodeUrl, githubDatasheetUrl);
         }
 
+        public void CreateDocsOverride()
+        {
+            documentation.CreateOverride();
+        }
+
         public void UpdateSnipSnop(string githubUrl)
         {
             //check if we have a valid SnipSnop

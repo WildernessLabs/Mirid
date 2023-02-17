@@ -190,8 +190,8 @@ namespace Mirid
 
                     if (driver.HasDocOverride == false)
                     {
-                        Console.WriteLine($"No docs override for {driver.Name}");
-                        continue;
+                        Console.WriteLine($"No docs override for {driver.Name} .... creating file ....");
+                        driver.CreateDocsOverride();
                     }
 
                     var relativePath = Path.GetRelativePath(driverSet.DriverSetSourcePath, Path.GetDirectoryName(driver.FilePath));
@@ -204,7 +204,6 @@ namespace Mirid
                     {
                         relativePath = Path.GetDirectoryName(relativePath);
                     }
-
 
                     var uri = new Uri(driverSet.GitHubUrl);
                     var githubCodeUri = new Uri(uri, relativePath);

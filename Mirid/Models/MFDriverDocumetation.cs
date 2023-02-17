@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Mirid.Models
@@ -63,6 +65,21 @@ namespace Mirid.Models
             }
         }
 
+        public void CreateOverride()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine( "---");
+            sb.AppendLine($"uid: {driver.Namespace}.{driver.Name}");
+            sb.AppendLine("remarks: *content");
+            sb.AppendLine( "---");
+            sb.AppendLine("");
+            sb.AppendLine("");
+
+            File.WriteAllText(FullPath, sb.ToString());
+
+            ReadDocsFile();
+        }
+
         public void UpdateSnipSnop(string snippet, string githubUrl)
         {
             int snipIndex;
@@ -121,7 +138,7 @@ namespace Mirid.Models
             var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
             bool isTableStarted = false;
-            int tableLineStart = 0;
+            int tableLineStart = 5;
             int tableLineEnd = 0;
 
             for(int i = 0; i < lines.Count; i++)
