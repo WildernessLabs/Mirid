@@ -16,7 +16,7 @@ namespace ReferenceSwitcher
 
             //switcher.SwitchMeadowContracts(publish: true);
             //switcher.SwitchMeadowModbus(publish: true);
-            switcher.SwitchMeadowCore(publish: false);
+            //switcher.SwitchMeadowCore(publish: false);
             //switcher.SwitchMeadowFoundationCore(publish: true);
             //switcher.SwitchMeadowFoundation(publish: false);
             //switcher.SwitchMeadowFoundationGrove(publish: true);
@@ -25,7 +25,9 @@ namespace ReferenceSwitcher
             //switcher.SwitchMeadowProjectLab(publish: false);
 
 
+
             //switcher.SwitchMeadowCoreSamples(publish: true);
+            switcher.SwitchMeadowProjectSamples(publish: false);
         }
     }
 }
