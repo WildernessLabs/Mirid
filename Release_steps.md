@@ -1,14 +1,10 @@
 1. Release Meadow Units (trigger on main using a new release in GitHub)
-	- nugetize
  	- merge to main
 	- create a new release on GitHub and publish (kicks off workflow to publish nuget)
-	- denugetize
 
 2. Release Meadow Logging (if needed) 
-	- nugetize
 	- merge to main
 	- create a new release on GitHub and publish (kicks off workflow to publish nuget)
-	- switch to local refs
 
 MQTT (if needed) ... or delete
 
@@ -19,6 +15,8 @@ MQTT (if needed) ... or delete
 	- merge to main
 	- create a new release on GitHub and publish (kicks off workflow to publish nuget)
 	- change develop back to local refs
+
+Release ModBus!!!
 
 4. Release Meadow.Core
 	- wait for Contracts nuget to publish
@@ -34,6 +32,10 @@ MQTT (if needed) ... or delete
 	- run Meadow F7 Nuget package creation action from GitHub on main
 	- change develop back to local refs (Core / F7)
 
+5b. Release Meadow.Windows
+5c. Release Meadow.Simulation
+5d. Release Meadow.Linux
+
 6. Release Meadow.Foundation.Core
 	- wait for Meadow.Contracts to publish
 	- nugetize Meadow.Foundation.Core
@@ -41,24 +43,21 @@ MQTT (if needed) ... or delete
 	- create a new release on GitHub and publish
 
 7. Release Meadow.Foundation peripherals / libraries
+	- update build scripts level 1 & 2 to include any new or change packages (see Mirid tooling)
+	- update build scripts level 1 & 2 to publish using latest release version (e.g. 0.94.0)
 	- nugetize Meadow.Foundation peripheral driver and libs 
 	- and nugetize Meadow.Foundation samples (f7 only ... leave local refs to drivers)
-	- update build scripts level 1 & 2 to include any new or change pacakges (see Mirid tooling)
-	- update build scripts level 1 & 2 to publish using latest release version (e.g. 0.94.0)
 	- wait for M.F. Core to publish
 	- run level 1 action on main
 	- wait for level 1 nuget packages to publish
 	- run level 2 action on main
 	- change develop to local refs
 
-
 8. Release Meadow.Foundation.Grove
 - wait for Meadow.Foundation packages to publish
 
-
 9. Release Meadow.Foundation.mikroBus
 - wait for Meadow.Foundation packages to publish
-
 
 10. Release Meadow.Foundation.FeatherWings
 - wait for Meadow.Foundation packages to publish

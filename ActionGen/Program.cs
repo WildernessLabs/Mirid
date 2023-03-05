@@ -1,9 +1,4 @@
-﻿using System.IO;
-using System.Net.Http.Headers;
-using System.Runtime.CompilerServices;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace ActionGen
+﻿namespace ActionGen
 {
     class Program
     {
@@ -27,7 +22,7 @@ namespace ActionGen
             var level1 = new Dictionary<string, FileInfo>();
             var level2 = new Dictionary<string, FileInfo>();
 
-            for(int i = 0; i < metadata.Length; i++) 
+            for (int i = 0; i < metadata.Length; i++)
             {
                 if (metadata[i].refCount == 0)
                 {
@@ -57,9 +52,9 @@ namespace ActionGen
         {
             var drivers = new List<FileInfo>();
 
-            foreach( var project in projectFiles)
+            foreach (var project in projectFiles)
             {
-                if(project.Directory.Name == "Driver")
+                if (project.Directory.Name == "Driver")
                 {
                     drivers.Add(project);
                 }
@@ -88,10 +83,10 @@ namespace ActionGen
             int count = 0;
             string packageId = string.Empty;
 
-            foreach(var line in lines) 
+            foreach (var line in lines)
             {
-                //does it reference another peripherl or a library
-                if (line.Contains("ProjectReference") && 
+                //does it reference another peripheral or a library
+                if (line.Contains("ProjectReference") &&
                     line.Contains("Meadow.Foundation.Core") == false)
                 {
                     count++;
@@ -110,7 +105,7 @@ namespace ActionGen
         {
             var data = new (int refCount, string packageId)[projectFiles.Length];
 
-            for(int i = 0; i < data.Length; i++) 
+            for (int i = 0; i < data.Length; i++)
             {
                 data[i] = GetMetaData(projectFiles[i]);
             }

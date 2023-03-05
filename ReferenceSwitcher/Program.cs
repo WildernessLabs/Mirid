@@ -14,20 +14,20 @@ namespace ReferenceSwitcher
 
             //toggle methods below for various repos
 
-            //switcher.SwitchMeadowContracts(publish: true);
-            //switcher.SwitchMeadowModbus(publish: true);
+            //switcher.SwitchMeadowContracts(publish: false);
+            //switcher.SwitchMeadowModbus(publish: false);
             //switcher.SwitchMeadowCore(publish: false);
-            //switcher.SwitchMeadowFoundationCore(publish: true);
+            //switcher.SwitchMeadowFoundationCore(publish: false);
             //switcher.SwitchMeadowFoundation(publish: false);
             //switcher.SwitchMeadowFoundationGrove(publish: true);
             //switcher.SwitchMeadowFoundationFeatherwings(publish: true);
             //switcher.SwitchMeadowFoundationMikroBus(publish: true);
-            //switcher.SwitchMeadowProjectLab(publish: false);
+            switcher.SwitchMeadowProjectLab(publish: false);
 
 
 
             //switcher.SwitchMeadowCoreSamples(publish: true);
-            switcher.SwitchMeadowProjectSamples(publish: false);
+            //switcher.SwitchMeadowProjectSamples(publish: false);
         }
     }
 }

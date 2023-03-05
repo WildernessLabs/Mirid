@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace ReferenceSwitcher
@@ -81,7 +80,7 @@ namespace ReferenceSwitcher
 
         public void SwitchMeadowContracts(bool publish)
         {
-            SwitchRepo(Repos[MeadowRepo.Modbus].ProjectFiles,
+            SwitchRepo(Repos[MeadowRepo.Contracts].ProjectFiles,
                 new IEnumerable<FileInfo>[] { Repos[MeadowRepo.Logging].ProjectFiles, Repos[MeadowRepo.Units].ProjectFiles },
                 publish);
         }
@@ -116,7 +115,7 @@ namespace ReferenceSwitcher
         public void SwitchMeadowFoundationFeatherwings(bool publish)
         {
             SwitchRepo(Repos[MeadowRepo.FoundationFeatherwings].ProjectFiles,
-                new IEnumerable<FileInfo>[] { Repos[MeadowRepo.Foundation].ProjectFiles, 
+                new IEnumerable<FileInfo>[] { Repos[MeadowRepo.Foundation].ProjectFiles,
                     Repos[MeadowRepo.Core].ProjectFiles },
                 publish);
         }
