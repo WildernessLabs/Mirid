@@ -63,3 +63,18 @@ Release ModBus!!!
 - wait for Meadow.Foundation packages to publish
 
 11. Release ProjectLab
+
+12. Update Samples (nugetize and push to main)
+- Update Meadow.Core.Samples 
+- Update Meadow.Project.Samples
+- Update ProjectLab.Samples
+
+13. Release new CLI
+
+14. Release new SDK
+
+15. Release VS on Windows extensions
+
+16. Release VS for Mac extensions
+
+17. Release VSCode extension
