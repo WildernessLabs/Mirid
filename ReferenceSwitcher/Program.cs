@@ -22,12 +22,13 @@ namespace ReferenceSwitcher
             //switcher.SwitchMeadowFoundationGrove(publish: true);
             //switcher.SwitchMeadowFoundationFeatherwings(publish: true);
             //switcher.SwitchMeadowFoundationMikroBus(publish: true);
-            switcher.SwitchMeadowProjectLab(publish: false);
+            //switcher.SwitchMeadowProjectLab(publish: false);
 
 
 
             //switcher.SwitchMeadowCoreSamples(publish: true);
             //switcher.SwitchMeadowProjectSamples(publish: false);
+            switcher.SwitchGPS_Tracker(publish: true);
         }
     }
 }
