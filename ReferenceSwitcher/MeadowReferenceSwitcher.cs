@@ -22,6 +22,7 @@ namespace ReferenceSwitcher
         ProjectLab,
         CoreSamples,
         ProjectSamples,
+        ProjectLabSamples,
 
         GPS_Tracker,
 
@@ -53,6 +54,7 @@ namespace ReferenceSwitcher
                 { MeadowRepo.ProjectLab, repoLoader.LoadRepo("Meadow.ProjectLab", "Meadow.ProjectLab/Source/") },
                 { MeadowRepo.CoreSamples, repoLoader.LoadRepo("Meadow.Core.Samples", "Meadow.Core.Samples/Source/", RefSwitcher.Projects.All) },
                 { MeadowRepo.ProjectSamples, repoLoader.LoadRepo("Meadow.Project.Samples", "Meadow.Project.Samples/Source/", RefSwitcher.Projects.All) },
+                { MeadowRepo.ProjectLabSamples, repoLoader.LoadRepo("Meadow.ProjectLab.Samples", "Meadow.ProjectLab.Samples/Source/", RefSwitcher.Projects.All) },
                 { MeadowRepo.GPS_Tracker, repoLoader.LoadRepo("GNSS_Tracker", "GPS_Tracker/Source/", RefSwitcher.Projects.All) }
             };
         }
@@ -76,49 +78,59 @@ namespace ReferenceSwitcher
         public void SwitchMeadowModbus(bool publish)
         {
             SwitchRepo(Repos[MeadowRepo.Modbus].ProjectFiles,
-                new IEnumerable<FileInfo>[] { Repos[MeadowRepo.Logging].ProjectFiles,
-                                              Repos[MeadowRepo.Contracts].ProjectFiles },
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Logging].ProjectFiles,
+                    Repos[MeadowRepo.Contracts].ProjectFiles },
                 publish);
         }
 
         public void SwitchMeadowContracts(bool publish)
         {
             SwitchRepo(Repos[MeadowRepo.Contracts].ProjectFiles,
-                new IEnumerable<FileInfo>[] { Repos[MeadowRepo.Logging].ProjectFiles, Repos[MeadowRepo.Units].ProjectFiles },
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Logging].ProjectFiles,
+                    Repos[MeadowRepo.Units].ProjectFiles },
                 publish);
         }
 
         public void SwitchMeadowCore(bool publish)
         {
             SwitchRepo(Repos[MeadowRepo.Core].ProjectFiles,
-                new IEnumerable<FileInfo>[] { Repos[MeadowRepo.MQTTnet].ProjectFiles, Repos[MeadowRepo.Contracts].ProjectFiles, Repos[MeadowRepo.Core].ProjectFiles },
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.MQTTnet].ProjectFiles,
+                    Repos[MeadowRepo.Contracts].ProjectFiles,
+                    Repos[MeadowRepo.Core].ProjectFiles },
                 publish);
         }
 
         public void SwitchMeadowFoundationCore(bool publish)
         {
             SwitchRepo(Repos[MeadowRepo.FoundationCore].ProjectFiles,
-                new IEnumerable<FileInfo>[] { Repos[MeadowRepo.Core].ProjectFiles },
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Core].ProjectFiles },
                 publish);
         }
 
         public void SwitchMeadowFoundation(bool publish)
         {
             SwitchRepo(Repos[MeadowRepo.Foundation].ProjectFiles,
-                new IEnumerable<FileInfo>[] { Repos[MeadowRepo.Foundation].ProjectFiles,
-                                              Repos[MeadowRepo.FoundationCore].ProjectFiles,
-                                              Repos[MeadowRepo.Modbus].ProjectFiles },
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Foundation].ProjectFiles,
+                    Repos[MeadowRepo.FoundationCore].ProjectFiles,
+                    Repos[MeadowRepo.Modbus].ProjectFiles },
                 publish);
 
             SwitchRepo(Repos[MeadowRepo.FoundationSamples].ProjectFiles,
-                new IEnumerable<FileInfo>[] { Repos[MeadowRepo.Core].ProjectFiles },
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Core].ProjectFiles },
                 publish);
         }
 
         public void SwitchMeadowFoundationFeatherwings(bool publish)
         {
             SwitchRepo(Repos[MeadowRepo.FoundationFeatherwings].ProjectFiles,
-                new IEnumerable<FileInfo>[] { Repos[MeadowRepo.Foundation].ProjectFiles,
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Foundation].ProjectFiles,
                     Repos[MeadowRepo.Core].ProjectFiles },
                 publish);
         }
@@ -126,7 +138,8 @@ namespace ReferenceSwitcher
         public void SwitchMeadowFoundationMikroBus(bool publish)
         {
             SwitchRepo(Repos[MeadowRepo.FoundationMikroBus].ProjectFiles,
-                new IEnumerable<FileInfo>[] { Repos[MeadowRepo.Foundation].ProjectFiles,
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Foundation].ProjectFiles,
                     Repos[MeadowRepo.Core].ProjectFiles },
                 publish);
         }
@@ -134,7 +147,8 @@ namespace ReferenceSwitcher
         public void SwitchMeadowFoundationGrove(bool publish)
         {
             SwitchRepo(Repos[MeadowRepo.FoundationGrove].ProjectFiles,
-                new IEnumerable<FileInfo>[] { Repos[MeadowRepo.Foundation].ProjectFiles,
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Foundation].ProjectFiles,
                     Repos[MeadowRepo.Core].ProjectFiles },
                 publish);
         }
@@ -142,27 +156,30 @@ namespace ReferenceSwitcher
         public void SwitchMeadowProjectLab(bool publish)
         {
             SwitchRepo(Repos[MeadowRepo.ProjectLab].ProjectFiles,
-                new IEnumerable<FileInfo>[] { Repos[MeadowRepo.Foundation].ProjectFiles,
-                                              Repos[MeadowRepo.Core].ProjectFiles,
-                                              Repos[MeadowRepo.Modbus].ProjectFiles },
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Foundation].ProjectFiles,
+                    Repos[MeadowRepo.Core].ProjectFiles,
+                    Repos[MeadowRepo.Modbus].ProjectFiles },
                 publish);
         }
 
         public void SwitchMeadowCoreSamples(bool publish)
         {
             SwitchRepo(Repos[MeadowRepo.CoreSamples].ProjectFiles,
-                new IEnumerable<FileInfo>[] { Repos[MeadowRepo.Foundation].ProjectFiles,
-                                              Repos[MeadowRepo.Core].ProjectFiles,
-                                              Repos[MeadowRepo.Modbus].ProjectFiles },
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Foundation].ProjectFiles,
+                    Repos[MeadowRepo.Core].ProjectFiles,
+                    Repos[MeadowRepo.Modbus].ProjectFiles },
                 publish);
         }
 
         public void SwitchMeadowProjectSamples(bool publish)
         {
             SwitchRepo(Repos[MeadowRepo.ProjectSamples].ProjectFiles,
-                new IEnumerable<FileInfo>[] { Repos[MeadowRepo.Foundation].ProjectFiles,
-                                              Repos[MeadowRepo.Core].ProjectFiles,
-                                              Repos[MeadowRepo.Modbus].ProjectFiles },
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Foundation].ProjectFiles,
+                    Repos[MeadowRepo.Core].ProjectFiles,
+                    Repos[MeadowRepo.Modbus].ProjectFiles },
                 publish);
         }
 
@@ -175,5 +192,15 @@ namespace ReferenceSwitcher
                 publish);
         }
 
+        public void SwitchMeadowProjectLabSamples(bool publish)
+        {
+            SwitchRepo(Repos[MeadowRepo.ProjectLabSamples].ProjectFiles,
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.ProjectLab].ProjectFiles,
+                    Repos[MeadowRepo.Foundation].ProjectFiles,
+                    Repos[MeadowRepo.FoundationGrove].ProjectFiles,
+                    Repos[MeadowRepo.FoundationMikroBus].ProjectFiles },
+                publish);
+        }
     }
 }
