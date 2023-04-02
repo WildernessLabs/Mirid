@@ -30,7 +30,8 @@ namespace ReferenceSwitcher
             //switcher.SwitchMeadowProjectSamples(publish: false);
             //switcher.SwitchGPS_Tracker(publish: true);
             //switcher.SwitchMeadowProjectLabSamples(publish: false);
-            switcher.SwitchClima(publish: false);
+            //switcher.SwitchClima(publish: false);
+            switcher.SwitchJuego(publish: true);
         }
     }
 }

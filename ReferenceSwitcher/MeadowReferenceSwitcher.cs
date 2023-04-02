@@ -26,6 +26,7 @@ namespace ReferenceSwitcher
 
         GPS_Tracker,
         Clima,
+        Juego,
 
         count
     }
@@ -57,7 +58,8 @@ namespace ReferenceSwitcher
                 { MeadowRepo.ProjectSamples, repoLoader.LoadRepo("Meadow.Project.Samples", "Meadow.Project.Samples/Source/", RefSwitcher.Projects.All) },
                 { MeadowRepo.ProjectLabSamples, repoLoader.LoadRepo("Meadow.ProjectLab.Samples", "Meadow.ProjectLab.Samples/Source/", RefSwitcher.Projects.All) },
                 { MeadowRepo.GPS_Tracker, repoLoader.LoadRepo("GNSS_Tracker", "GNSS_Sensor_Tracker/Source/", RefSwitcher.Projects.All) },
-                { MeadowRepo.Clima, repoLoader.LoadRepo("Clima", "Clima/Source/", RefSwitcher.Projects.All) }
+                { MeadowRepo.Clima, repoLoader.LoadRepo("Clima", "Clima/Source/", RefSwitcher.Projects.All) },
+                { MeadowRepo.Juego, repoLoader.LoadRepo("Juego", "Juego/Source/", RefSwitcher.Projects.All) }
             };
         }
 
@@ -197,6 +199,15 @@ namespace ReferenceSwitcher
         public void SwitchClima(bool publish)
         {
             SwitchRepo(Repos[MeadowRepo.Clima].ProjectFiles,
+                new IEnumerable<FileInfo>[] { Repos[MeadowRepo.Foundation].ProjectFiles,
+                                              Repos[MeadowRepo.Core].ProjectFiles,
+                                              Repos[MeadowRepo.Modbus].ProjectFiles },
+                publish);
+        }
+
+        public void SwitchJuego(bool publish)
+        {
+            SwitchRepo(Repos[MeadowRepo.Juego].ProjectFiles,
                 new IEnumerable<FileInfo>[] { Repos[MeadowRepo.Foundation].ProjectFiles,
                                               Repos[MeadowRepo.Core].ProjectFiles,
                                               Repos[MeadowRepo.Modbus].ProjectFiles },
