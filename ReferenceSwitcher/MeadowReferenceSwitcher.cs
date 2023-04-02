@@ -56,8 +56,8 @@ namespace ReferenceSwitcher
                 { MeadowRepo.CoreSamples, repoLoader.LoadRepo("Meadow.Core.Samples", "Meadow.Core.Samples/Source/", RefSwitcher.Projects.All) },
                 { MeadowRepo.ProjectSamples, repoLoader.LoadRepo("Meadow.Project.Samples", "Meadow.Project.Samples/Source/", RefSwitcher.Projects.All) },
                 { MeadowRepo.ProjectLabSamples, repoLoader.LoadRepo("Meadow.ProjectLab.Samples", "Meadow.ProjectLab.Samples/Source/", RefSwitcher.Projects.All) },
-                { MeadowRepo.GPS_Tracker, repoLoader.LoadRepo("GNSS_Tracker", "GPS_Tracker/Source/", RefSwitcher.Projects.All) },
-                { MeadowRepo.Clima, repoLoader.LoadRepo("Clima", "ClimaDoingNz/Source/", RefSwitcher.Projects.All) }
+                { MeadowRepo.GPS_Tracker, repoLoader.LoadRepo("GNSS_Tracker", "GNSS_Sensor_Tracker/Source/", RefSwitcher.Projects.All) },
+                { MeadowRepo.Clima, repoLoader.LoadRepo("Clima", "Clima/Source/", RefSwitcher.Projects.All) }
             };
         }
 
@@ -109,7 +109,7 @@ namespace ReferenceSwitcher
         {
             SwitchRepo(Repos[MeadowRepo.FoundationCore].ProjectFiles,
                 new IEnumerable<FileInfo>[] {
-                    Repos[MeadowRepo.Core].ProjectFiles },
+                    Repos[MeadowRepo.Contracts].ProjectFiles },
                 publish);
         }
 
