@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Mirid.Models;
+using Mirid.Output;
+using Mirid.Outputs;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Mirid.Models;
-using Mirid.Output;
-using Mirid.Outputs;
 
 namespace Mirid
 {
@@ -53,9 +53,9 @@ namespace Mirid
 
             LoadDriverSets();
 
-            UpdateDocs(); 
+            //UpdateDocs(); 
 
-            WritePeripheralTables(driverSets.Values.ToList());
+            // WritePeripheralTables(driverSets.Values.ToList());
             //RunDriverReport();
         }
 
@@ -70,7 +70,7 @@ namespace Mirid
         }
 
         static void LoadDriverSets()
-        { 
+        {
             Console.WriteLine($"Load {CORE_PERIPHERALS} driver set");
             var coreDriverSet = new MFCoreDriverSet(
                 name: CORE_PERIPHERALS,
@@ -79,7 +79,7 @@ namespace Mirid
                 docsOverridePath: MFDocsOverridePath,
                 githubUrl: MFCoreGitHubUrl);
             Console.WriteLine($"Processed {coreDriverSet.DriverPackages.Count} packages with {GetDriverCount(coreDriverSet)} drivers");
-            
+
 
             Console.WriteLine($"Load {LIBRARIES_AND_FRAMEWORKS} driver set");
             var frameworksDriverSet = new MFDriverSet(LIBRARIES_AND_FRAMEWORKS,
@@ -91,10 +91,10 @@ namespace Mirid
 
 
             Console.WriteLine($"Load {EXTERNAL_PERIPHERALS} driver set");
-            var peripheralsDriverSet = new MFDriverSet(EXTERNAL_PERIPHERALS, 
-                MFSourcePath, 
-                MFPeripheralsPath, 
-                MFDocsOverridePath, 
+            var peripheralsDriverSet = new MFDriverSet(EXTERNAL_PERIPHERALS,
+                MFSourcePath,
+                MFPeripheralsPath,
+                MFDocsOverridePath,
                 MFGitHubUrl);
             Console.WriteLine($"Processed {peripheralsDriverSet.DriverPackages.Count} packages with {GetDriverCount(peripheralsDriverSet)} drivers");
 
@@ -123,7 +123,7 @@ namespace Mirid
             driverSets.Add(MIKROBUS, mikroBusDriverSet);
 
             int total = 0;
-            foreach(var d in driverSets.Values)
+            foreach (var d in driverSets.Values)
             {
                 total += GetDriverCount(d);
             }
@@ -135,7 +135,7 @@ namespace Mirid
         {
             int count = 0;
 
-            foreach(var p in driverSet.DriverPackages)
+            foreach (var p in driverSet.DriverPackages)
             {
                 count += p.NumberOfDrivers;
             }
@@ -146,13 +146,13 @@ namespace Mirid
         {
             Console.WriteLine("Write Peripheral Tables");
 
-          //  PeripheralDocsOutput.WritePeripheralTablesSimple(docSet.DriverPackages);
+            //  PeripheralDocsOutput.WritePeripheralTablesSimple(docSet.DriverPackages);
             PeripheralDocsOutput.WritePeripheralTables(driverSets);
         }
 
         //ToDo - rework in the context of doc sets
         static void RunDriverReport(MFDriverSet docSet)
-        { 
+        {
             Console.Clear();
             Console.WriteLine("Driver Report");
 
@@ -182,7 +182,7 @@ namespace Mirid
         {
             int count = 0;
 
-            foreach(var package in driverSet.DriverPackages)
+            foreach (var package in driverSet.DriverPackages)
             {
                 foreach (var driver in package.Drivers)
                 {
@@ -209,7 +209,7 @@ namespace Mirid
                     var githubCodeUri = new Uri(uri, relativePath);
 
                     string githubDatasheetUrl = String.Empty;
-                    if(package.HasDataSheet && 
+                    if (package.HasDataSheet &&
                        !string.IsNullOrWhiteSpace(package.Assets.DatasheetPath))
                     {
                         relativePath = Path.GetRelativePath(driverSet.DriverSetSourcePath, package.Assets.DatasheetPath);

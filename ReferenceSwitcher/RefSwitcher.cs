@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System;
 
 namespace ReferenceSwitcher
 {
     public partial class RefSwitcher
     {
-        public void SwitchToPublishingMode(IEnumerable<FileInfo> projectsToUpdate, IEnumerable<FileInfo> projectsToReference)
+        public static void SwitchToPublishingMode(IEnumerable<FileInfo> projectsToUpdate, IEnumerable<FileInfo> projectsToReference)
         {
             Console.WriteLine("Developer mode");
 
@@ -33,7 +33,7 @@ namespace ReferenceSwitcher
             }
         }
 
-        public void SwitchToDeveloperMode(IEnumerable<FileInfo> projectsToUpdate, IEnumerable<FileInfo> projectsToReference)
+        public static void SwitchToDeveloperMode(IEnumerable<FileInfo> projectsToUpdate, IEnumerable<FileInfo> projectsToReference)
         {
             foreach (var f in projectsToUpdate)
             {
@@ -55,8 +55,14 @@ namespace ReferenceSwitcher
             }
         }
 
-        public void ReplaceNugetRefWithLocalRef(FileInfo fileInfoToModify, string packageId, FileInfo fileInfoToReference)
+        public static void ReplaceNugetRefWithLocalRef(FileInfo fileInfoToModify, string packageId, FileInfo fileInfoToReference)
         {
+            if (fileInfoToModify == null)
+            {
+                Console.WriteLine($"{fileInfoToModify} is null");
+                return;
+            }
+
             var lines = File.ReadAllLines(fileInfoToModify.FullName);
 
             var newLines = new List<string>();
@@ -84,22 +90,19 @@ namespace ReferenceSwitcher
             File.WriteAllLines(fileInfoToModify.FullName, newLines.ToArray());
         }
 
-        public FileInfo GetFileInfoForProjectName(string projectName, IEnumerable<FileInfo> files)
+        public static FileInfo GetFileInfoForProjectName(string projectName, IEnumerable<FileInfo> files)
         {
             foreach (var f in files)
             {
-                var name = Path.GetFileName(f.FullName);
-
                 if (Path.GetFileName(f.FullName) == projectName)
                 {
                     return f;
                 }
             }
-
             return null;
         }
 
-        public void ReplaceLocalRefWithNugetRef(FileInfo fileInfoToModify, string fileName, FileInfo fileInfoToReference)
+        public static void ReplaceLocalRefWithNugetRef(FileInfo fileInfoToModify, string fileName, FileInfo fileInfoToReference)
         {
             var lines = File.ReadAllLines(fileInfoToModify.FullName);
 
@@ -136,7 +139,7 @@ namespace ReferenceSwitcher
             File.WriteAllLines(fileInfoToModify.FullName, newLines.ToArray());
         }
 
-        List<string> GetListOfProjectReferencesInProject(FileInfo fileInfo)
+        static List<string> GetListOfProjectReferencesInProject(FileInfo fileInfo)
         {
             var projects = new List<string>();
 
@@ -170,7 +173,7 @@ namespace ReferenceSwitcher
             return projects;
         }
 
-        List<string> GetListOfNugetReferencesInProject(FileInfo fileInfo)
+        static List<string> GetListOfNugetReferencesInProject(FileInfo fileInfo)
         {
             var nugets = new List<string>();
 
@@ -208,12 +211,7 @@ namespace ReferenceSwitcher
             return nugets;
         }
 
-        
-        
-
-        
-
-        public Tuple<string, string> GetNugetInfoFromFileInfo(FileInfo file)
+        public static Tuple<string, string> GetNugetInfoFromFileInfo(FileInfo file)
         {
             var lines = File.ReadAllLines(file.FullName);
 
@@ -230,7 +228,9 @@ namespace ReferenceSwitcher
                     var startIndex = line.IndexOf(">") + 1;
                     var endIndex = line.LastIndexOf("<");
 
-                    packageId = line.Substring(startIndex, endIndex - startIndex);
+                    if (endIndex < startIndex) continue;
+
+                    packageId = line[startIndex..endIndex];
                     isPublished = true;
                 }
 
@@ -239,7 +239,7 @@ namespace ReferenceSwitcher
                     var startIndex = line.IndexOf(">") + 1;
                     var endIndex = line.LastIndexOf("<");
 
-                    version = line.Substring(startIndex, endIndex - startIndex);
+                    version = line[startIndex..endIndex];
                 }
             }
 
@@ -250,7 +250,7 @@ namespace ReferenceSwitcher
             return null;
         }
 
-        FileInfo GetFileForPackageId(IEnumerable<FileInfo> fileInfos, string packageId)
+        static FileInfo GetFileForPackageId(IEnumerable<FileInfo> fileInfos, string packageId)
         {
             foreach (var f in fileInfos)
             {
