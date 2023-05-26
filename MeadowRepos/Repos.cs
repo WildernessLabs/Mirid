@@ -36,13 +36,13 @@
             string org = "WildernessLabs";
 
             AddRepo("Meadow.Units", org, "Source", new List<string>());
-            AddRepo("MQTTnet", org, "Source/MQTTnet", new List<string>());
-            AddRepo("Meadow.Logging", org, "Source", new List<string> { "Meadow.Units" });
+            AddRepo("MQTTnet", org, "Source\\MQTTnet", new List<string>());
+            AddRepo("Meadow.Logging", org, "Source\\Meadow.Logging", new List<string> { "Meadow.Units" });
 
-            AddRepo("Meadow.Contracts", org, "Source", new List<string> { "Meadow.Units", "Meadow.Logging" });
+            AddRepo("Meadow.Contracts", org, "Source\\Meadow.Contracts", new List<string> { "Meadow.Units", "Meadow.Logging" });
             AddRepo("Meadow.Modbus", org, "src", new List<string> { "Meadow.Logging", "Meadow.Contracts" });
 
-            AddRepo("Meadow.Core", org, "Source", new List<string> { "Meadow.Logging", "Meadow.Contracts", "Meadow.Core" });
+            AddRepo("Meadow.Core", org, "source", new List<string> { "Meadow.Logging", "Meadow.Contracts", "Meadow.Core" });
             AddRepo("Meadow.Foundation", org, "Source", new List<string> { "Meadow.Contracts", "Meadow.Core" });
 
             AddRepo("Meadow.Foundation.Featherwings", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation" });

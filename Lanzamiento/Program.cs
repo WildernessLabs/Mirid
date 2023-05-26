@@ -1,4 +1,5 @@
-﻿using MeadowRepos;
+﻿using ExternalRefReaper;
+using MeadowRepos;
 using ReferenceSwitcher;
 using System.Diagnostics;
 
@@ -8,6 +9,7 @@ namespace Lanzamiento
     {
         static string rootDirectory = @"f:\Release";
         static string nugetDirectory = @"f:\LocalNuget";
+        static string version = "0.98.1";
 
         static void Main(string[] args)
         {
@@ -32,7 +34,22 @@ namespace Lanzamiento
             foreach (var repo in Repos.Repositories)
             {
                 Nugetize(rootDirectory, repo.Value);
+                RemoveExternalReferences(rootDirectory, repo.Value);
             }
+        }
+
+        static void RemoveExternalReferences(string directory, GitRepo repo)
+        {
+            //find the sln
+            var slnFile = Directory.GetFiles(Path.Combine(directory, repo.Name, repo.SourceDirectory), "*.sln").FirstOrDefault();
+
+            if (string.IsNullOrEmpty(slnFile))
+            {
+                Console.WriteLine($"Could not find solution (sln) for {repo.Name} in {directory}");
+                return;
+            }
+
+            RefReaper.RemoveExternalRefs(slnFile);
         }
 
         static void Nugetize(string directory, GitRepo repo)
@@ -72,6 +89,7 @@ namespace Lanzamiento
             {
                 Console.WriteLine($"Getting the latest in {githubRepo}/{githubRepo}");
                 ExecuteCommand(fullPath, $"git clean -dfx");
+                ExecuteCommand(fullPath, $"git reset --hard");
                 ExecuteCommand(fullPath, $"git pull");
             }
             else

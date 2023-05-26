@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ExternalRefReaper\ExternalRefReaper.csproj" />
     <ProjectReference Include="..\MeadowRepos\MeadowRepos.csproj" />
     <ProjectReference Include="..\ReferenceSwitcher\ReferenceSwitcher.csproj" />
   </ItemGroup>

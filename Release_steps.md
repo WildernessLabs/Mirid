@@ -23,6 +23,7 @@ Nuget.org publishing flow
 ### Steps
 1. Clone repo (git command line)
 2. Switch to develop branch (git command line)
+2a. Validate if main if ahead of develop and throw (Octokit)
 3. Create a new versioned branch off of develop (git command line)
 4. Remove external references (Mirid - ToDo)
 5. Switch to nuget references (Mirid)
@@ -40,6 +41,8 @@ Nuget.org publishing flow
 1. What runs the app
 2. How do we set the version? (command line param?)
 3. How do we define the scope of publishing and the order - e.g. a manifest (markdown, or json, something .... )
+4. What does the manifest look like
+5. What options do we need to control the build process (skip folders, etc.)
 
 
 
