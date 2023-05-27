@@ -38,7 +38,7 @@ namespace Lanzamiento
                 RemoveExternalReferences(ROOT_DIRECTORY, repo.Value);
             }
 
-            string[] excludedProjects = { "Sample", "sample", "Test", "test", "Update", "Client", "client", "Demo", "Prototype", "ProKit", "HackKit", "Mobile", "mobile" };
+            string[] excludedProjects = { "Sample", "sample", "Test", "test", "Utilities", "Update", "Client", "client", "Demo", "Prototype", "ProKit", "HackKit", "Mobile", "mobile" };
 
             foreach (var repo in Repos.Repositories)
             {
