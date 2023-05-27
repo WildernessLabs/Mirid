@@ -7,9 +7,10 @@ namespace Lanzamiento
 {
     internal class Program
     {
-        static string ROOT_DIRECTORY = @"f:\Release";
-        static string NUGET_DIRECTORY = @"f:\LocalNuget";
-        static string VERSION = "0.98.1.1";
+        static string ROOT_DIRECTORY = @"C:\Release";
+        static string NUGET_DIRECTORY = @"C:\LocalNuget";
+        static string VERSION = "0.98.2-alpha";
+        static string NUGET_TOKEN = "";
 
         static void Main(string[] args)
         {
@@ -22,7 +23,7 @@ namespace Lanzamiento
             Repos.PopulateRepos();
 
             string branch = "develop";
-
+            /*
 
             foreach (var repo in Repos.Repositories)
             {
@@ -38,7 +39,7 @@ namespace Lanzamiento
                 RemoveExternalReferences(ROOT_DIRECTORY, repo.Value);
             }
 
-            string[] excludedProjects = { "Sample", "sample", "Test", "test", "Utilities", "Update", "Client", "client", "Demo", "Prototype", "ProKit", "HackKit", "Mobile", "mobile" };
+            string[] excludedProjects = { "Simulated", "Sample", "sample", "Test", "test", "Utilities", "Update", "Client", "client", "Demo", "Prototype", "ProKit", "HackKit", "Mobile", "mobile" };
 
             foreach (var repo in Repos.Repositories)
             {
@@ -51,9 +52,18 @@ namespace Lanzamiento
 
                     BuildProject(project);
                 }
+            }
+            */
+            PublishNugets(NUGET_DIRECTORY, VERSION);
+        }
 
+        static void PublishNugets(string directory, string version)
+        {
+            var files = Directory.GetFiles(directory, $"*{version}*");
 
-                //BuildProject(ROOT_DIRECTORY, repo.Value);
+            foreach(var file in files)
+            {
+                ExecuteCommand(directory, $"dotnet nuget push --api-key {NUGET_TOKEN} {file} -s https://api.nuget.org/v3/index.json");
             }
         }
 
@@ -67,21 +77,6 @@ namespace Lanzamiento
 
             ExecuteCommand(ROOT_DIRECTORY, $"dotnet build -c Release {project.FullName} /p:Version={VERSION}");
             ExecuteCommand(ROOT_DIRECTORY, $"dotnet pack -c Release {project.FullName} /p:Version={VERSION} --output {NUGET_DIRECTORY}");
-        }
-
-        static void BuildProject(string directory, GitRepo repo)
-        {
-            //find the sln
-            var path = Path.Combine(directory, repo.Name, repo.SourceDirectory);
-            var projectFile = Directory.GetFiles(path, "*.csproj").FirstOrDefault();
-
-            if (string.IsNullOrEmpty(projectFile))
-            {
-                UpdateConsoleMessage($"Could not find project for {repo.Name} in {directory}");
-                return;
-            }
-
-            ExecuteCommand(directory, $"dotnet build --configuration Release {projectFile} /p:Version=${VERSION}");
         }
 
         static void RemoveExternalReferences(string directory, GitRepo repo)
