@@ -7,35 +7,81 @@ namespace Lanzamiento
 {
     internal class Program
     {
-        static string rootDirectory = @"f:\Release";
-        static string nugetDirectory = @"f:\LocalNuget";
-        static string version = "0.98.1";
+        static string ROOT_DIRECTORY = @"f:\Release";
+        static string NUGET_DIRECTORY = @"f:\LocalNuget";
+        static string VERSION = "0.98.1.1";
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello Lanzamiento");
+            UpdateConsoleStatus("Hello Lanzamiento");
 
-            ValidateDirectory(rootDirectory);
-            ValidateDirectory(nugetDirectory);
+            ValidateDirectory(ROOT_DIRECTORY);
+            ValidateDirectory(NUGET_DIRECTORY);
 
-            Console.WriteLine("Loading repo data");
+            UpdateConsoleStatus("Loading repo data");
             Repos.PopulateRepos();
 
             string branch = "develop";
 
+
             foreach (var repo in Repos.Repositories)
             {
-                CloneRepo(rootDirectory, repo.Value.GitHubOrg, repo.Value.Name);
-                SetLocalRepoBranch(rootDirectory, repo.Value.Name, branch);
-                var path = Path.Combine(rootDirectory, repo.Key, repo.Value.SourceDirectory);
+                CloneRepo(ROOT_DIRECTORY, repo.Value.GitHubOrg, repo.Value.Name);
+                SetLocalRepoBranch(ROOT_DIRECTORY, repo.Value.Name, branch);
+                var path = Path.Combine(ROOT_DIRECTORY, repo.Key, repo.Value.SourceDirectory);
                 repo.Value.ProjectFiles = RepoLoader.GetCsProjFiles(path, ProjectType.All);
             }
 
             foreach (var repo in Repos.Repositories)
             {
-                Nugetize(rootDirectory, repo.Value);
-                RemoveExternalReferences(rootDirectory, repo.Value);
+                Nugetize(ROOT_DIRECTORY, repo.Value);
+                RemoveExternalReferences(ROOT_DIRECTORY, repo.Value);
             }
+
+            string[] excludedProjects = { "Sample", "sample", "Test", "test", "Update", "Client", "client", "Demo", "Prototype", "ProKit", "HackKit", "Mobile", "mobile" };
+
+            foreach (var repo in Repos.Repositories)
+            {
+                foreach (var project in repo.Value.ProjectFiles)
+                {
+                    if (excludedProjects.Any(project.DirectoryName.Contains))
+                    {
+                        continue;
+                    }
+
+                    BuildProject(project);
+                }
+
+
+                //BuildProject(ROOT_DIRECTORY, repo.Value);
+            }
+        }
+
+        static void BuildProject(FileInfo project)
+        {
+            if (project.Exists == false)
+            {
+                UpdateConsoleMessage($"Could not find project {project}");
+                return;
+            }
+
+            ExecuteCommand(ROOT_DIRECTORY, $"dotnet build -c Release {project.FullName} /p:Version={VERSION}");
+            ExecuteCommand(ROOT_DIRECTORY, $"dotnet pack -c Release {project.FullName} /p:Version={VERSION} --output {NUGET_DIRECTORY}");
+        }
+
+        static void BuildProject(string directory, GitRepo repo)
+        {
+            //find the sln
+            var path = Path.Combine(directory, repo.Name, repo.SourceDirectory);
+            var projectFile = Directory.GetFiles(path, "*.csproj").FirstOrDefault();
+
+            if (string.IsNullOrEmpty(projectFile))
+            {
+                UpdateConsoleMessage($"Could not find project for {repo.Name} in {directory}");
+                return;
+            }
+
+            ExecuteCommand(directory, $"dotnet build --configuration Release {projectFile} /p:Version=${VERSION}");
         }
 
         static void RemoveExternalReferences(string directory, GitRepo repo)
@@ -45,7 +91,7 @@ namespace Lanzamiento
 
             if (string.IsNullOrEmpty(slnFile))
             {
-                Console.WriteLine($"Could not find solution (sln) for {repo.Name} in {directory}");
+                UpdateConsoleMessage($"Could not find solution (sln) for {repo.Name} in {directory}");
                 return;
             }
 
@@ -77,7 +123,7 @@ namespace Lanzamiento
                 throw new Exception($"{Path.Combine(directory, githubRepo)} doesn't exist, cannot set branch: {branch}");
             }
 
-            Console.WriteLine($"Changing {githubRepo} branch to {branch}");
+            UpdateConsoleStatus($"Changing {githubRepo} branch to {branch}");
             ExecuteCommand(fullPath, $"git checkout {branch}");
         }
 
@@ -87,15 +133,15 @@ namespace Lanzamiento
 
             if (Directory.Exists(fullPath))
             {
-                Console.WriteLine($"Getting the latest in {githubRepo}/{githubRepo}");
+                UpdateConsoleStatus($"Getting the latest in {githubRepo}/{githubRepo}");
                 ExecuteCommand(fullPath, $"git clean -dfx");
                 ExecuteCommand(fullPath, $"git reset --hard");
                 ExecuteCommand(fullPath, $"git pull");
             }
             else
             {
-                Console.WriteLine($"Cloning {githubRepo}/{githubRepo}");
-                ExecuteCommand(rootDirectory, $"git clone https://www.github.com/{githubOrg}/{githubRepo}");
+                UpdateConsoleStatus($"Cloning {githubRepo}/{githubRepo}");
+                ExecuteCommand(ROOT_DIRECTORY, $"git clone https://www.github.com/{githubOrg}/{githubRepo}");
             }
         }
 
@@ -105,25 +151,49 @@ namespace Lanzamiento
             {
                 CreateNoWindow = false,
                 UseShellExecute = false,
+                // RedirectStandardOutput = true,
                 WorkingDirectory = directory
             };
 
             var process = Process.Start(processInfo);
+
+            process.OutputDataReceived += Process_OutputDataReceived;
+
+
             process?.WaitForExit();
+        }
+
+        private static void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            UpdateConsoleMessage(e.Data);
         }
 
         static void ValidateDirectory(string directory)
         {
             if (Directory.Exists(directory) == false)
             {
-                Console.WriteLine($"{directory} does not exist");
-                Console.WriteLine($"Creating {directory}");
+                UpdateConsoleStatus($"{directory} does not exist");
+                UpdateConsoleStatus($"Creating {directory}");
                 Directory.CreateDirectory(directory);
             }
             else
             {
-                Console.WriteLine($"{directory} found");
+                UpdateConsoleMessage($"{directory} found");
             }
+        }
+
+        static void UpdateConsoleStatus(string status)
+        {
+            //    Console.CursorTop = 1;
+            //    Console.CursorLeft = 0;
+            Console.WriteLine(status.PadRight(80));
+        }
+
+        static void UpdateConsoleMessage(string message)
+        {
+            //    Console.CursorTop = 3;
+            //    Console.CursorLeft = 0;
+            Console.WriteLine(message.PadRight(80));
         }
     }
 }
