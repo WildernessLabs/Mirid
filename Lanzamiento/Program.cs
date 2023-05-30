@@ -7,9 +7,9 @@ namespace Lanzamiento
 {
     internal class Program
     {
-        static string ROOT_DIRECTORY = @"C:\Release";
-        static string NUGET_DIRECTORY = @"C:\LocalNuget";
-        static string VERSION = "0.98.2-alpha";
+        static string ROOT_DIRECTORY = @"F:\Release";
+        static string NUGET_DIRECTORY = @"F:\LocalNuget";
+        static string VERSION = "1.0.0.1";
         static string NUGET_TOKEN = "";
 
         static void Main(string[] args)
@@ -22,24 +22,31 @@ namespace Lanzamiento
             UpdateConsoleStatus("Loading repo data");
             Repos.PopulateRepos();
 
-            string branch = "develop";
-            /*
+            string sourceBranch = "develop";
+            string targetBranch = $"v{VERSION}";
 
             foreach (var repo in Repos.Repositories)
             {
                 CloneRepo(ROOT_DIRECTORY, repo.Value.GitHubOrg, repo.Value.Name);
-                SetLocalRepoBranch(ROOT_DIRECTORY, repo.Value.Name, branch);
-                var path = Path.Combine(ROOT_DIRECTORY, repo.Key, repo.Value.SourceDirectory);
-                repo.Value.ProjectFiles = RepoLoader.GetCsProjFiles(path, ProjectType.All);
+                SetLocalRepoBranch(ROOT_DIRECTORY, repo.Value.Name, sourceBranch);
+                CreateNewBranch(ROOT_DIRECTORY, repo.Value.Name, targetBranch);
+                SetLocalRepoBranch(ROOT_DIRECTORY, repo.Value.Name, targetBranch);
             }
 
             foreach (var repo in Repos.Repositories)
             {
-                Nugetize(ROOT_DIRECTORY, repo.Value);
+                var path = Path.Combine(ROOT_DIRECTORY, repo.Key, repo.Value.SourceDirectory);
+                var repos = RepoLoader.GetCsProjFiles(path, ProjectType.All);
+                repo.Value.ProjectFiles = RefSwitcher.SortProjectsByLocalDependencies(repos);
+            }
+
+            foreach (var repo in Repos.Repositories)
+            {
+                Nugetize(repo.Value);
                 RemoveExternalReferences(ROOT_DIRECTORY, repo.Value);
             }
 
-            string[] excludedProjects = { "Simulated", "Sample", "sample", "Test", "test", "Utilities", "Update", "Client", "client", "Demo", "Prototype", "ProKit", "HackKit", "Mobile", "mobile" };
+            string[] excludedProjects = { "Simulated", "Sample", "sample", "Test", "test", "Utilities", "Update", "client", "Demo", "Prototype", "ProKit", "HackKit", "Mobile", "mobile" };
 
             foreach (var repo in Repos.Repositories)
             {
@@ -50,24 +57,44 @@ namespace Lanzamiento
                         continue;
                     }
 
-                    BuildProject(project);
+                    BuildProject(project, ROOT_DIRECTORY, NUGET_DIRECTORY, VERSION);
                 }
             }
-            */
+
             PublishNugets(NUGET_DIRECTORY, VERSION);
+
+            foreach (var repo in Repos.Repositories)
+            {
+                PushVersionBranch(ROOT_DIRECTORY, repo.Value.Name, VERSION);
+            }
+        }
+
+        static void PushVersionBranch(string directory, string githubRepo, string version)
+        {
+            var fullPath = Path.Combine(directory, githubRepo);
+
+            if (Directory.Exists(Path.Combine(directory, githubRepo)) == false)
+            {
+                throw new Exception($"{Path.Combine(directory, githubRepo)} doesn't exist, cannot push");
+            }
+
+            //UpdateConsoleStatus($"Creating new branch {CreateNewBranch} on  {githubRepo}");
+            ExecuteCommand(fullPath, $"git add -A");
+            ExecuteCommand(fullPath, $"git commit -m \"Release {version}\"");
+            ExecuteCommand(fullPath, $"git push --set-upstream origin v{version}");
         }
 
         static void PublishNugets(string directory, string version)
         {
             var files = Directory.GetFiles(directory, $"*{version}*");
 
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 ExecuteCommand(directory, $"dotnet nuget push --api-key {NUGET_TOKEN} {file} -s https://api.nuget.org/v3/index.json");
             }
         }
 
-        static void BuildProject(FileInfo project)
+        static void BuildProject(FileInfo project, string rootDirectory, string nugetDirectory, string version)
         {
             if (project.Exists == false)
             {
@@ -75,8 +102,8 @@ namespace Lanzamiento
                 return;
             }
 
-            ExecuteCommand(ROOT_DIRECTORY, $"dotnet build -c Release {project.FullName} /p:Version={VERSION}");
-            ExecuteCommand(ROOT_DIRECTORY, $"dotnet pack -c Release {project.FullName} /p:Version={VERSION} --output {NUGET_DIRECTORY}");
+            ExecuteCommand(rootDirectory, $"dotnet build -c Release {project.FullName} /p:Version={version}");
+            ExecuteCommand(rootDirectory, $"dotnet pack -c Release {project.FullName} /p:Version={version} --output {nugetDirectory}");
         }
 
         static void RemoveExternalReferences(string directory, GitRepo repo)
@@ -93,7 +120,7 @@ namespace Lanzamiento
             RefReaper.RemoveExternalRefs(slnFile);
         }
 
-        static void Nugetize(string directory, GitRepo repo)
+        static void Nugetize(GitRepo repo)
         {
             RefSwitcher.SwitchToPublishingMode(repo.ProjectFiles, GetDependencyProjects(repo.DependencyRepoNames));
         }
@@ -107,6 +134,19 @@ namespace Lanzamiento
                 projects.AddRange(Repos.Repositories[dependency].ProjectFiles);
             }
             return projects;
+        }
+
+        static void CreateNewBranch(string directory, string githubRepo, string branch)
+        {
+            var fullPath = Path.Combine(directory, githubRepo);
+
+            if (Directory.Exists(Path.Combine(directory, githubRepo)) == false)
+            {
+                throw new Exception($"{Path.Combine(directory, githubRepo)} doesn't exist, cannot set branch: {branch}");
+            }
+
+            UpdateConsoleStatus($"Creating new branch {CreateNewBranch} on  {githubRepo}");
+            ExecuteCommand(fullPath, $"git branch {branch}");
         }
 
         static void SetLocalRepoBranch(string directory, string githubRepo, string branch)
@@ -154,8 +194,9 @@ namespace Lanzamiento
 
             process.OutputDataReceived += Process_OutputDataReceived;
 
-
             process?.WaitForExit();
+
+            var exitCode = process.ExitCode;
         }
 
         private static void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
