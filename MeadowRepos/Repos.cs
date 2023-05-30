@@ -37,14 +37,14 @@
 
             AddRepo("Meadow.Units", org, "Source\\Meadow.Units", new List<string>());
             AddRepo("MQTTnet", org, "Source\\MQTTnet", new List<string>());
-            AddRepo("Meadow.Logging", org, "Source\\Meadow.Logging", new List<string> { "Meadow.Units" });
+            AddRepo("Meadow.Logging", org, "Source\\Meadow.Logging", new List<string>());
 
             AddRepo("Meadow.Contracts", org, "Source\\Meadow.Contracts", new List<string> { "Meadow.Units", "Meadow.Logging" });
-            AddRepo("Meadow.Modbus", org, "src", new List<string> { "Meadow.Logging", "Meadow.Contracts" });
+            AddRepo("Meadow.Modbus", org, "src", new List<string> { "Meadow.Contracts" });
             AddRepo("Maple", org, "Source", new List<string> { "Meadow.Logging" });
 
-            AddRepo("Meadow.Core", org, "source", new List<string> { "Meadow.Logging", "Meadow.Contracts", "Meadow.Core" });
-            AddRepo("Meadow.Foundation", org, "Source", new List<string> { "Meadow.Contracts", "Meadow.Core" });
+            AddRepo("Meadow.Core", org, "source", new List<string> { "Meadow.Core", "Meadow.Modbus", "MQTTnet" });
+            AddRepo("Meadow.Foundation", org, "Source", new List<string> { "Meadow.Contracts", "Meadow.Foundation", "Meadow.Modbus" });
 
             AddRepo("Meadow.Foundation.Featherwings", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation" });
             AddRepo("Meadow.Foundation.Grove", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation" });

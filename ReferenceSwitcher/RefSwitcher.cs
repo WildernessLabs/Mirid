@@ -6,6 +6,66 @@ namespace ReferenceSwitcher
 {
     public partial class RefSwitcher
     {
+        public static IEnumerable<FileInfo> SortProjectsByLocalDependencies(IEnumerable<FileInfo> projectsToUpdate)
+        {
+            var unsortedList = new List<FileInfo>();
+            var sortedList = new List<FileInfo>();
+
+            unsortedList.AddRange(projectsToUpdate);
+
+            while (sortedList.Count < unsortedList.Count)
+            {
+                foreach (var file in unsortedList)
+                {   //already added
+                    if (sortedList.Contains(file))
+                    {
+                        continue;
+                    }
+                    var referencedProjects = GetListOfProjectReferencesInProject(file);
+
+                    //nugetized ... add it
+                    if (referencedProjects.Count == 0)
+                    {
+                        sortedList.Add(file);
+                        continue;
+                    }
+
+                    //we have references  ... check each if they're referening projects in the sorted list
+                    bool referencesSortedProjects = true;
+                    foreach (var p in referencedProjects)
+                    {
+                        var refProjFileInfo = GetFileInfoForProjectName(p, projectsToUpdate);
+
+                        if (refProjFileInfo == null)
+                        {   //external ref, ignore
+                            continue;
+                        }
+
+                        if (sortedList.Contains(refProjFileInfo) == false)
+                        {
+                            referencesSortedProjects = false;
+                            break;
+                        }
+
+                        if (refProjFileInfo == null)
+                        {   //referenced project outside of foundation (probably core)
+                            continue;
+                        }
+                    }
+
+                    if (referencesSortedProjects == true)
+                    {
+                        sortedList.Add(file);
+                    }
+                    else
+                    {
+                        int g = 0;
+                    }
+                }
+            }
+            return sortedList;
+        }
+
         public static void SwitchToPublishingMode(IEnumerable<FileInfo> projectsToUpdate, IEnumerable<FileInfo> projectsToReference)
         {
             Console.WriteLine("Developer mode");
@@ -117,15 +177,15 @@ namespace ReferenceSwitcher
                 {
                     var nugetInfo = GetNugetInfoFromFileInfo(fileInfoToReference);
 
-                    if (nugetInfo == null)   //if it's null it's missing meta data
-                    {                       //which means it's not published
+                    if (nugetInfo == null)  // if it's null it's missing meta data
+                    {                       // which means it's not published
                         newLines.Add(line);
                     }
                     else
                     {
                         Console.WriteLine($"Nuget: {nugetInfo.Item1} Version: {nugetInfo.Item2}");
 
-                        string newLine = $"    <PackageReference Include=\"{nugetInfo.Item1}\" Version=\"0.*\" />";
+                        string newLine = $"    <PackageReference Include=\"{nugetInfo.Item1}\" Version=\"*\" />";
 
                         newLines.Add(newLine);
                     }
