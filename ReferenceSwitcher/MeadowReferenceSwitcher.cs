@@ -69,7 +69,7 @@ namespace ReferenceSwitcher
             {
                 if (publish)
                 {
-                    RefSwitcher.SwitchToPublishingMode(projectsToUpdate, collection);
+                    RefSwitcher.SwitchToPublishingMode(projectsToUpdate, collection, null);
                 }
                 else
                 {

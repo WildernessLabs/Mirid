@@ -7,10 +7,13 @@ namespace Lanzamiento
 {
     internal class Program
     {
-        static string ROOT_DIRECTORY = @"F:\Release";
+        static string ROOT_DIRECTORY = @"F:\Release121b";
         static string NUGET_DIRECTORY = @"F:\LocalNuget";
-        static string VERSION = "1.0.0.1";
-        static string NUGET_TOKEN = "";
+        static string VERSION = "1.2.1b";
+        static string NUGET_TOKEN = "oy2jojsomhlcy4s7axca43emjjr2uuvefhbpqjqsz6q3ji";
+
+        static bool isPreRelease = true;
+        static bool testBuild = true;
 
         static void Main(string[] args)
         {
@@ -29,8 +32,12 @@ namespace Lanzamiento
             {
                 CloneRepo(ROOT_DIRECTORY, repo.Value.GitHubOrg, repo.Value.Name);
                 SetLocalRepoBranch(ROOT_DIRECTORY, repo.Value.Name, sourceBranch);
-                CreateNewBranch(ROOT_DIRECTORY, repo.Value.Name, targetBranch);
-                SetLocalRepoBranch(ROOT_DIRECTORY, repo.Value.Name, targetBranch);
+
+                if (testBuild == false)
+                {
+                    CreateNewBranch(ROOT_DIRECTORY, repo.Value.Name, targetBranch);
+                    SetLocalRepoBranch(ROOT_DIRECTORY, repo.Value.Name, targetBranch);
+                }
             }
 
             foreach (var repo in Repos.Repositories)
@@ -42,7 +49,7 @@ namespace Lanzamiento
 
             foreach (var repo in Repos.Repositories)
             {
-                Nugetize(repo.Value);
+                Nugetize(repo.Value, isPreRelease ? VERSION : null);
                 RemoveExternalReferences(ROOT_DIRECTORY, repo.Value);
             }
 
@@ -60,6 +67,12 @@ namespace Lanzamiento
                     BuildProject(project, ROOT_DIRECTORY, NUGET_DIRECTORY, VERSION);
                 }
             }
+
+            if (testBuild == true)
+            {
+                return;
+            }
+
 
             PublishNugets(NUGET_DIRECTORY, VERSION);
 
@@ -120,9 +133,9 @@ namespace Lanzamiento
             RefReaper.RemoveExternalRefs(slnFile);
         }
 
-        static void Nugetize(GitRepo repo)
+        static void Nugetize(GitRepo repo, string? version)
         {
-            RefSwitcher.SwitchToPublishingMode(repo.ProjectFiles, GetDependencyProjects(repo.DependencyRepoNames));
+            RefSwitcher.SwitchToPublishingMode(repo.ProjectFiles, GetDependencyProjects(repo.DependencyRepoNames), version);
         }
 
         static IEnumerable<FileInfo> GetDependencyProjects(IEnumerable<string> dependencyNames)

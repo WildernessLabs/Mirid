@@ -36,7 +36,6 @@ namespace Mirid
         public static string MFMikroBusGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.MikroBus/tree/main/Source/";
 
 
-
         static readonly Dictionary<string, MFDriverSet> driverSets = new Dictionary<string, MFDriverSet>();
 
         static readonly string CORE_PERIPHERALS = "Core Peripherals";
@@ -53,9 +52,9 @@ namespace Mirid
 
             LoadDriverSets();
 
-            //UpdateDocs(); 
+            UpdateDocs();
 
-            // WritePeripheralTables(driverSets.Values.ToList());
+            WritePeripheralTables(driverSets.Values.ToList());
             //RunDriverReport();
         }
 

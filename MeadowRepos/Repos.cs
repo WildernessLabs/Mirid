@@ -37,7 +37,7 @@
 
             AddRepo("Meadow.Units", org, "Source\\Meadow.Units", new List<string>());
             AddRepo("MQTTnet", org, "Source\\MQTTnet", new List<string>());
-            AddRepo("Meadow.Logging", org, "Source\\Meadow.Logging", new List<string>());
+            AddRepo("Meadow.Logging", org, "Source", new List<string>());
 
             AddRepo("Meadow.Contracts", org, "Source\\Meadow.Contracts", new List<string> { "Meadow.Units", "Meadow.Logging" });
             AddRepo("Meadow.Modbus", org, "src", new List<string> { "Meadow.Contracts" });

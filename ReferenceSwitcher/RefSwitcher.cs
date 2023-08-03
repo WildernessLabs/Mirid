@@ -66,7 +66,7 @@ namespace ReferenceSwitcher
             return sortedList;
         }
 
-        public static void SwitchToPublishingMode(IEnumerable<FileInfo> projectsToUpdate, IEnumerable<FileInfo> projectsToReference)
+        public static void SwitchToPublishingMode(IEnumerable<FileInfo> projectsToUpdate, IEnumerable<FileInfo> projectsToReference, string? version)
         {
             Console.WriteLine("Developer mode");
 
@@ -88,7 +88,7 @@ namespace ReferenceSwitcher
                     }
 
                     //time to change the file
-                    ReplaceLocalRefWithNugetRef(f, p, refProjFileInfo);
+                    ReplaceLocalRefWithNugetRef(f, p, refProjFileInfo, version);
                 }
             }
         }
@@ -162,13 +162,15 @@ namespace ReferenceSwitcher
             return null;
         }
 
-        public static void ReplaceLocalRefWithNugetRef(FileInfo fileInfoToModify, string fileName, FileInfo fileInfoToReference)
+        public static void ReplaceLocalRefWithNugetRef(FileInfo fileInfoToModify, string fileName, FileInfo fileInfoToReference, string? version)
         {
             var lines = File.ReadAllLines(fileInfoToModify.FullName);
 
             var newLines = new List<string>();
 
             Console.WriteLine($"ReplaceLocalRef: {fileName}");
+
+            string newLine;
 
             foreach (var line in lines)
             {
@@ -185,7 +187,11 @@ namespace ReferenceSwitcher
                     {
                         Console.WriteLine($"Nuget: {nugetInfo.Item1} Version: {nugetInfo.Item2}");
 
-                        string newLine = $"    <PackageReference Include=\"{nugetInfo.Item1}\" Version=\"*\" />";
+
+                        if (version != null)
+                            newLine = $"    <PackageReference Include=\"{nugetInfo.Item1}\" Version=\"{version}\" />";
+                        else
+                            newLine = $"    <PackageReference Include=\"{nugetInfo.Item1}\" Version=\"*\" />";
 
                         newLines.Add(newLine);
                     }
