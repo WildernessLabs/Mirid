@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MeadowRepos;
+using System.Collections.Generic;
 using System.IO;
 
 namespace ReferenceSwitcher
@@ -33,13 +34,12 @@ namespace ReferenceSwitcher
 
     public class MeadowReferenceSwitcher
     {
-        Dictionary<MeadowRepo, Repo>? Repos;
-        readonly RefSwitcher refSwitcher = new RefSwitcher();
+        Dictionary<MeadowRepo, GitRepo>? Repos;
         readonly RepoLoader repoLoader = new RepoLoader();
 
         public void LoadProjects()
         {
-            Repos = new Dictionary<MeadowRepo, Repo>
+            Repos = new Dictionary<MeadowRepo, GitRepo>
             {
                 { MeadowRepo.Units, repoLoader.LoadRepo("Meadow.Units", "Meadow.Units/Source/") },
                 { MeadowRepo.Modbus, repoLoader.LoadRepo("Meadow.Modbus", "Meadow.Modbus/src/") },
@@ -47,22 +47,21 @@ namespace ReferenceSwitcher
                 { MeadowRepo.Logging, repoLoader.LoadRepo("Meadow.Logging", "Meadow.Logging/Source/") },
                 { MeadowRepo.Contracts, repoLoader.LoadRepo("Meadow.Contracts", "Meadow.Contracts/Source/") },
                 { MeadowRepo.Core, repoLoader.LoadRepo("Meadow.Core", "Meadow.Core/Source/") },
-                { MeadowRepo.Foundation, repoLoader.LoadRepo("Meadow.Foundation", "Meadow.Foundation/Source/") },
-                { MeadowRepo.FoundationSamples, repoLoader.LoadRepo("Meadow.Foundation", "Meadow.Foundation/Source/", RefSwitcher.Projects.Samples) },
+                { MeadowRepo.Foundation, repoLoader.LoadRepo("Meadow.Foundation", "Meadow.Foundation/Source/", ProjectType.Drivers) },
+                { MeadowRepo.FoundationSamples, repoLoader.LoadRepo("Meadow.Foundation", "Meadow.Foundation/Source/", ProjectType.Samples) },
                 { MeadowRepo.FoundationCore, repoLoader.LoadRepo("Meadow.Foundation.Core", "Meadow.Foundation/Source/Meadow.Foundation.Core/") },
-                { MeadowRepo.FoundationFeatherwings, repoLoader.LoadRepo("Meadow.Foundation.Featherwings", "Meadow.Foundation.Featherwings/Source/", RefSwitcher.Projects.All) },
-                { MeadowRepo.FoundationGrove, repoLoader.LoadRepo("Meadow.Foundation.Grove", "Meadow.Foundation.Grove/Source/", RefSwitcher.Projects.All) },
-                { MeadowRepo.FoundationMikroBus, repoLoader.LoadRepo("Meadow.Foundation.mikroBus", "Meadow.Foundation.mikroBus/Source/", RefSwitcher.Projects.All) },
+                { MeadowRepo.FoundationFeatherwings, repoLoader.LoadRepo("Meadow.Foundation.Featherwings", "Meadow.Foundation.Featherwings/Source/", ProjectType.All) },
+                { MeadowRepo.FoundationGrove, repoLoader.LoadRepo("Meadow.Foundation.Grove", "Meadow.Foundation.Grove/Source/", ProjectType.All) },
+                { MeadowRepo.FoundationMikroBus, repoLoader.LoadRepo("Meadow.Foundation.mikroBus", "Meadow.Foundation.mikroBus/Source/", ProjectType.All) },
                 { MeadowRepo.ProjectLab, repoLoader.LoadRepo("Meadow.ProjectLab", "Meadow.ProjectLab/Source/") },
-                { MeadowRepo.CoreSamples, repoLoader.LoadRepo("Meadow.Core.Samples", "Meadow.Core.Samples/Source/", RefSwitcher.Projects.All) },
-                { MeadowRepo.ProjectSamples, repoLoader.LoadRepo("Meadow.Project.Samples", "Meadow.Project.Samples/Source/", RefSwitcher.Projects.All) },
-                { MeadowRepo.ProjectLabSamples, repoLoader.LoadRepo("Meadow.ProjectLab.Samples", "Meadow.ProjectLab.Samples/Source/", RefSwitcher.Projects.All) },
-                { MeadowRepo.GPS_Tracker, repoLoader.LoadRepo("GNSS_Tracker", "GNSS_Sensor_Tracker/Source/", RefSwitcher.Projects.All) },
-                { MeadowRepo.Clima, repoLoader.LoadRepo("Clima", "Clima/Source/", RefSwitcher.Projects.All) },
-                { MeadowRepo.Juego, repoLoader.LoadRepo("Juego", "Juego/Source/", RefSwitcher.Projects.All) }
+                { MeadowRepo.CoreSamples, repoLoader.LoadRepo("Meadow.Core.Samples", "Meadow.Core.Samples/Source/", ProjectType.All) },
+                { MeadowRepo.ProjectSamples, repoLoader.LoadRepo("Meadow.Project.Samples", "Meadow.Project.Samples/Source/", ProjectType.All) },
+                { MeadowRepo.ProjectLabSamples, repoLoader.LoadRepo("Meadow.ProjectLab.Samples", "Meadow.ProjectLab.Samples/Source/", ProjectType.All) },
+                { MeadowRepo.GPS_Tracker, repoLoader.LoadRepo("GNSS_Tracker", "GNSS_Sensor_Tracker/Source/", ProjectType.All) },
+                { MeadowRepo.Clima, repoLoader.LoadRepo("Clima", "Clima/Source/", ProjectType.All) },
+                { MeadowRepo.Juego, repoLoader.LoadRepo("Juego", "Juego/Source/", ProjectType.All) }
             };
         }
-
 
         void SwitchRepo(IEnumerable<FileInfo> projectsToUpdate, IEnumerable<FileInfo>[] projectsToReference, bool publish)
         {
@@ -70,11 +69,11 @@ namespace ReferenceSwitcher
             {
                 if (publish)
                 {
-                    refSwitcher.SwitchToPublishingMode(projectsToUpdate, collection);
+                    RefSwitcher.SwitchToPublishingMode(projectsToUpdate, collection, null);
                 }
                 else
                 {
-                    refSwitcher.SwitchToDeveloperMode(projectsToUpdate, collection);
+                    RefSwitcher.SwitchToDeveloperMode(projectsToUpdate, collection);
                 }
             }
         }

@@ -1,3 +1,52 @@
+Nuget.org publishing flow
+
+0. Wait for dependencies to publish .... either to match version or to wait to build
+1. Nugetize
+2. Merge to main
+3. Release (means push to nuget.org)
+4. Denugetize develop
+(repeat)
+
+
+
+*******************************************
+
+## Local build publishing flow
+
+### Pre-req
+1. Windows dev box or VM
+2. Git command line
+3. Developer tools
+4. Ensure build machine is pointing to a known local nuget folder
+5. Manifest
+
+### Steps
+1. Clone repo (git command line)
+2. Switch to develop branch (git command line)
+2a. Validate if main if ahead of develop and throw (Octokit)
+3. Create a new versioned branch off of develop (git command line)
+4. Remove external references (Mirid - ToDo)
+5. Switch to nuget references (Mirid)
+6. Build nugets (MSBuild) - need to build and figure out where the packages are 
+7. Copy nugets to local nuget repo folder (copy in command line)
+--------------------------------------------------------------------------------------------
+8. Push new versioned branch to GitHub (git command line)
+9. PR from versioned branch to main (git command line)
+10. Tag release (including nightlies) (manual on GitHub ... maybe Octokit API)
+
+11. bulk upload all packages to nuget.org (custom script or tooling - to investigate)
+--------------------------------------------------------------------------------------------
+
+### To decide
+1. What runs the app
+2. How do we set the version? (command line param?)
+3. How do we define the scope of publishing and the order - e.g. a manifest (markdown, or json, something .... )
+4. What does the manifest look like
+5. What options do we need to control the build process (skip folders, etc.)
+
+
+
+
 1. Release Meadow Units (trigger on main using a new release in GitHub)
  	- merge to main
 	- create a new release on GitHub and publish (kicks off workflow to publish nuget)
@@ -63,6 +112,9 @@ Release ModBus!!!
 - wait for Meadow.Foundation packages to publish
 
 11. Release ProjectLab
+Jeugo
+Clima
+GNSS Tracker
 
 12. Update Samples (nugetize and push to main)
 - Update Meadow.Core.Samples 

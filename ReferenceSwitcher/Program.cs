@@ -14,7 +14,7 @@ namespace ReferenceSwitcher
 
             //toggle methods below for various repos
 
-            //switcher.SwitchMeadowContracts(publish: false);
+            //switcher.SwitchMeadowContracts(publish: true);
             //switcher.SwitchMeadowModbus(publish: false);
             //switcher.SwitchMeadowCore(publish: false);
             //switcher.SwitchMeadowFoundationCore(publish: false);
@@ -22,16 +22,16 @@ namespace ReferenceSwitcher
             //switcher.SwitchMeadowFoundationGrove(publish: true);
             //switcher.SwitchMeadowFoundationFeatherwings(publish: true);
             //switcher.SwitchMeadowFoundationMikroBus(publish: true);
-            //switcher.SwitchMeadowProjectLab(publish: false);
-
-
 
             //switcher.SwitchMeadowCoreSamples(publish: false);
             //switcher.SwitchMeadowProjectSamples(publish: false);
-            //switcher.SwitchGPS_Tracker(publish: true);
+
             //switcher.SwitchMeadowProjectLabSamples(publish: false);
-            //switcher.SwitchClima(publish: false);
-            switcher.SwitchJuego(publish: true);
+
+            switcher.SwitchMeadowProjectLab(publish: false);
+            switcher.SwitchGPS_Tracker(publish: false);
+            switcher.SwitchClima(publish: false);
+            switcher.SwitchJuego(publish: false);
         }
     }
 }

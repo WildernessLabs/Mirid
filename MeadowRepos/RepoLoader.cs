@@ -1,25 +1,23 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using static ReferenceSwitcher.RefSwitcher;
+﻿using ReferenceSwitcher;
 
-namespace ReferenceSwitcher
+namespace MeadowRepos
 {
     public class RepoLoader
     {
         string pathHack = "../../../../../";
 
-        public Repo LoadRepo(string name, string path, Projects projectType = Projects.All)
+        public GitRepo LoadRepo(string name, string path, ProjectType projectType = ProjectType.All)
         {
-            var repo = new Repo()
+            var repo = new GitRepo()
             {
                 Name = name,
-                Path = path,
+                SourceDirectory = path,
                 ProjectFiles = GetCsProjFiles(Path.Combine(pathHack, path), projectType),
             };
             return repo;
         }
 
-        public FileInfo[] GetCsProjFiles(string path, Projects projectsType = Projects.Drivers)
+        public static FileInfo[] GetCsProjFiles(string path, ProjectType projectsType = ProjectType.Drivers)
         {
             var files = (new DirectoryInfo(path)).GetFiles("*.csproj", SearchOption.AllDirectories);
 
@@ -27,12 +25,12 @@ namespace ReferenceSwitcher
 
             foreach (var file in files)
             {
-                if (projectsType == Projects.Drivers &&
+                if (projectsType == ProjectType.Drivers &&
                     (file.DirectoryName.Contains("Sample") || file.DirectoryName.Contains("sample")))
                 {
                     continue;
                 }
-                if (projectsType == Projects.Samples &&
+                if (projectsType == ProjectType.Samples &&
                     (!file.DirectoryName.Contains("Sample") && !file.DirectoryName.Contains("sample")))
                 {
                     continue;
