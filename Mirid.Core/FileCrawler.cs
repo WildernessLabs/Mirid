@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace Mirid
+﻿namespace Mirid
 {
     public static class FileCrawler
     {
@@ -13,8 +8,8 @@ namespace Mirid
             if (Directory.Exists(path))
             {
                 var files = GetCsProjFiles(path);
-                
-                if(filter)
+
+                if (filter)
                 {
                     files = files.Where(f => !f.FullName.Contains("Test"))
                                  .Where(f => !f.FullName.Contains("Utilities"))
@@ -24,11 +19,11 @@ namespace Mirid
             }
             else
             {
-                return new FileInfo[0];
+                return Array.Empty<FileInfo>();
             }
         }
 
-        static FileInfo GetFileInfo(string path)
+        public static FileInfo GetFileInfo(string path)
         {
             return new FileInfo(path);
         }

@@ -15,11 +15,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{320E7477
 		version.md = version.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lanzamiento", "Lanzamiento\Lanzamiento.csproj", "{ABA06693-EDF3-4104-9410-465C8A9FEFA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lanzamiento", "Lanzamiento\Lanzamiento.csproj", "{ABA06693-EDF3-4104-9410-465C8A9FEFA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeadowRepos", "MeadowRepos\MeadowRepos.csproj", "{77BA538C-2C97-478C-A83B-9D10C5DAED99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeadowRepos", "MeadowRepos\MeadowRepos.csproj", "{77BA538C-2C97-478C-A83B-9D10C5DAED99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalRefReaper", "ExternalRefReaper\ExternalRefReaper.csproj", "{17B550A1-7BEE-408E-A542-8954A5154EF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExternalRefReaper", "ExternalRefReaper\ExternalRefReaper.csproj", "{17B550A1-7BEE-408E-A542-8954A5154EF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metafire", "Metafire\Metafire.csproj", "{5D27F2F1-55AB-4868-88E9-C1908F3C1678}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirid.Core", "Mirid.Core\Mirid.Core.csproj", "{A024F626-5F7E-4F78-B647-2EE24D1B5FF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +55,14 @@ Global
 		{17B550A1-7BEE-408E-A542-8954A5154EF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17B550A1-7BEE-408E-A542-8954A5154EF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17B550A1-7BEE-408E-A542-8954A5154EF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D27F2F1-55AB-4868-88E9-C1908F3C1678}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D27F2F1-55AB-4868-88E9-C1908F3C1678}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D27F2F1-55AB-4868-88E9-C1908F3C1678}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D27F2F1-55AB-4868-88E9-C1908F3C1678}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A024F626-5F7E-4F78-B647-2EE24D1B5FF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A024F626-5F7E-4F78-B647-2EE24D1B5FF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A024F626-5F7E-4F78-B647-2EE24D1B5FF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A024F626-5F7E-4F78-B647-2EE24D1B5FF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

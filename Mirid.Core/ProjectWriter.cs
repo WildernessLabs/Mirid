@@ -1,9 +1,6 @@
-﻿using System.IO;
-using System.Linq;
-
-namespace Mirid
+﻿namespace Mirid
 {
-    class ProjectWriter
+    public class ProjectWriter
     {
         public static bool AddReference(FileInfo project, string reference)
         {
@@ -12,7 +9,7 @@ namespace Mirid
             //find references 
             int indexItemGroup = -1;
             int indexCloseProject = -1;
-         
+
             for (int i = 0; i < lines.Count; i++)
             {
                 if (lines[i].Contains("<ProjectReference"))
@@ -39,11 +36,11 @@ namespace Mirid
 
             return true;
         }
-        
+
 
         public static bool AddReference(FileInfo project, FileInfo reference)
         {
-            if(project == null || reference == null)
+            if (project == null || reference == null)
             {
                 return false;
             }
@@ -140,15 +137,15 @@ namespace Mirid
             //find property
             int index = -1;
             int indexProperyGroup = -1;
-            for(int i = 0; i < lines.Count; i++)
+            for (int i = 0; i < lines.Count; i++)
             {
-                if(lines[i].Contains("<PropertyGroup>"))
+                if (lines[i].Contains("<PropertyGroup>"))
                 {
                     indexProperyGroup = i;
                 }
-                else if(lines[i].Contains($"<{property}>"))
+                else if (lines[i].Contains($"<{property}>"))
                 {
-                    if(lines[i].Contains($">{value}<"))
+                    if (lines[i].Contains($">{value}<"))
                     {
                         return true;
                     }
@@ -158,18 +155,18 @@ namespace Mirid
                 }
             }
 
-            if(indexProperyGroup == -1)
+            if (indexProperyGroup == -1)
             {
                 return false;
             }
 
-            if(index == -1)
+            if (index == -1)
             {
                 lines.Insert(indexProperyGroup + 1, $"    <{property}>{value}</{property}>");
             }
             else
             {
-                if(lines[index].Contains($"<{value}>") == false)
+                if (lines[index].Contains($"<{value}>") == false)
                 {
                     lines[index] = $"    <{property}>{value}</{property}>";
                 }

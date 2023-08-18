@@ -1,14 +1,8 @@
-﻿using System.IO;
-
-namespace Mirid
+﻿namespace Mirid
 {
     public class Validations
     {
-        public Validations()
-        {
-        }
-
-        static bool DoesProjectContainMatchingClass(FileInfo projectFile)
+        public static bool DoesProjectContainMatchingClass(FileInfo projectFile)
         {
             var driverName = projectFile.Name.Substring(0, projectFile.Name.IndexOf(".csproj"));
             driverName = driverName.Substring(driverName.LastIndexOf(".") + 1);
@@ -28,7 +22,7 @@ namespace Mirid
             return exists;
         }
 
-        static bool IsProjectInMatchingFolder(FileInfo projectFile)
+        public static bool IsProjectInMatchingFolder(FileInfo projectFile)
         {
             return false;
         }
