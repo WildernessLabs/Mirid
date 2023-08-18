@@ -3,7 +3,7 @@
     class Program
     {
         //ToDo update to a command line arg
-        public static string MCSourcePath = "../../../../../Meadow.Core/Source/";
+        public static string MCSourcePath = "../../../../../Meadow.Core/source/";
         public static string MFSourcePath = "../../../../../Meadow.Foundation/Source/";
         public static string MFPeripheralsPath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Peripherals";
 

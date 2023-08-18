@@ -46,7 +46,7 @@ namespace ReferenceSwitcher
                 { MeadowRepo.MQTTnet, repoLoader.LoadRepo("MQTTnet", "MQTTnet/Source/MQTTnet/") },
                 { MeadowRepo.Logging, repoLoader.LoadRepo("Meadow.Logging", "Meadow.Logging/Source/") },
                 { MeadowRepo.Contracts, repoLoader.LoadRepo("Meadow.Contracts", "Meadow.Contracts/Source/") },
-                { MeadowRepo.Core, repoLoader.LoadRepo("Meadow.Core", "Meadow.Core/Source/") },
+                { MeadowRepo.Core, repoLoader.LoadRepo("Meadow.Core", "Meadow.Core/source/") },
                 { MeadowRepo.Foundation, repoLoader.LoadRepo("Meadow.Foundation", "Meadow.Foundation/Source/", ProjectType.Drivers) },
                 { MeadowRepo.FoundationSamples, repoLoader.LoadRepo("Meadow.Foundation", "Meadow.Foundation/Source/", ProjectType.Samples) },
                 { MeadowRepo.FoundationCore, repoLoader.LoadRepo("Meadow.Foundation.Core", "Meadow.Foundation/Source/Meadow.Foundation.Core/") },

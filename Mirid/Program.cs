@@ -10,7 +10,7 @@ namespace Mirid
 {
     class Program
     {
-        public static string MCFullPath = "../../../../../Meadow.Core/Source/";
+        public static string MCFullPath = "../../../../../Meadow.Core/source/";
         public static string MFSourcePath = "../../../../../Meadow.Foundation/Source/";
 
         public static string MFCorePerihperalsPath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Core";
@@ -64,7 +64,7 @@ namespace Mirid
 
         static void UpdateMetadata()
         {
-            foreach(var driverSet in driverSets.Values)
+            foreach (var driverSet in driverSets.Values)
             {
                 driverSet.UpdateProjectMetadata();
             }
