@@ -52,7 +52,7 @@
 
             AddRepo("Meadow.ProjectLab", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation", "Meadow.Modbus" });
             AddRepo("GNSS_Sensor_Tracker", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation" });
-            AddRepo("Clima", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation" });
+            AddRepo("Clima", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation", "Maple" });
             AddRepo("Juego", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation" });
         }
     }
