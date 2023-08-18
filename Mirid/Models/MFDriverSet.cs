@@ -55,7 +55,7 @@ namespace Mirid.Models
 
         //this entire method needs to be dynamic
         //pass in what to process and what to apply
-        void UpdateProjectMetadata()
+        public void UpdateProjectMetadata()
         {
             Console.WriteLine("Update project metadata");
 
@@ -69,6 +69,7 @@ namespace Mirid.Models
 
             foreach (var proj in driverProjectFiles)
             {
+                ProjectWriter.AddUpdateProperty(proj, "PackageLicenceExpression", "Apache-2.0");
                 ProjectWriter.AddUpdateProperty(proj, "GenerateDocumentationFile", "true");
 
                 /*  

@@ -52,10 +52,22 @@ namespace Mirid
 
             LoadDriverSets();
 
-            UpdateDocs();
+            UpdateMetadata();
+
+            return;
+
+            //UpdateDocs();
 
             WritePeripheralTables(driverSets.Values.ToList());
             //RunDriverReport();
+        }
+
+        static void UpdateMetadata()
+        {
+            foreach(var driverSet in driverSets.Values)
+            {
+                driverSet.UpdateProjectMetadata();
+            }
         }
 
         static void UpdateDocs()
