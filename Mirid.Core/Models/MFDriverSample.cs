@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Linq;
-
-namespace Mirid.Models
+﻿namespace Mirid.Models
 {
     public class MFDriverSample
     {

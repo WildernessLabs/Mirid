@@ -7,9 +7,9 @@ namespace Lanzamiento
 {
     internal class Program
     {
-        static string ROOT_DIRECTORY = @"F:\Release121b";
+        static string ROOT_DIRECTORY = @"F:\Release1210b";
         static string NUGET_DIRECTORY = @"F:\LocalNuget";
-        static string VERSION = "1.2.1b";
+        static string VERSION = "1.2.1.10-beta";
         static string NUGET_TOKEN = "oy2jojsomhlcy4s7axca43emjjr2uuvefhbpqjqsz6q3ji";
 
         static bool isPreRelease = true;
@@ -53,13 +53,11 @@ namespace Lanzamiento
                 RemoveExternalReferences(ROOT_DIRECTORY, repo.Value);
             }
 
-            string[] excludedProjects = { "Simulated", "Sample", "sample", "Test", "test", "Utilities", "Update", "client", "Demo", "Prototype", "ProKit", "HackKit", "Mobile", "mobile" };
-
             foreach (var repo in Repos.Repositories)
             {
                 foreach (var project in repo.Value.ProjectFiles)
                 {
-                    if (excludedProjects.Any(project.DirectoryName.Contains))
+                    if (Repos.ExcludedProjects.Any(project.DirectoryName.Contains))
                     {
                         continue;
                     }
@@ -72,6 +70,8 @@ namespace Lanzamiento
             {
                 return;
             }
+
+            return;
 
 
             PublishNugets(NUGET_DIRECTORY, VERSION);

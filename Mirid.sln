@@ -21,9 +21,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeadowRepos", "MeadowRepos\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExternalRefReaper", "ExternalRefReaper\ExternalRefReaper.csproj", "{17B550A1-7BEE-408E-A542-8954A5154EF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metafire", "Metafire\Metafire.csproj", "{5D27F2F1-55AB-4868-88E9-C1908F3C1678}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Metafire", "Metafire\Metafire.csproj", "{5D27F2F1-55AB-4868-88E9-C1908F3C1678}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirid.Core", "Mirid.Core\Mirid.Core.csproj", "{A024F626-5F7E-4F78-B647-2EE24D1B5FF2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mirid.Core", "Mirid.Core\Mirid.Core.csproj", "{A024F626-5F7E-4F78-B647-2EE24D1B5FF2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lectura", "Lectura\Lectura.csproj", "{D8A444F4-BA0B-4B48-A0BD-0A003F89DC53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{A024F626-5F7E-4F78-B647-2EE24D1B5FF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A024F626-5F7E-4F78-B647-2EE24D1B5FF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A024F626-5F7E-4F78-B647-2EE24D1B5FF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8A444F4-BA0B-4B48-A0BD-0A003F89DC53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8A444F4-BA0B-4B48-A0BD-0A003F89DC53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8A444F4-BA0B-4B48-A0BD-0A003F89DC53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8A444F4-BA0B-4B48-A0BD-0A003F89DC53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
