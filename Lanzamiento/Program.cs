@@ -9,21 +9,25 @@ namespace Lanzamiento
     {
         static string ROOT_DIRECTORY = @"G:\Release1310";
         static string NUGET_DIRECTORY = @"G:\LocalNuget";
-        static string VERSION = "1.3.1-beta";
+        static string VERSION = "1.3.1.1-beta";
         static string NUGET_TOKEN = "";
 
         static bool isPreRelease = true;
-        static bool testBuild = true;
+        static bool testBuild = false;
         static bool cloneRepos = true;
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello Lanzamiento");
+            var now = DateTime.Now;
+
+            Console.WriteLine($"Hello Lanzamiento - {now}");
 
             ValidateDirectory(ROOT_DIRECTORY);
             ValidateDirectory(NUGET_DIRECTORY);
 
             Repos.PopulateRepos();
+
+            Console.WriteLine($"Loaded {Repos.Repositories.Count} repos");
 
             string sourceBranch = "develop";
             string targetBranch = $"v{VERSION}";
@@ -73,6 +77,7 @@ namespace Lanzamiento
 
             if (testBuild == true)
             {
+                Console.WriteLine($"Complete - took {DateTime.Now - now}");
                 return;
             }
 
@@ -80,6 +85,7 @@ namespace Lanzamiento
 
             if (isPreRelease == true)
             {
+                Console.WriteLine($"Complete - took {DateTime.Now - now}");
                 return;
             }
 
@@ -87,6 +93,8 @@ namespace Lanzamiento
             {
                 PushVersionBranch(ROOT_DIRECTORY, repo.Value.Name, VERSION);
             }
+
+            Console.WriteLine($"Complete - took {DateTime.Now - now}");
         }
 
         static void PushVersionBranch(string directory, string githubRepo, string version)
@@ -106,11 +114,14 @@ namespace Lanzamiento
 
         static void PublishNugets(string directory, string version)
         {
-            var files = Directory.GetFiles(directory, $"*{version}*");
+            var files = Directory.GetFiles(directory, $"*{version}*.nupkg");
 
             foreach (var file in files)
             {
-                ExecuteCommand(directory, $"dotnet nuget push --api-key {NUGET_TOKEN} {file} -s https://api.nuget.org/v3/index.json");
+                if(0 == ExecuteCommand(directory, $"dotnet nuget push --api-key {NUGET_TOKEN} {file} -s https://api.nuget.org/v3/index.json", false))
+                {
+                    Console.WriteLine($"Published {file}");
+                }
             }
         }
 
@@ -135,7 +146,7 @@ namespace Lanzamiento
 
             if (string.IsNullOrEmpty(slnFile))
             {
-                UpdateConsoleMessage($"Could not find solution for {repo.Name} - ok for Meadow.Logging and MQTTnet");
+                UpdateConsoleMessage($"*** Could not find solution for {repo.Name} to remove refs - ok for Meadow.Logging and MQTTnet");
                 return;
             }
 
@@ -202,8 +213,10 @@ namespace Lanzamiento
             }
         }
 
-        public static void ExecuteCommand(string directory, string command)
+        public static int ExecuteCommand(string directory, string command, bool throwOnError = true)
         {
+            int exitCode;
+
             try
             {
                 var processInfo = new ProcessStartInfo("cmd.exe", "/C " + command)
@@ -227,12 +240,19 @@ namespace Lanzamiento
                 process.WaitForExit();
 
                 // Check for errors by examining the exit code.
-                int exitCode = process.ExitCode;
+                exitCode = process.ExitCode;
 
                 if (exitCode != 0)
                 {
-                    // Handle the error by throwing an exception.
-                    throw new Exception($"Command exited with error code {exitCode}\nOutput:\n{output}");
+                    if (throwOnError)
+                    {
+                        // Handle the error by throwing an exception.
+                        throw new Exception($"Command exited with error code {exitCode}\nOutput:\n{output}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"*** ExecuteCommand failed: {command}");
+                    }
                 }
             }
             catch (Exception ex)
@@ -242,6 +262,8 @@ namespace Lanzamiento
                 Console.WriteLine(ex.Message);
                 throw; // Re-throw the exception to propagate it further if needed.
             }
+
+            return exitCode;
         }
 
         private static void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
