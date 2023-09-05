@@ -94,6 +94,7 @@ namespace Lectura
 
             int whiteSpaceCount = 0;
             bool isStart = true;
+            bool lastLineIsBlank = false;
 
             var cleanlines = new List<string>();
 
@@ -110,9 +111,16 @@ namespace Lectura
                 }
 
                 if (line.Length > whiteSpaceCount)
+                {
                     cleanlines.Add(line.Substring(whiteSpaceCount));
+                    lastLineIsBlank = false;
+                }
                 else
-                    cleanlines.Add(line);
+                {
+                    if (lastLineIsBlank == false)
+                        cleanlines.Add(line);
+                    lastLineIsBlank = true;
+                }
             }
             return string.Join("\n", cleanlines);
         }
@@ -132,7 +140,7 @@ namespace Lectura
             output.AppendLine();
             output.AppendLine("The **Meadow.Foundation** peripherals library is an open-source repository of drivers and libraries that streamline and simplify adding hardware to your C# .NET Meadow IoT application.");
             output.AppendLine();
-            output.AppendLine("For more information on developing for Meadow, visit [developer.wildernesslabs.co](http://developer.wildernesslabs.co/), to view all of Wilderness Labs open-source projects, including samples, visit [github.com/wildernesslabs](https://github.com/wildernesslabs/)");
+            output.AppendLine("For more information on developing for Meadow, visit [developer.wildernesslabs.co](http://developer.wildernesslabs.co/), to view all Wilderness Labs open-source projects, including samples, visit [github.com/wildernesslabs](https://github.com/wildernesslabs/)");
             output.AppendLine();
 
             if (string.IsNullOrWhiteSpace(sample) == false)
@@ -142,7 +150,6 @@ namespace Lectura
                 output.AppendLine("```");
                 output.AppendLine(sample);
                 output.AppendLine("```");
-                output.AppendLine();
             }
 
             File.WriteAllText(fullPath, output.ToString());

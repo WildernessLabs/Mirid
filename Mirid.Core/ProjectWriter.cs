@@ -12,9 +12,14 @@
 
             for (int i = 0; i < lines.Count; i++)
             {
-                if (lines[i].Contains("<ProjectReference"))
+                if (lines[i].Contains(reference))
+                {   //already have it
+                    return true;
+                }
+                if (lines[i].Contains("<ItemGroup>"))
                 {
-                    indexItemGroup = i - 1;
+                    indexItemGroup = i;
+                    break;
                 }
                 if (lines[i].Contains("</Project>"))
                 {
