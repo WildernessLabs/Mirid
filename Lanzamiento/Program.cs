@@ -7,22 +7,22 @@ namespace Lanzamiento
 {
     internal class Program
     {
-        static string ROOT_DIRECTORY = @"F:\Release1210b";
-        static string NUGET_DIRECTORY = @"F:\LocalNuget";
-        static string VERSION = "1.2.1.10-beta";
-        static string NUGET_TOKEN = "oy2jojsomhlcy4s7axca43emjjr2uuvefhbpqjqsz6q3ji";
+        static string ROOT_DIRECTORY = @"G:\Release1310";
+        static string NUGET_DIRECTORY = @"G:\LocalNuget";
+        static string VERSION = "1.3.1-beta";
+        static string NUGET_TOKEN = "";
 
         static bool isPreRelease = true;
         static bool testBuild = true;
+        static bool cloneRepos = true;
 
         static void Main(string[] args)
         {
-            UpdateConsoleStatus("Hello Lanzamiento");
+            Console.WriteLine("Hello Lanzamiento");
 
             ValidateDirectory(ROOT_DIRECTORY);
             ValidateDirectory(NUGET_DIRECTORY);
 
-            UpdateConsoleStatus("Loading repo data");
             Repos.PopulateRepos();
 
             string sourceBranch = "develop";
@@ -30,10 +30,13 @@ namespace Lanzamiento
 
             foreach (var repo in Repos.Repositories)
             {
-                CloneRepo(ROOT_DIRECTORY, repo.Value.GitHubOrg, repo.Value.Name);
-                SetLocalRepoBranch(ROOT_DIRECTORY, repo.Value.Name, sourceBranch);
+                if(cloneRepos)
+                {
+                    CloneRepo(ROOT_DIRECTORY, repo.Value.GitHubOrg, repo.Value.Name);
+                    SetLocalRepoBranch(ROOT_DIRECTORY, repo.Value.Name, sourceBranch);
+                }
 
-                if (testBuild == false)
+                if (testBuild == false && isPreRelease == false)
                 {
                     CreateNewBranch(ROOT_DIRECTORY, repo.Value.Name, targetBranch);
                     SetLocalRepoBranch(ROOT_DIRECTORY, repo.Value.Name, targetBranch);
@@ -51,6 +54,8 @@ namespace Lanzamiento
             {
                 Nugetize(repo.Value, isPreRelease ? VERSION : null);
                 RemoveExternalReferences(ROOT_DIRECTORY, repo.Value);
+
+                Console.WriteLine($"Prepared {repo.Key} for publishing");
             }
 
             foreach (var repo in Repos.Repositories)
@@ -71,10 +76,12 @@ namespace Lanzamiento
                 return;
             }
 
-            return;
-
-
             PublishNugets(NUGET_DIRECTORY, VERSION);
+
+            if (isPreRelease == true)
+            {
+                return;
+            }
 
             foreach (var repo in Repos.Repositories)
             {
@@ -111,12 +118,14 @@ namespace Lanzamiento
         {
             if (project.Exists == false)
             {
-                UpdateConsoleMessage($"Could not find project {project}");
+                UpdateConsoleMessage($"Could not find project {project} - OK for MQTTnet and Logging");
                 return;
             }
 
             ExecuteCommand(rootDirectory, $"dotnet build -c Release {project.FullName} /p:Version={version}");
             ExecuteCommand(rootDirectory, $"dotnet pack -c Release {project.FullName} /p:Version={version} --output {nugetDirectory}");
+
+            UpdateConsoleMessage($"Built {Path.GetFileNameWithoutExtension(project.Name)} nuget");
         }
 
         static void RemoveExternalReferences(string directory, GitRepo repo)
@@ -126,7 +135,7 @@ namespace Lanzamiento
 
             if (string.IsNullOrEmpty(slnFile))
             {
-                UpdateConsoleMessage($"Could not find solution (sln) for {repo.Name} in {directory}");
+                UpdateConsoleMessage($"Could not find solution for {repo.Name} - ok for Meadow.Logging and MQTTnet");
                 return;
             }
 
@@ -171,8 +180,8 @@ namespace Lanzamiento
                 throw new Exception($"{Path.Combine(directory, githubRepo)} doesn't exist, cannot set branch: {branch}");
             }
 
-            UpdateConsoleStatus($"Changing {githubRepo} branch to {branch}");
             ExecuteCommand(fullPath, $"git checkout {branch}");
+            Console.WriteLine($" and set branch to {branch}");
         }
 
         static void CloneRepo(string directory, string githubOrg, string githubRepo)
@@ -181,35 +190,58 @@ namespace Lanzamiento
 
             if (Directory.Exists(fullPath))
             {
-                UpdateConsoleStatus($"Getting the latest in {githubRepo}/{githubRepo}");
                 ExecuteCommand(fullPath, $"git clean -dfx");
                 ExecuteCommand(fullPath, $"git reset --hard");
                 ExecuteCommand(fullPath, $"git pull");
+                Console.Write($"Pulled {githubRepo}/{githubRepo}");
             }
             else
             {
-                UpdateConsoleStatus($"Cloning {githubRepo}/{githubRepo}");
                 ExecuteCommand(ROOT_DIRECTORY, $"git clone https://www.github.com/{githubOrg}/{githubRepo}");
+                Console.Write($"Cloned {githubRepo}/{githubRepo}");
             }
         }
 
         public static void ExecuteCommand(string directory, string command)
         {
-            var processInfo = new ProcessStartInfo("cmd.exe", "/C " + command)
+            try
             {
-                CreateNoWindow = false,
-                UseShellExecute = false,
-                // RedirectStandardOutput = true,
-                WorkingDirectory = directory
-            };
+                var processInfo = new ProcessStartInfo("cmd.exe", "/C " + command)
+                {
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    WorkingDirectory = directory
+                };
 
-            var process = Process.Start(processInfo);
+                var process = new Process
+                {
+                    StartInfo = processInfo
+                };
 
-            process.OutputDataReceived += Process_OutputDataReceived;
+                process.Start();
 
-            process?.WaitForExit();
+                // Read the standard output asynchronously to avoid deadlocks.
+                string output = process.StandardOutput.ReadToEnd();
 
-            var exitCode = process.ExitCode;
+                process.WaitForExit();
+
+                // Check for errors by examining the exit code.
+                int exitCode = process.ExitCode;
+
+                if (exitCode != 0)
+                {
+                    // Handle the error by throwing an exception.
+                    throw new Exception($"Command exited with error code {exitCode}\nOutput:\n{output}");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occur during process execution.
+                Console.WriteLine("Error executing the command:");
+                Console.WriteLine(ex.Message);
+                throw; // Re-throw the exception to propagate it further if needed.
+            }
         }
 
         private static void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
@@ -221,13 +253,11 @@ namespace Lanzamiento
         {
             if (Directory.Exists(directory) == false)
             {
-                UpdateConsoleStatus($"{directory} does not exist");
-                UpdateConsoleStatus($"Creating {directory}");
+                UpdateConsoleStatus($"{directory} does not exist - creating");
                 Directory.CreateDirectory(directory);
             }
             else
             {
-                UpdateConsoleMessage($"{directory} found");
             }
         }
 
