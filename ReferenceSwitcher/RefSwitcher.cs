@@ -59,7 +59,6 @@ namespace ReferenceSwitcher
                     }
                     else
                     {
-                        int g = 0;
                     }
                 }
             }
@@ -68,12 +67,10 @@ namespace ReferenceSwitcher
 
         public static void SwitchToPublishingMode(IEnumerable<FileInfo> projectsToUpdate, IEnumerable<FileInfo> projectsToReference, string? version)
         {
-            Console.WriteLine("Developer mode");
-
             //loop over every project we want to update
             foreach (var f in projectsToUpdate)
             {
-                Console.WriteLine($"Found {f.Name}");
+                //Console.WriteLine($"Found {f.Name}");
 
                 //find all of the local refs in that project
                 var referencedProjects = GetListOfProjectReferencesInProject(f);
@@ -168,8 +165,6 @@ namespace ReferenceSwitcher
 
             var newLines = new List<string>();
 
-            Console.WriteLine($"ReplaceLocalRef: {fileName}");
-
             string newLine;
 
             foreach (var line in lines)
@@ -185,7 +180,7 @@ namespace ReferenceSwitcher
                     }
                     else
                     {
-                        Console.WriteLine($"Nuget: {nugetInfo.Item1} Version: {nugetInfo.Item2}");
+                        //Console.WriteLine($"Nuget: {nugetInfo.Item1} Version: {nugetInfo.Item2}");
 
 
                         if (version != null)
@@ -229,12 +224,14 @@ namespace ReferenceSwitcher
 
                         //  var projectName = Path.GetFileNameWithoutExtension(projPath);
 
-                        Console.WriteLine($"Found project ref: {projectName}");
+                        //Console.WriteLine($"Found project ref: {projectName}");
 
                         projects.Add(projectName);
                     }
                 }
             }
+
+            //Console.WriteLine($"Found {projects.Count} project refs in {fileInfo.Name}");
 
             return projects;
         }
