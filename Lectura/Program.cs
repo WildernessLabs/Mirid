@@ -1,15 +1,13 @@
 ﻿using MeadowRepos;
 using Mirid.Models;
 using ReferenceSwitcher;
-using System.IO;
 using System.Text;
-using System.Xml.Linq;
 
 namespace Lectura
 {
     internal class Program
     {
-        static string ROOT_DIRECTORY = @"h:\WL";
+        static readonly string ROOT_DIRECTORY = @"h:\WL";
 
         static void Main(string[] args)
         {
@@ -30,7 +28,7 @@ namespace Lectura
                 foreach (var projectFile in projectFiles)
                 {
                     //make sure it's a Meadow.Foundation nuget driver package
-                    if(!projectFile.FullName.Contains("Meadow.Foundation"))
+                    if (!projectFile.FullName.Contains("Meadow.Foundation"))
                     {
                         continue;
                     }
@@ -58,14 +56,22 @@ namespace Lectura
 
             var samplesDirectory = parentFolder.GetDirectories("Sample*").FirstOrDefault();
 
-            var folder = samplesDirectory?.GetDirectories(name+"_Sample").FirstOrDefault();
+            var folder = samplesDirectory?.GetDirectories(name + "_Sample").FirstOrDefault();
 
+            if (folder == null)
+            {   //go fuzzy
+                folder = samplesDirectory?.GetDirectories("*_Sample").FirstOrDefault();
+            }
             if (folder == null)
             {
                 return string.Empty;
             }
 
             var sampleFile = folder.GetFiles("MeadowApp.cs").FirstOrDefault();
+            if (sampleFile == null)
+            {
+                return string.Empty;
+            }
 
 
             return GetSnipSnop(sampleFile);
@@ -98,14 +104,14 @@ namespace Lectura
 
             var cleanlines = new List<string>();
 
-            foreach(var line in lines) 
+            foreach (var line in lines)
             {
-                if(isStart == true && string.IsNullOrEmpty(line))
+                if (isStart == true && string.IsNullOrEmpty(line))
                 { continue; }
 
                 isStart = false;
 
-                if(whiteSpaceCount == 0)
+                if (whiteSpaceCount == 0)
                 {
                     whiteSpaceCount = line.TakeWhile(c => char.IsWhiteSpace(c)).Count();
                 }
@@ -127,7 +133,7 @@ namespace Lectura
 
         static void WriteReadme(MFPackageProject packageProject, string destinationFolder, string sample)
         {
-            StringBuilder output = new ();
+            StringBuilder output = new();
 
             var fullPath = Path.Combine(destinationFolder, "Readme.md");
 
@@ -147,7 +153,7 @@ namespace Lectura
             {
                 output.AppendLine("## Usage");
                 output.AppendLine();
-                output.AppendLine("```");
+                output.AppendLine("```csharp");
                 output.AppendLine(sample);
                 output.AppendLine("```");
             }
