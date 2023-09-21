@@ -25,7 +25,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Metafire", "Metafire\Metafi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mirid.Core", "Mirid.Core\Mirid.Core.csproj", "{A024F626-5F7E-4F78-B647-2EE24D1B5FF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lectura", "Lectura\Lectura.csproj", "{D8A444F4-BA0B-4B48-A0BD-0A003F89DC53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lectura", "Lectura\Lectura.csproj", "{D8A444F4-BA0B-4B48-A0BD-0A003F89DC53}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contribuir", "Contribuir\Contribuir.csproj", "{81D7BFF5-A52C-4BED-858B-1C3D8FADDBAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,10 @@ Global
 		{D8A444F4-BA0B-4B48-A0BD-0A003F89DC53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8A444F4-BA0B-4B48-A0BD-0A003F89DC53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8A444F4-BA0B-4B48-A0BD-0A003F89DC53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81D7BFF5-A52C-4BED-858B-1C3D8FADDBAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81D7BFF5-A52C-4BED-858B-1C3D8FADDBAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81D7BFF5-A52C-4BED-858B-1C3D8FADDBAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81D7BFF5-A52C-4BED-858B-1C3D8FADDBAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -45,7 +45,7 @@ namespace Lectura
                     var sample = LoadSample(projectFile, packageProject.AssemblyName);
 
                     //write readme
-                    WriteReadme(packageProject, projectFile.DirectoryName, sample);
+                    WriteReadme(repo.Value, packageProject, projectFile.DirectoryName, sample);
                 }
             }
         }
@@ -131,22 +131,25 @@ namespace Lectura
             return string.Join("\n", cleanlines);
         }
 
-        static void WriteReadme(MFPackageProject packageProject, string destinationFolder, string sample)
+        static void WriteReadme(GitRepo repo, MFPackageProject packageProject, string destinationFolder, string sample)
         {
             StringBuilder output = new();
 
             var fullPath = Path.Combine(destinationFolder, "Readme.md");
+            var repoPath = $"https://github.com/{repo.GitHubOrg}/{repo.Name}";
 
             output.AppendLine($"# {packageProject.PackageId}");
             output.AppendLine();
             output.AppendLine($"**{packageProject.Description}**");
             output.AppendLine();
 
-            output.AppendLine($"The **{packageProject.AssemblyName}** library is designed for the [Wilderness Labs](www.wildernesslabs.co) Meadow .NET IoT platform and is part of [Meadow.Foundation](https://developer.wildernesslabs.co/Meadow/Meadow.Foundation/)");
+            output.AppendLine($"The **{packageProject.AssemblyName}** library is designed for the [Wilderness Labs](www.wildernesslabs.co) Meadow .NET IoT platform and is part of [Meadow.Foundation](https://developer.wildernesslabs.co/Meadow/Meadow.Foundation/).");
             output.AppendLine();
             output.AppendLine("The **Meadow.Foundation** peripherals library is an open-source repository of drivers and libraries that streamline and simplify adding hardware to your C# .NET Meadow IoT application.");
             output.AppendLine();
-            output.AppendLine("For more information on developing for Meadow, visit [developer.wildernesslabs.co](http://developer.wildernesslabs.co/), to view all Wilderness Labs open-source projects, including samples, visit [github.com/wildernesslabs](https://github.com/wildernesslabs/)");
+            output.AppendLine("For more information on developing for Meadow, visit [developer.wildernesslabs.co](http://developer.wildernesslabs.co/).");
+            output.AppendLine();
+            output.AppendLine("To view all Wilderness Labs open-source projects, including samples, visit [github.com/wildernesslabs](https://github.com/wildernesslabs/).");
             output.AppendLine();
 
             if (string.IsNullOrWhiteSpace(sample) == false)
@@ -157,6 +160,18 @@ namespace Lectura
                 output.AppendLine(sample);
                 output.AppendLine("```");
             }
+
+            output.AppendLine("## How to Contribute");
+            output.AppendLine();
+            output.AppendLine("- **Found a bug?** [Report an issue](https://github.com/WildernessLabs/Meadow_Issues/issues)");
+            output.AppendLine("- Have a **feature idea or driver request?** [Open a new feature request](https://github.com/WildernessLabs/Meadow_Issues/issues)");
+            output.AppendLine($"- Want to **contribute code?** Fork the [{repo.Name}]({repoPath}) repository and submit a pull request against the `develop` branch");
+            output.AppendLine();
+
+            output.AppendLine();
+            output.AppendLine("## Need Help?");
+            output.AppendLine();
+            output.AppendLine($"If you have questions or need assistance, please join the Wilderness Labs [community on Slack](http://slackinvite.wildernesslabs.co/).");
 
             File.WriteAllText(fullPath, output.ToString());
         }
