@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Mirid.Models;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Mirid.Models;
 
 namespace Mirid.Outputs
 {
@@ -11,7 +11,7 @@ namespace Mirid.Outputs
         {
             StringBuilder output = new StringBuilder();
 
-            foreach(var driverSet in driverSets)
+            foreach (var driverSet in driverSets)
             {
                 output.AppendLine($"## {driverSet.SetName}");
 
@@ -33,16 +33,18 @@ namespace Mirid.Outputs
 
         static void WritePeripheralPackages(List<MFPackage> packages, StringBuilder output)
         {
-            //we can assume we're in order
             string group = string.Empty;
 
             List<MFPackage> packagesWithMultipleDrivers = new List<MFPackage>();
 
+            //put the packages in alphabetical order
+            packages.Sort((a, b) => a.PackageName.CompareTo(b.PackageName));
+
             foreach (var package in packages)
             {
-                if(group != GetPeripheralGroup(package.PackageName))
+                if (group != GetPeripheralGroup(package.PackageName))
                 {
-                    if(packagesWithMultipleDrivers.Count > 0)
+                    if (packagesWithMultipleDrivers.Count > 0)
                     {
                         output.AppendLine();
                         WriteMultipleDriverTables(packagesWithMultipleDrivers, output);
@@ -56,7 +58,7 @@ namespace Mirid.Outputs
                     WriteTableHeader(output);
                 }
 
-                if(package.NumberOfDrivers > 1)
+                if (package.NumberOfDrivers > 1)
                 {
                     packagesWithMultipleDrivers.Add(package);
                 }
@@ -77,11 +79,11 @@ namespace Mirid.Outputs
 
         static void WriteMultipleDriverTables(List<MFPackage> nugets, StringBuilder builder)
         {
-            string GetDriverType(MFPackage nuget) 
+            string GetDriverType(MFPackage nuget)
             {
                 var packageCategories = nuget.PackageName.Split('.');
                 var type = packageCategories[packageCategories.Length - 2].TrimEnd('s');
-                switch(type) 
+                switch (type)
                 {
                     case "Display":
                         return "display";
@@ -93,8 +95,8 @@ namespace Mirid.Outputs
                         return "IO expander";
                     default:
                         return type.ToLower();
-                        
-                             
+
+
 
                 }
             }
@@ -104,7 +106,7 @@ namespace Mirid.Outputs
                 return $"/docs/api/Meadow.Foundation/{driver.Namespace}.{driver.Name}.html";
             }
 
-            foreach(var nuget in nugets)
+            foreach (var nuget in nugets)
             {
                 var driverType = GetDriverType(nuget);
 
@@ -114,7 +116,7 @@ namespace Mirid.Outputs
 
                 WriteTableHeader(builder);
 
-                foreach(var driver in nuget.Drivers)
+                foreach (var driver in nuget.Drivers)
                 {
                     var driverUrl = GetDriverUrl(driver);
 
@@ -130,12 +132,12 @@ namespace Mirid.Outputs
         {
             var text = package.Split(".");
 
-            if(text.Length < 3)
+            if (text.Length < 3)
             {
                 return package;
             }
 
-            if(string.Compare(text[2], "Sensors") == 0)
+            if (string.Compare(text[2], "Sensors") == 0)
             {
                 return text[3];
             }
@@ -145,8 +147,8 @@ namespace Mirid.Outputs
         static string GetPeripheralLink(string packageName, bool hasMultipleDrivers)
         {
             var name = GetDriverNameFromPackage(packageName);
-            var postFix = hasMultipleDrivers?"Base":string.Empty;
-            
+            var postFix = hasMultipleDrivers ? "Base" : string.Empty;
+
             var url = $"/docs/api/Meadow.Foundation/{packageName}{postFix}.html";
 
             return $"[{name}]({url})";
@@ -158,7 +160,7 @@ namespace Mirid.Outputs
 
             WriteTableHeader(output);
 
-            foreach(var nuget in nugets)
+            foreach (var nuget in nugets)
             {
                 WriteTableRow(GetStatusText(nuget.IsPublished),
                     GetDriverNameFromPackage(nuget.PackageName),
@@ -174,7 +176,7 @@ namespace Mirid.Outputs
             if (package == "Meadow.Foundation")
                 return package;
 
-            if(package.Contains("Meadow.Foundation"))
+            if (package.Contains("Meadow.Foundation"))
             {
                 return package.Substring("Meadow.Foundation.".Length);
             }

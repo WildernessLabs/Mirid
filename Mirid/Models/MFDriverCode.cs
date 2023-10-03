@@ -13,7 +13,7 @@ namespace Mirid.Models
         {
             get
             {
-                if(string.IsNullOrEmpty(_namespace))
+                if (string.IsNullOrEmpty(_namespace))
                 {
                     _namespace = GetNamespace();
                 }
@@ -21,7 +21,7 @@ namespace Mirid.Models
             }
         }
         string _namespace;
-        
+
 
         string[] lines;
 
@@ -37,9 +37,11 @@ namespace Mirid.Models
 
         void ReadCodeFile(string filePath)
         {
-            if(File.Exists(filePath) == false)
+            if (File.Exists(filePath) == false)
             {
-                throw new FileNotFoundException($"Couldn't find driver file {filePath}");
+                //throw new FileNotFoundException($"Couldn't find driver file {filePath}");
+                lines = new string[0];
+                return;
             }
 
             lines = File.ReadAllLines(filePath);
@@ -51,7 +53,7 @@ namespace Mirid.Models
             {
                 if (line.Contains("namespace"))
                 {
-                    return line.Substring("namespace ".Length);
+                    return line.Substring("namespace ".Length).TrimEnd(';');
                 }
             }
 
