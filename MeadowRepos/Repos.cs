@@ -48,10 +48,11 @@
             AddRepo("Meadow.Core", org, "source", new List<string> { "Meadow.Contracts", "Meadow.Logging", "Meadow.Core", "Meadow.Modbus", "MQTTnet" });
             AddRepo("Meadow.Foundation", org, "Source", new List<string> { "Meadow.Core", "Meadow.Contracts", "Meadow.Foundation", "Meadow.Modbus" });
 
+            AddRepo("Meadow.Foundation.MBus", org, "Source", new List<string> { "Meadow.Core", "Meadow.Contracts", "Meadow.Logging" });
             AddRepo("Meadow.Foundation.CompositeDevices", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation" });
             AddRepo("Meadow.Foundation.Featherwings", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation" });
             AddRepo("Meadow.Foundation.Grove", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation" });
-            AddRepo("Meadow.Foundation.mikroBus", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation", "Meadow.ProjectLab" });
+            AddRepo("Meadow.Foundation.mikroBus", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation", "Meadow.ProjectLab", "Meadow.Foundation.MBus" });
 
             AddRepo("Meadow.ProjectLab", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation", "Meadow.Modbus" });
             AddRepo("GNSS_Sensor_Tracker", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation" });
