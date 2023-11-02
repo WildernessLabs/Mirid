@@ -7,14 +7,17 @@ namespace Lanzamiento
 {
     internal class Program
     {
-        static string ROOT_DIRECTORY = @"G:\Release1310";
-        static string NUGET_DIRECTORY = @"G:\LocalNuget";
-        static string VERSION = "1.3.1.1-beta";
-        static string NUGET_TOKEN = "";
+        static readonly string ROOT_DIRECTORY = @"G:\Release140";
+        static readonly string NUGET_DIRECTORY = @"G:\LocalNuget";
+        static readonly string VERSION = "1.4.0.5";
+        static readonly string NUGET_TOKEN = "";
 
-        static bool isPreRelease = true;
-        static bool testBuild = false;
-        static bool cloneRepos = true;
+        static readonly bool isPreRelease = false;
+        static readonly bool testBuild = false;
+        static readonly bool cloneRepos = true;
+        static readonly bool createVersionBranch = true;
+        static readonly bool tagRelease = false;
+        static readonly bool publishNugets = false;
 
         static void Main(string[] args)
         {
@@ -34,13 +37,13 @@ namespace Lanzamiento
 
             foreach (var repo in Repos.Repositories)
             {
-                if(cloneRepos)
+                if (cloneRepos == true)
                 {
                     CloneRepo(ROOT_DIRECTORY, repo.Value.GitHubOrg, repo.Value.Name);
                     SetLocalRepoBranch(ROOT_DIRECTORY, repo.Value.Name, sourceBranch);
                 }
 
-                if (testBuild == false && isPreRelease == false)
+                if (testBuild == false && createVersionBranch == true)
                 {
                     CreateNewBranch(ROOT_DIRECTORY, repo.Value.Name, targetBranch);
                     SetLocalRepoBranch(ROOT_DIRECTORY, repo.Value.Name, targetBranch);
@@ -81,7 +84,19 @@ namespace Lanzamiento
                 return;
             }
 
-            PublishNugets(NUGET_DIRECTORY, VERSION);
+            if (publishNugets == true)
+            {
+                PublishNugets(NUGET_DIRECTORY, VERSION);
+
+                foreach (var repo in Repos.Repositories)
+                {
+                    if (testBuild == false && tagRelease == true)
+                    {
+                        TagBranch(ROOT_DIRECTORY, repo.Value.Name, VERSION);
+                    }
+                }
+            }
+
 
             if (isPreRelease == true)
             {
@@ -89,9 +104,12 @@ namespace Lanzamiento
                 return;
             }
 
-            foreach (var repo in Repos.Repositories)
+            if (createVersionBranch == true)
             {
-                PushVersionBranch(ROOT_DIRECTORY, repo.Value.Name, VERSION);
+                foreach (var repo in Repos.Repositories)
+                {
+                    PushVersionBranch(ROOT_DIRECTORY, repo.Value.Name, VERSION);
+                }
             }
 
             Console.WriteLine($"Complete - took {DateTime.Now - now}");
@@ -106,10 +124,12 @@ namespace Lanzamiento
                 throw new Exception($"{Path.Combine(directory, githubRepo)} doesn't exist, cannot push");
             }
 
-            //UpdateConsoleStatus($"Creating new branch {CreateNewBranch} on  {githubRepo}");
-            ExecuteCommand(fullPath, $"git add -A");
-            ExecuteCommand(fullPath, $"git commit -m \"Release {version}\"");
+            //UpdateConsoleStatus($"Creating new branch {CreateNewBranch} on {githubRepo}");
+            ExecuteCommand(fullPath, $"git add -A", false);
+            ExecuteCommand(fullPath, $"git commit -m \"Release {version}\"", false);
             ExecuteCommand(fullPath, $"git push --set-upstream origin v{version}");
+
+            Console.WriteLine($"Pushed {version} branch to {githubRepo}");
         }
 
         static void PublishNugets(string directory, string version)
@@ -118,7 +138,7 @@ namespace Lanzamiento
 
             foreach (var file in files)
             {
-                if(0 == ExecuteCommand(directory, $"dotnet nuget push --api-key {NUGET_TOKEN} {file} -s https://api.nuget.org/v3/index.json", false))
+                if (0 == ExecuteCommand(directory, $"dotnet nuget push --api-key {NUGET_TOKEN} {file} -s https://api.nuget.org/v3/index.json", false))
                 {
                     Console.WriteLine($"Published {file}");
                 }
@@ -178,7 +198,7 @@ namespace Lanzamiento
                 throw new Exception($"{Path.Combine(directory, githubRepo)} doesn't exist, cannot set branch: {branch}");
             }
 
-            UpdateConsoleStatus($"Creating new branch {CreateNewBranch} on  {githubRepo}");
+            UpdateConsoleStatus($"Creating new branch {CreateNewBranch} on {githubRepo}");
             ExecuteCommand(fullPath, $"git branch {branch}");
         }
 
@@ -193,6 +213,18 @@ namespace Lanzamiento
 
             ExecuteCommand(fullPath, $"git checkout {branch}");
             Console.WriteLine($" and set branch to {branch}");
+        }
+
+        static void TagBranch(string directory, string githubRepo, string version)
+        {
+            var fullPath = Path.Combine(directory, githubRepo);
+
+            if (Directory.Exists(fullPath))
+            {
+                ExecuteCommand(fullPath, $"git tag {version}");
+                ExecuteCommand(fullPath, $"git push origin --tags");
+                Console.Write($"Tagged {githubRepo}/{githubRepo}");
+            }
         }
 
         static void CloneRepo(string directory, string githubOrg, string githubRepo)
