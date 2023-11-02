@@ -35,15 +35,20 @@ namespace Mirid
         public static string MFMikroBusDocsOverridePath = "../../../../../Documentation/docfx/api-override/Meadow.Foundation.MikroBus";
         public static string MFMikroBusGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.MikroBus/tree/main/Source/";
 
+        public static string MFCompositePath = "../../../../../Meadow.Foundation.CompositeDevices/Source/";
+        public static string MFCompositeDocsOverridePath = "../../../../../Documentation/docfx/api-override/Meadow.Foundation.CompositeDevices";
+        public static string MFCompositeGitHubUrl = "https://github.com/wildernesslabs/meadow.foundation.compositedevices/tree/main/Source/";
+
 
         static readonly Dictionary<string, MFDriverSet> driverSets = new Dictionary<string, MFDriverSet>();
 
         static readonly string CORE_PERIPHERALS = "Core Peripherals";
-        static readonly string LIBRARIES_AND_FRAMEWORKS = "Libraries and Frameworks";
+        //static readonly string LIBRARIES_AND_FRAMEWORKS = "Libraries and Frameworks";
         static readonly string EXTERNAL_PERIPHERALS = "External Peripherals";
         static readonly string FEATHERWINGS = "FeatherWings";
         static readonly string SEEED_STUDIO_GROVE = "Seeed Studio Grove";
         static readonly string MIKROBUS = "mikroBUS";
+        static readonly string COMPOSITE_DEVICES = "Composite Devices";
 
         static void Main(string[] args)
         {
@@ -52,17 +57,15 @@ namespace Mirid
 
             LoadDriverSets();
 
-            UpdateMetadata();
+            UpdateProjectMetadata();
 
-            return;
-
-            //UpdateDocs();
+            UpdateDocs();
 
             WritePeripheralTables(driverSets.Values.ToList());
             //RunDriverReport();
         }
 
-        static void UpdateMetadata()
+        static void UpdateProjectMetadata()
         {
             foreach (var driverSet in driverSets.Values)
             {
@@ -73,7 +76,7 @@ namespace Mirid
         static void UpdateDocs()
         {
             UpdatePeripheralDocs(driverSets[CORE_PERIPHERALS]);
-            UpdatePeripheralDocs(driverSets[LIBRARIES_AND_FRAMEWORKS]);
+            //UpdatePeripheralDocs(driverSets[LIBRARIES_AND_FRAMEWORKS]);
             UpdatePeripheralDocs(driverSets[EXTERNAL_PERIPHERALS]);
             UpdatePeripheralDocs(driverSets[FEATHERWINGS]);
             UpdatePeripheralDocs(driverSets[SEEED_STUDIO_GROVE]);
@@ -91,14 +94,14 @@ namespace Mirid
                 githubUrl: MFCoreGitHubUrl);
             Console.WriteLine($"Processed {coreDriverSet.DriverPackages.Count} packages with {GetDriverCount(coreDriverSet)} drivers");
 
-
+            /*
             Console.WriteLine($"Load {LIBRARIES_AND_FRAMEWORKS} driver set");
             var frameworksDriverSet = new MFDriverSet(LIBRARIES_AND_FRAMEWORKS,
                 MFSourcePath,
                 MFFrameworksPath,
                 MFDocsOverridePath,
                 MFFrameworksGitHubUrl);
-            Console.WriteLine($"Processed {frameworksDriverSet.DriverPackages.Count} packages with {GetDriverCount(frameworksDriverSet)} drivers");
+            Console.WriteLine($"Processed {frameworksDriverSet.DriverPackages.Count} packages with {GetDriverCount(frameworksDriverSet)} drivers");*/
 
 
             Console.WriteLine($"Load {EXTERNAL_PERIPHERALS} driver set");
@@ -124,14 +127,19 @@ namespace Mirid
             var mikroBusDriverSet = new MFDriverSet(MIKROBUS, MFSourcePath, MFMikroBusPath, MFMikroBusDocsOverridePath, MFMikroBusGitHubUrl);
             Console.WriteLine($"Processed {mikroBusDriverSet.DriverPackages.Count} packages packages with {GetDriverCount(mikroBusDriverSet)} drivers");
 
+            Console.WriteLine($"Load {COMPOSITE_DEVICES} driver set");
+            var compositeDriverSet = new MFDriverSet(COMPOSITE_DEVICES, MFSourcePath, MFCompositePath, MFCompositeDocsOverridePath, MFCompositeGitHubUrl);
+            Console.WriteLine($"Processed {compositeDriverSet.DriverPackages.Count} packages packages with {GetDriverCount(compositeDriverSet)} drivers");
+
 
             //common location so we can turn em off and on ... order counts
             driverSets.Add(CORE_PERIPHERALS, coreDriverSet);
-            driverSets.Add(LIBRARIES_AND_FRAMEWORKS, frameworksDriverSet);
+            //driverSets.Add(LIBRARIES_AND_FRAMEWORKS, frameworksDriverSet);
             driverSets.Add(EXTERNAL_PERIPHERALS, peripheralsDriverSet);
             driverSets.Add(SEEED_STUDIO_GROVE, groveDriverSet);
             driverSets.Add(FEATHERWINGS, featherDriverSet);
             driverSets.Add(MIKROBUS, mikroBusDriverSet);
+            driverSets.Add(COMPOSITE_DEVICES, compositeDriverSet);
 
             int total = 0;
             foreach (var d in driverSets.Values)

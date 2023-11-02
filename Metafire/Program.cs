@@ -6,7 +6,7 @@ namespace Metafire
 {
     internal class Program
     {
-        static string ROOT_DIRECTORY = @"h:\WL";
+        static readonly string ROOT_DIRECTORY = @"h:\WL";
 
         static void Main(string[] args)
         {
@@ -39,17 +39,17 @@ namespace Metafire
                         continue;
                     }
 
-                    //ProjectWriter.AddUpdateProperty(proj, "Nullable", "enable");
-                    //ProjectWriter.AddUpdateProperty(proj, "LangVersion", "10.0");
-                    //ProjectWriter.AddUpdateProperty(proj, "PackageLicenseExpression", "Apache-2.0");
-                    //ProjectWriter.AddUpdateProperty(proj, "GenerateDocumentationFile", "true");
-                    //ProjectWriter.AddUpdateProperty(proj, "Authors", "Wilderness Labs, Inc");
-                    //ProjectWriter.AddUpdateProperty(proj, "Company", "Wilderness Labs, Inc");
+                    ProjectWriter.AddUpdateProperty(proj, "Nullable", "enable");
+                    ProjectWriter.AddUpdateProperty(proj, "LangVersion", "10.0");
+                    ProjectWriter.AddUpdateProperty(proj, "PackageLicenseExpression", "Apache-2.0");
+                    ProjectWriter.AddUpdateProperty(proj, "GenerateDocumentationFile", "true");
+                    ProjectWriter.AddUpdateProperty(proj, "Authors", "Wilderness Labs, Inc");
+                    ProjectWriter.AddUpdateProperty(proj, "Company", "Wilderness Labs, Inc");
                     //
                     ProjectWriter.AddReference(proj, $"    <None Include=\".\\Readme.md\" Pack=\"true\" PackagePath=\"\"/>");
                     ProjectWriter.AddUpdateProperty(proj, "PackageReadmeFile", "Readme.md");
 
-                    //  ProjectWriter.AddReference(proj, $"    <None Include=\"..\\..\\..\\..\\icon.png\" Pack=\"true\" PackagePath=\"\"/>");
+                    // ProjectWriter.AddReference(proj, $"    <None Include=\"..\\..\\..\\..\\icon.png\" Pack=\"true\" PackagePath=\"\"/>");
                     //ProjectWriter.AddUpdateProperty(proj, "Authors", "Wilderness Labs, Inc");
                     //ProjectWriter.AddUpdateProperty(proj, "Company", "Wilderness Labs, Inc");
                     //ProjectWriter.AddUpdateProperty(proj, "PackageProjectUrl", "http://developer.wildernesslabs.co/Meadow/Meadow.Foundation/");

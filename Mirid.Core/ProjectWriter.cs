@@ -6,16 +6,20 @@
         {
             var lines = File.ReadAllLines(project.FullName).ToList();
 
-            //find references 
-            int indexItemGroup = -1;
-            int indexCloseProject = -1;
-
             for (int i = 0; i < lines.Count; i++)
             {
                 if (lines[i].Contains(reference))
                 {   //already have it
                     return true;
                 }
+            }
+
+            //find references 
+            int indexItemGroup = -1;
+            int indexCloseProject = -1;
+
+            for (int i = 0; i < lines.Count; i++)
+            {
                 if (lines[i].Contains("<ItemGroup>"))
                 {
                     indexItemGroup = i;

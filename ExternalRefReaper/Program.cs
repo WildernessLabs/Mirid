@@ -5,8 +5,6 @@
         static void Main(string[] args)
         {
             Console.WriteLine("Hello ref reaper!");
-
-
         }
     }
 }

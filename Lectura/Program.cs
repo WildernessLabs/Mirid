@@ -58,10 +58,7 @@ namespace Lectura
 
             var folder = samplesDirectory?.GetDirectories(name + "_Sample").FirstOrDefault();
 
-            if (folder == null)
-            {   //go fuzzy
-                folder = samplesDirectory?.GetDirectories("*_Sample").FirstOrDefault();
-            }
+            folder ??= samplesDirectory?.GetDirectories("*_Sample").FirstOrDefault();
             if (folder == null)
             {
                 return string.Empty;
@@ -172,6 +169,23 @@ namespace Lectura
             output.AppendLine("## Need Help?");
             output.AppendLine();
             output.AppendLine($"If you have questions or need assistance, please join the Wilderness Labs [community on Slack](http://slackinvite.wildernesslabs.co/).");
+
+            //check if the oldFile exists and if the content is different than output 
+            if (File.Exists(fullPath))
+            {
+                var oldText = File.ReadAllText(fullPath);
+
+                var outputString = output.ToString();
+
+                if (oldText == outputString)
+                {
+                    return;
+                }
+                else //show what's different in the two strings
+                {
+                    Console.WriteLine($"{oldText.Length} vs {outputString.Length}");
+                }
+            }
 
             File.WriteAllText(fullPath, output.ToString());
         }
