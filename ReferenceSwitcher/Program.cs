@@ -19,19 +19,21 @@ namespace ReferenceSwitcher
             //switcher.SwitchMeadowCore(publish: false);
             //switcher.SwitchMeadowFoundationCore(publish: false);
             //switcher.SwitchMeadowFoundation(publish: false);
-            switcher.SwitchMeadowFoundationGrove(publish: false);
-            switcher.SwitchMeadowFoundationFeatherwings(publish: false);
-            switcher.SwitchMeadowFoundationMikroBus(publish: false);
+            //switcher.SwitchMeadowFoundationGrove(publish: false);
+            //switcher.SwitchMeadowFoundationFeatherwings(publish: false);
+            //switcher.SwitchMeadowFoundationMikroBus(publish: false);
 
-            //switcher.SwitchMeadowCoreSamples(publish: false);
-            //switcher.SwitchMeadowProjectSamples(publish: false);
-
-            //switcher.SwitchMeadowProjectLabSamples(publish: false);
-
-            //switcher.SwitchMeadowProjectLab(publish: false);
-            //switcher.SwitchGPS_Tracker(publish: false);
-            //switcher.SwitchClima(publish: false);
             //switcher.SwitchJuego(publish: false);
+            //switcher.SwitchClima(publish: false);
+            //switcher.SwitchGPS_Tracker(publish: false);
+            //switcher.SwitchMeadowProjectLab(publish: false);
+
+            //switcher.SwitchJuegoSamples(publish: false);
+            //switcher.SwitchMeadowCoreSamples(publish: false);
+            //switcher.SwitchMeadowCloudSamples(publish: false);
+            //switcher.SwitchMeadowProjectSamples(publish: false);
+            //switcher.SwitchMeadowDesktopSamples(publish: false);
+            //switcher.SwitchMeadowProjectLabSamples(publish: false);
         }
     }
 }

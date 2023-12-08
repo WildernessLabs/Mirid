@@ -19,15 +19,19 @@ namespace ReferenceSwitcher
         FoundationFeatherwings,
         FoundationGrove,
         FoundationMikroBus,
+        Maple,
 
         ProjectLab,
-        CoreSamples,
-        ProjectSamples,
-        ProjectLabSamples,
-
         GPS_Tracker,
         Clima,
         Juego,
+
+        CoreSamples,
+        JuegoSamples,
+        CloudSamples,
+        ProjectSamples,
+        DesktopSamples,
+        ProjectLabSamples,
 
         count
     }
@@ -53,13 +57,17 @@ namespace ReferenceSwitcher
                 { MeadowRepo.FoundationFeatherwings, repoLoader.LoadRepo("Meadow.Foundation.Featherwings", "Meadow.Foundation.Featherwings/Source/", ProjectType.All) },
                 { MeadowRepo.FoundationGrove, repoLoader.LoadRepo("Meadow.Foundation.Grove", "Meadow.Foundation.Grove/Source/", ProjectType.All) },
                 { MeadowRepo.FoundationMikroBus, repoLoader.LoadRepo("Meadow.Foundation.mikroBus", "Meadow.Foundation.mikroBus/Source/", ProjectType.All) },
+                { MeadowRepo.Maple, repoLoader.LoadRepo("Maple", "Maple/Source/", ProjectType.All) },
                 { MeadowRepo.ProjectLab, repoLoader.LoadRepo("Meadow.ProjectLab", "Meadow.ProjectLab/Source/") },
-                { MeadowRepo.CoreSamples, repoLoader.LoadRepo("Meadow.Core.Samples", "Meadow.Core.Samples/Source/", ProjectType.All) },
-                { MeadowRepo.ProjectSamples, repoLoader.LoadRepo("Meadow.Project.Samples", "Meadow.Project.Samples/Source/", ProjectType.All) },
-                { MeadowRepo.ProjectLabSamples, repoLoader.LoadRepo("Meadow.ProjectLab.Samples", "Meadow.ProjectLab.Samples/Source/", ProjectType.All) },
                 { MeadowRepo.GPS_Tracker, repoLoader.LoadRepo("GNSS_Tracker", "GNSS_Sensor_Tracker/Source/", ProjectType.All) },
                 { MeadowRepo.Clima, repoLoader.LoadRepo("Clima", "Clima/Source/", ProjectType.All) },
-                { MeadowRepo.Juego, repoLoader.LoadRepo("Juego", "Juego/Source/", ProjectType.All) }
+                { MeadowRepo.Juego, repoLoader.LoadRepo("Juego", "Juego/Source/", ProjectType.All) },
+                { MeadowRepo.CoreSamples, repoLoader.LoadRepo("Meadow.Core.Samples", "Meadow.Core.Samples/Source/", ProjectType.All) },
+                { MeadowRepo.JuegoSamples, repoLoader.LoadRepo("Juego.Samples", "Juego.Samples/Source/", ProjectType.All) },
+                { MeadowRepo.CloudSamples, repoLoader.LoadRepo("Meadow.Cloud.Samples", "Meadow.Cloud.Samples/Source/", ProjectType.All) },
+                { MeadowRepo.DesktopSamples, repoLoader.LoadRepo("Meadow.Desktop.Samples", "Meadow.Desktop.Samples/Source/", ProjectType.All) },
+                { MeadowRepo.ProjectSamples, repoLoader.LoadRepo("Meadow.Project.Samples", "Meadow.Project.Samples/Source/", ProjectType.All) },
+                { MeadowRepo.ProjectLabSamples, repoLoader.LoadRepo("Meadow.ProjectLab.Samples", "Meadow.ProjectLab.Samples/Source/", ProjectType.All) },
             };
         }
 
@@ -166,26 +174,6 @@ namespace ReferenceSwitcher
                 publish);
         }
 
-        public void SwitchMeadowCoreSamples(bool publish)
-        {
-            SwitchRepo(Repos[MeadowRepo.CoreSamples].ProjectFiles,
-                new IEnumerable<FileInfo>[] {
-                    Repos[MeadowRepo.Foundation].ProjectFiles,
-                    Repos[MeadowRepo.Core].ProjectFiles,
-                    Repos[MeadowRepo.Modbus].ProjectFiles },
-                publish);
-        }
-
-        public void SwitchMeadowProjectSamples(bool publish)
-        {
-            SwitchRepo(Repos[MeadowRepo.ProjectSamples].ProjectFiles,
-                new IEnumerable<FileInfo>[] {
-                    Repos[MeadowRepo.Foundation].ProjectFiles,
-                    Repos[MeadowRepo.Core].ProjectFiles,
-                    Repos[MeadowRepo.Modbus].ProjectFiles },
-                publish);
-        }
-
         public void SwitchGPS_Tracker(bool publish)
         {
             SwitchRepo(Repos[MeadowRepo.GPS_Tracker].ProjectFiles,
@@ -213,10 +201,67 @@ namespace ReferenceSwitcher
                 publish);
         }
 
+        public void SwitchJuegoSamples(bool publish)
+        {
+            SwitchRepo(Repos[MeadowRepo.JuegoSamples].ProjectFiles,
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Juego].ProjectFiles,
+                    Repos[MeadowRepo.Foundation].ProjectFiles,
+                    Repos[MeadowRepo.Core].ProjectFiles,
+                    Repos[MeadowRepo.Modbus].ProjectFiles },
+                publish);
+        }
+
+        public void SwitchMeadowCoreSamples(bool publish)
+        {
+            SwitchRepo(Repos[MeadowRepo.CoreSamples].ProjectFiles,
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Foundation].ProjectFiles,
+                    Repos[MeadowRepo.Core].ProjectFiles,
+                    Repos[MeadowRepo.Modbus].ProjectFiles },
+                publish);
+        }
+
+        public void SwitchMeadowCloudSamples(bool publish)
+        {
+            SwitchRepo(Repos[MeadowRepo.CloudSamples].ProjectFiles,
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Foundation].ProjectFiles,
+                    Repos[MeadowRepo.ProjectLab].ProjectFiles,
+                    Repos[MeadowRepo.FoundationGrove].ProjectFiles,
+                    Repos[MeadowRepo.Maple].ProjectFiles,
+                    Repos[MeadowRepo.Core].ProjectFiles,
+                    Repos[MeadowRepo.Logging].ProjectFiles,
+                    Repos[MeadowRepo.Modbus].ProjectFiles },
+                publish);
+        }
+
+        public void SwitchMeadowProjectSamples(bool publish)
+        {
+            SwitchRepo(Repos[MeadowRepo.ProjectSamples].ProjectFiles,
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Maple].ProjectFiles,
+                    Repos[MeadowRepo.Foundation].ProjectFiles,
+                    Repos[MeadowRepo.Core].ProjectFiles,
+                    Repos[MeadowRepo.Modbus].ProjectFiles },
+                publish);
+        }
+
+        public void SwitchMeadowDesktopSamples(bool publish)
+        {
+            SwitchRepo(Repos[MeadowRepo.DesktopSamples].ProjectFiles,
+                new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Foundation].ProjectFiles,
+                    Repos[MeadowRepo.Core].ProjectFiles,
+                    Repos[MeadowRepo.Modbus].ProjectFiles },
+                publish);
+        }
+
         public void SwitchMeadowProjectLabSamples(bool publish)
         {
             SwitchRepo(Repos[MeadowRepo.ProjectLabSamples].ProjectFiles,
                 new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Maple].ProjectFiles,
                     Repos[MeadowRepo.ProjectLab].ProjectFiles,
                     Repos[MeadowRepo.Foundation].ProjectFiles,
                     Repos[MeadowRepo.FoundationGrove].ProjectFiles,
