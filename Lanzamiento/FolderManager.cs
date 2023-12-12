@@ -27,7 +27,8 @@
                 try
                 {
                     // Skip hidden directories and .git directories
-                    if (IsIgnoredDirectory(Path.GetDirectoryName(sourceFilePath)))
+                    string sourceDirectory = Path.GetDirectoryName(sourceFilePath);
+                    if (IsIgnoredDirectory(sourceDirectory))
                     {
                         continue;
                     }
@@ -47,8 +48,6 @@
 
                     // Copy the file
                     File.Copy(sourceFilePath, targetFilePath, true);
-
-                    //  Console.WriteLine($"Copied: {sourceFilePath} to {targetFilePath}");
                 }
                 catch (Exception ex)
                 {
@@ -64,7 +63,8 @@
                 try
                 {
                     // Skip hidden directories and .git directories
-                    if (IsIgnoredDirectory(Path.GetDirectoryName(targetFilePath)))
+                    string targetDirectory = Path.GetDirectoryName(targetFilePath);
+                    if (IsIgnoredDirectory(targetDirectory))
                     {
                         continue;
                     }
@@ -79,7 +79,6 @@
                     if (!File.Exists(sourceFilePath))
                     {
                         File.Delete(targetFilePath);
-                        //   Console.WriteLine($"Deleted: {targetFilePath}");
                     }
                 }
                 catch (Exception ex)
@@ -88,6 +87,7 @@
                 }
             }
         }
+
 
         static bool IsIgnoredDirectory(string directoryPath)
         {
@@ -101,10 +101,11 @@
                 return true;
             }
 
-            if (directoryPath.Contains(".git"))
+            if (directoryPath.Contains(".git") && directoryPath.Contains(".github") == false)
             {
                 return true;
             }
+
             return false;
         }
     }
