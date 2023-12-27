@@ -81,6 +81,7 @@ namespace Mirid
             UpdatePeripheralDocs(driverSets[FEATHERWINGS]);
             UpdatePeripheralDocs(driverSets[SEEED_STUDIO_GROVE]);
             UpdatePeripheralDocs(driverSets[MIKROBUS]);
+            // UpdatePeripheralDocs(driverSets[COMPOSITE_DEVICES]);
         }
 
         static void LoadDriverSets()
