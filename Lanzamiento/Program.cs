@@ -7,17 +7,20 @@ namespace Lanzamiento
 {
     internal class Program
     {
-        static readonly string ROOT_DIRECTORY = @"G:\Release140";
+        static readonly string ROOT_DEV_DIRECTORY = @"G:\1603Dev";
+        static readonly string ROOT_MAIN_DIRECTORY = @"G:\1603Main";
         static readonly string NUGET_DIRECTORY = @"G:\LocalNuget";
-        static readonly string VERSION = "1.4.0.5";
-        static readonly string NUGET_TOKEN = "";
+        static readonly string VERSION = "1.6.0.5-beta";
 
-        static readonly bool isPreRelease = false;
+        static readonly string TIMESTAMP = "2023-10-31 6:52:00";
+
         static readonly bool testBuild = false;
+        static readonly bool buildNugets = true;
         static readonly bool cloneRepos = true;
-        static readonly bool createVersionBranch = true;
-        static readonly bool tagRelease = false;
-        static readonly bool publishNugets = false;
+        static readonly bool tagRelease = true;
+        static readonly bool publishNugets = true;
+        static readonly bool syncFolders = false;
+        static readonly bool pushVersionBranch = false;
 
         static void Main(string[] args)
         {
@@ -25,7 +28,8 @@ namespace Lanzamiento
 
             Console.WriteLine($"Hello Lanzamiento - {now}");
 
-            ValidateDirectory(ROOT_DIRECTORY);
+            ValidateDirectory(ROOT_DEV_DIRECTORY);
+            ValidateDirectory(ROOT_MAIN_DIRECTORY);
             ValidateDirectory(NUGET_DIRECTORY);
 
             Repos.PopulateRepos();
@@ -33,38 +37,38 @@ namespace Lanzamiento
             Console.WriteLine($"Loaded {Repos.Repositories.Count} repos");
 
             string sourceBranch = "develop";
+            string updateBranch = "main";
             string targetBranch = $"v{VERSION}";
 
             foreach (var repo in Repos.Repositories)
             {
                 if (cloneRepos == true)
                 {
-                    CloneRepo(ROOT_DIRECTORY, repo.Value.GitHubOrg, repo.Value.Name);
-                    SetLocalRepoBranch(ROOT_DIRECTORY, repo.Value.Name, sourceBranch);
-                }
-
-                if (testBuild == false && createVersionBranch == true)
-                {
-                    CreateNewBranch(ROOT_DIRECTORY, repo.Value.Name, targetBranch);
-                    SetLocalRepoBranch(ROOT_DIRECTORY, repo.Value.Name, targetBranch);
+                    CloneRepo(ROOT_DEV_DIRECTORY, repo.Value.GitHubOrg, repo.Value.Name);
+                    SetLocalRepoBranch(ROOT_DEV_DIRECTORY, repo.Value.Name, sourceBranch);
+                    //   var hash = GetCommitForTimeStamp(ROOT_DEV_DIRECTORY, repo.Value.Name, sourceBranch, $"{TIMESTAMP}");
+                    //   SetHeadToCommit(ROOT_DEV_DIRECTORY, repo.Value.Name, hash);
                 }
             }
 
+            //sort project dependancies 
             foreach (var repo in Repos.Repositories)
             {
-                var path = Path.Combine(ROOT_DIRECTORY, repo.Key, repo.Value.SourceDirectory);
+                var path = Path.Combine(ROOT_DEV_DIRECTORY, repo.Key, repo.Value.SourceDirectory);
                 var repos = RepoLoader.GetCsProjFiles(path, ProjectType.All);
                 repo.Value.ProjectFiles = RefSwitcher.SortProjectsByLocalDependencies(repos);
             }
 
+            //update projects to swap local refs to nugets
             foreach (var repo in Repos.Repositories)
             {
-                Nugetize(repo.Value, isPreRelease ? VERSION : null);
-                RemoveExternalReferences(ROOT_DIRECTORY, repo.Value);
+                Nugetize(repo.Value, VERSION);
+                RemoveExternalReferences(ROOT_DEV_DIRECTORY, repo.Value);
 
                 Console.WriteLine($"Prepared {repo.Key} for publishing");
             }
 
+            //build the projects
             foreach (var repo in Repos.Repositories)
             {
                 foreach (var project in repo.Value.ProjectFiles)
@@ -74,17 +78,14 @@ namespace Lanzamiento
                         continue;
                     }
 
-                    BuildProject(project, ROOT_DIRECTORY, NUGET_DIRECTORY, VERSION);
+                    if (buildNugets)
+                    {
+                        BuildProject(project, ROOT_DEV_DIRECTORY, NUGET_DIRECTORY, VERSION);
+                    }
                 }
             }
 
-            if (testBuild == true)
-            {
-                Console.WriteLine($"Complete - took {DateTime.Now - now}");
-                return;
-            }
-
-            if (publishNugets == true)
+            if (publishNugets == true && testBuild == false)
             {
                 PublishNugets(NUGET_DIRECTORY, VERSION);
 
@@ -92,28 +93,44 @@ namespace Lanzamiento
                 {
                     if (testBuild == false && tagRelease == true)
                     {
-                        TagBranch(ROOT_DIRECTORY, repo.Value.Name, VERSION);
+                        TagBranch(ROOT_DEV_DIRECTORY, repo.Value.Name, VERSION);
                     }
                 }
             }
 
-
-            if (isPreRelease == true)
-            {
-                Console.WriteLine($"Complete - took {DateTime.Now - now}");
-                return;
-            }
-
-            if (createVersionBranch == true)
+            if (syncFolders)
             {
                 foreach (var repo in Repos.Repositories)
                 {
-                    PushVersionBranch(ROOT_DIRECTORY, repo.Value.Name, VERSION);
+                    if (repo.Key.Contains("MQTT"))
+                    {   //since we'll never update and it doesn't have a main branch
+                        continue;
+                    }
+
+                    CloneRepo(ROOT_MAIN_DIRECTORY, repo.Value.GitHubOrg, repo.Value.Name);
+                    SetLocalRepoBranch(ROOT_MAIN_DIRECTORY, repo.Value.Name, updateBranch);
+                    CreateNewBranch(ROOT_MAIN_DIRECTORY, repo.Value.Name, targetBranch);
+                    SetLocalRepoBranch(ROOT_MAIN_DIRECTORY, repo.Value.Name, targetBranch);
+                    SyncFolder(ROOT_DEV_DIRECTORY, ROOT_MAIN_DIRECTORY, repo.Value.Name);
+
+                    if (pushVersionBranch && testBuild == false)
+                    {
+                        PushVersionBranch(ROOT_MAIN_DIRECTORY, repo.Value.Name, VERSION);
+                    }
                 }
             }
 
             Console.WriteLine($"Complete - took {DateTime.Now - now}");
         }
+
+        static void SyncFolder(string sourceDirectory, string targetDirectory, string githubRepo)
+        {
+            var fullPathSource = Path.Combine(sourceDirectory, githubRepo);
+            var fullPathTarget = Path.Combine(targetDirectory, githubRepo);
+
+            FolderManager.CopyAndDeleteFiles(fullPathSource, fullPathTarget);
+        }
+
 
         static void PushVersionBranch(string directory, string githubRepo, string version)
         {
@@ -124,12 +141,17 @@ namespace Lanzamiento
                 throw new Exception($"{Path.Combine(directory, githubRepo)} doesn't exist, cannot push");
             }
 
-            //UpdateConsoleStatus($"Creating new branch {CreateNewBranch} on {githubRepo}");
-            ExecuteCommand(fullPath, $"git add -A", false);
-            ExecuteCommand(fullPath, $"git commit -m \"Release {version}\"", false);
-            ExecuteCommand(fullPath, $"git push --set-upstream origin v{version}");
-
-            Console.WriteLine($"Pushed {version} branch to {githubRepo}");
+            try
+            {
+                ExecuteCommand(fullPath, $"git add -A", false);
+                ExecuteCommand(fullPath, $"git commit -m \"Release {version}\"", false);
+                ExecuteCommand(fullPath, $"git push --set-upstream origin v{version}");
+                Console.WriteLine($"Pushed {version} branch to {githubRepo}");
+            }
+            catch
+            {
+                Console.WriteLine($"Failed to push {version} branch to {githubRepo}");
+            }
         }
 
         static void PublishNugets(string directory, string version)
@@ -198,7 +220,7 @@ namespace Lanzamiento
                 throw new Exception($"{Path.Combine(directory, githubRepo)} doesn't exist, cannot set branch: {branch}");
             }
 
-            UpdateConsoleStatus($"Creating new branch {CreateNewBranch} on {githubRepo}");
+            Console.Write($"Created new branch {branch} on {githubRepo}");
             ExecuteCommand(fullPath, $"git branch {branch}");
         }
 
@@ -227,6 +249,21 @@ namespace Lanzamiento
             }
         }
 
+        //git rev-list -n 1 --before="2023-10-31 17:24:22" develop
+
+        static string GetCommitForTimeStamp(string directory, string githubRepo, string branch, string timeStampString)
+        {
+            var fullPath = Path.Combine(directory, githubRepo);
+            ExecuteCommand(fullPath, $"git rev-list -n 1 --before=\"{timeStampString}\" {branch}", out string output);
+            return output.Trim('\n');
+        }
+
+        static void SetHeadToCommit(string directory, string githubRepo, string commit)
+        {
+            var fullPath = Path.Combine(directory, githubRepo);
+            ExecuteCommand(fullPath, $"git reset --hard {commit}");
+        }
+
         static void CloneRepo(string directory, string githubOrg, string githubRepo)
         {
             var fullPath = Path.Combine(directory, githubRepo);
@@ -236,16 +273,21 @@ namespace Lanzamiento
                 ExecuteCommand(fullPath, $"git clean -dfx");
                 ExecuteCommand(fullPath, $"git reset --hard");
                 ExecuteCommand(fullPath, $"git pull");
-                Console.Write($"Pulled {githubRepo}/{githubRepo}");
+                Console.Write($"Pulled {githubOrg}/{githubRepo}");
             }
             else
             {
-                ExecuteCommand(ROOT_DIRECTORY, $"git clone https://www.github.com/{githubOrg}/{githubRepo}");
-                Console.Write($"Cloned {githubRepo}/{githubRepo}");
+                ExecuteCommand(directory, $"git clone https://www.github.com/{githubOrg}/{githubRepo}");
+                Console.Write($"Cloned {githubOrg}/{githubRepo}");
             }
         }
 
         public static int ExecuteCommand(string directory, string command, bool throwOnError = true)
+        {
+            return ExecuteCommand(directory, command, out _, throwOnError);
+        }
+
+        public static int ExecuteCommand(string directory, string command, out string output, bool throwOnError = true)
         {
             int exitCode;
 
@@ -267,7 +309,7 @@ namespace Lanzamiento
                 process.Start();
 
                 // Read the standard output asynchronously to avoid deadlocks.
-                string output = process.StandardOutput.ReadToEnd();
+                output = process.StandardOutput.ReadToEnd();
 
                 process.WaitForExit();
 
