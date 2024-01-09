@@ -2,6 +2,56 @@
 {
     public class ProjectWriter
     {
+        public static bool AddOrReplaceReference(FileInfo project, string reference, string lineMatch)
+        {
+            var lines = File.ReadAllLines(project.FullName).ToList();
+
+            for (int i = 0; i < lines.Count; i++)
+            {
+                if (lines[i].Contains(reference))
+                {   //already have it
+                    return true;
+                }
+                if (lines[i].Contains(lineMatch))
+                {
+                    lines[i] = reference;
+                    File.WriteAllLines(project.FullName, lines.ToArray());
+                    return true;
+                }
+            }
+
+            //find references 
+            int indexItemGroup = -1;
+            int indexCloseProject = -1;
+
+            for (int i = 0; i < lines.Count; i++)
+            {
+                if (lines[i].Contains("<ItemGroup>"))
+                {
+                    indexItemGroup = i;
+                    break;
+                }
+                if (lines[i].Contains("</Project>"))
+                {
+                    indexCloseProject = i;
+                }
+            }
+
+            if (indexItemGroup == -1)
+            {
+                lines.Insert(indexCloseProject, $"  </ItemGroup>");
+                lines.Insert(indexCloseProject, $"  <ItemGroup>");
+                indexItemGroup = indexCloseProject;
+            }
+
+            //insert 
+            lines.Insert(indexItemGroup + 1, reference);
+
+            File.WriteAllLines(project.FullName, lines.ToArray());
+
+            return true;
+        }
+
         public static bool AddReference(FileInfo project, string reference)
         {
             var lines = File.ReadAllLines(project.FullName).ToList();
@@ -45,7 +95,6 @@
 
             return true;
         }
-
 
         public static bool AddReference(FileInfo project, FileInfo reference)
         {
