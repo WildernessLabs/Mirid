@@ -6,8 +6,8 @@ namespace Metafire;
 
 internal class Program
 {
-    static readonly string ROOT_DIRECTORY = @"c:\WL";
-    static readonly string NUGET_VERSION = "1.6.0.1";
+    static readonly string ROOT_DIRECTORY = @"h:\WL";
+    static readonly string NUGET_VERSION = "1.7.0";
 
     static void Main(string[] args)
     {
@@ -30,9 +30,9 @@ internal class Program
             {
 
                 //make sure it's a Meadow.Foundation nuget driver package
-                if (proj.FullName.Contains("Meadow.Foundation"))
+                if (proj.FullName.Contains("Meadow.Foundation") && proj.FullName.Contains("Sample") == false)
                 {
-                    continue; //for now
+                    //continue; //for now
                     ProjectWriter.AddOrReplaceReference(proj, $"    <None Include=\".\\Readme.md\" Pack=\"true\" PackagePath=\"\" />", "<None Include=\".\\Readme.md\"");
                     ProjectWriter.AddUpdateProperty(proj, "PackageReadmeFile", "Readme.md");
                 }

@@ -6,18 +6,42 @@
         {
             var lines = File.ReadAllLines(project.FullName).ToList();
 
+            var indexes = new List<int>();
+
             for (int i = 0; i < lines.Count; i++)
             {
-                if (lines[i].Contains(reference))
+                //if (lines[i].Contains(reference))
                 {   //already have it
-                    return true;
+                    //    return true;
                 }
                 if (lines[i].Contains(lineMatch))
                 {
-                    lines[i] = reference;
-                    File.WriteAllLines(project.FullName, lines.ToArray());
-                    return true;
+                    indexes.Add(i);
+                    //  lines[i] = reference;
+                    //  File.WriteAllLines(project.FullName, lines.ToArray());
+                    //  return true;
                 }
+            }
+
+            bool found = false;
+            foreach (var index in indexes)
+            {
+                if (found == false)
+                {
+                    lines[index] = reference;
+                    found = true;
+                }
+                else
+                {
+                    lines.RemoveAt(index);
+                    break;
+                }
+            }
+
+            if (found == true)
+            {
+                File.WriteAllLines(project.FullName, lines.ToArray());
+                return true;
             }
 
             //find references 
@@ -192,12 +216,12 @@
             //load project
             var lines = File.ReadAllLines(file.FullName).ToList();
 
-            //find property
-            int index = -1;
+            List<int> indexes = new();
+
             int indexProperyGroup = -1;
             for (int i = 0; i < lines.Count; i++)
             {
-                if (lines[i].Contains("<PropertyGroup>"))
+                if (indexProperyGroup == -1 && lines[i].Contains("<PropertyGroup>"))
                 {
                     indexProperyGroup = i;
                 }
@@ -205,11 +229,10 @@
                 {
                     if (lines[i].Contains($">{value}<"))
                     {
-                        return true;
+                        //   return true;
                     }
 
-                    index = i;
-                    break;
+                    indexes.Add(i);
                 }
             }
 
@@ -218,16 +241,27 @@
                 return false;
             }
 
-            if (index == -1)
+            bool found = false;
+
+            foreach (var index in indexes)
             {
-                lines.Insert(indexProperyGroup + 1, $"    <{property}>{value}</{property}>");
-            }
-            else
-            {
-                if (lines[index].Contains($"<{value}>") == false)
+                if (found)
+                {   //only good for one duplicate
+                    lines.RemoveAt(index);
+                    break;
+                }
+
+                if (lines[index].Contains($">{value}<") == true)
                 {
+                    found = true;
                     lines[index] = $"    <{property}>{value}</{property}>";
                 }
+            }
+
+            //add if it doesn't exist
+            if (found == false)
+            {
+                lines.Insert(indexProperyGroup + 1, $"    <{property}>{value}</{property}>");
             }
 
             File.WriteAllLines(file.FullName, lines.ToArray());
