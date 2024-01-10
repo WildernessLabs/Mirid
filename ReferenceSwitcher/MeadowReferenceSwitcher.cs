@@ -6,6 +6,7 @@ namespace ReferenceSwitcher
 {
     public enum MeadowRepo
     {
+        amqpnetlite,
         Units,
         MQTTnet,
         Logging,
@@ -45,6 +46,7 @@ namespace ReferenceSwitcher
         {
             Repos = new Dictionary<MeadowRepo, GitRepo>
             {
+                { MeadowRepo.amqpnetlite, repoLoader.LoadRepo("amqpnetlite", "amqpnetlite/src/") },
                 { MeadowRepo.Units, repoLoader.LoadRepo("Meadow.Units", "Meadow.Units/Source/") },
                 { MeadowRepo.Modbus, repoLoader.LoadRepo("Meadow.Modbus", "Meadow.Modbus/src/") },
                 { MeadowRepo.MQTTnet, repoLoader.LoadRepo("MQTTnet", "MQTTnet/Source/MQTTnet/") },
@@ -216,6 +218,7 @@ namespace ReferenceSwitcher
         {
             SwitchRepo(Repos[MeadowRepo.CoreSamples].ProjectFiles,
                 new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.MQTTnet].ProjectFiles,
                     Repos[MeadowRepo.Foundation].ProjectFiles,
                     Repos[MeadowRepo.Core].ProjectFiles,
                     Repos[MeadowRepo.Modbus].ProjectFiles },
@@ -240,6 +243,7 @@ namespace ReferenceSwitcher
         {
             SwitchRepo(Repos[MeadowRepo.ProjectSamples].ProjectFiles,
                 new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.amqpnetlite].ProjectFiles,
                     Repos[MeadowRepo.Maple].ProjectFiles,
                     Repos[MeadowRepo.Foundation].ProjectFiles,
                     Repos[MeadowRepo.Core].ProjectFiles,
@@ -261,7 +265,9 @@ namespace ReferenceSwitcher
         {
             SwitchRepo(Repos[MeadowRepo.ProjectLabSamples].ProjectFiles,
                 new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.amqpnetlite].ProjectFiles,
                     Repos[MeadowRepo.Maple].ProjectFiles,
+                    Repos[MeadowRepo.Modbus].ProjectFiles,
                     Repos[MeadowRepo.ProjectLab].ProjectFiles,
                     Repos[MeadowRepo.Foundation].ProjectFiles,
                     Repos[MeadowRepo.FoundationGrove].ProjectFiles,
