@@ -251,7 +251,7 @@
                     break;
                 }
 
-                if (lines[index].Contains($">{value}<") == true)
+                if (lines[index].Contains($"<{property}>") == true)
                 {
                     found = true;
                     lines[index] = $"    <{property}>{value}</{property}>";
