@@ -178,7 +178,7 @@ namespace Lectura
 
             output.AppendLine("## About Meadow");
             output.AppendLine();
-            output.AppendLine("Meadow is a complete, IoT platform with defense-grade security that runs full .NET applications on embeddable microcontrollers.");
+            output.AppendLine("Meadow is a complete, IoT platform with defense-grade security that runs full .NET applications on embeddable microcontrollers and Linux single-board computers including Raspberry Pi and NVIDIA Jetson.");
             output.AppendLine();
             output.AppendLine("### Build");
             output.AppendLine();
