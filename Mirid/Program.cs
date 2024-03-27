@@ -40,7 +40,7 @@ namespace Mirid
         public static string MFCompositeGitHubUrl = "https://github.com/wildernesslabs/meadow.foundation.compositedevices/tree/main/Source/";
 
 
-        static readonly Dictionary<string, MFDriverSet> driverSets = new Dictionary<string, MFDriverSet>();
+        static readonly Dictionary<string, MFDriverSet> driverSets = new();
 
         static readonly string CORE_PERIPHERALS = "Core Peripherals";
         static readonly string LIBRARIES_AND_FRAMEWORKS = "Libraries and Frameworks";
@@ -76,7 +76,7 @@ namespace Mirid
         static void UpdateDocs()
         {
             //UpdatePeripheralDocs(driverSets[CORE_PERIPHERALS]);
-            //UpdatePeripheralDocs(driverSets[LIBRARIES_AND_FRAMEWORKS]);
+            UpdatePeripheralDocs(driverSets[LIBRARIES_AND_FRAMEWORKS]);
             UpdatePeripheralDocs(driverSets[EXTERNAL_PERIPHERALS]);
             UpdatePeripheralDocs(driverSets[FEATHERWINGS]);
             UpdatePeripheralDocs(driverSets[SEEED_STUDIO_GROVE]);
@@ -95,14 +95,13 @@ namespace Mirid
                 githubUrl: MFCoreGitHubUrl);
             Console.WriteLine($"Processed {coreDriverSet.DriverPackages.Count} packages with {GetDriverCount(coreDriverSet)} drivers");
 
-            /*
             Console.WriteLine($"Load {LIBRARIES_AND_FRAMEWORKS} driver set");
             var frameworksDriverSet = new MFDriverSet(LIBRARIES_AND_FRAMEWORKS,
                 MFSourcePath,
                 MFFrameworksPath,
                 MFDocsOverridePath,
                 MFFrameworksGitHubUrl);
-            Console.WriteLine($"Processed {frameworksDriverSet.DriverPackages.Count} packages with {GetDriverCount(frameworksDriverSet)} drivers");*/
+            Console.WriteLine($"Processed {frameworksDriverSet.DriverPackages.Count} packages with {GetDriverCount(frameworksDriverSet)} drivers");
 
 
             Console.WriteLine($"Load {EXTERNAL_PERIPHERALS} driver set");
@@ -135,7 +134,7 @@ namespace Mirid
 
             //common location so we can turn em off and on ... order counts
             driverSets.Add(CORE_PERIPHERALS, coreDriverSet);
-            //driverSets.Add(LIBRARIES_AND_FRAMEWORKS, frameworksDriverSet);
+            driverSets.Add(LIBRARIES_AND_FRAMEWORKS, frameworksDriverSet);
             driverSets.Add(EXTERNAL_PERIPHERALS, peripheralsDriverSet);
             driverSets.Add(SEEED_STUDIO_GROVE, groveDriverSet);
             driverSets.Add(FEATHERWINGS, featherDriverSet);

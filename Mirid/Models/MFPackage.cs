@@ -49,7 +49,7 @@ namespace Mirid.Models
         public string Description => NugetProject?.Description ?? string.Empty;
 
         [Ignore]
-        public DirectoryInfo ProjectDirectory {get; protected set; }
+        public DirectoryInfo ProjectDirectory { get; protected set; }
 
 
         public MFPackage(FileInfo driverProjectFile, string docsOverridePath)
@@ -60,7 +60,7 @@ namespace Mirid.Models
         }
 
         protected virtual void LoadDriverResouces(FileInfo driverProjectFile, string docsOverridePath)
-        {    
+        {
             if (File.Exists(driverProjectFile.FullName) == false)
             {
                 throw new FileNotFoundException($"Driver project not found {driverProjectFile.FullName}");
@@ -95,8 +95,8 @@ namespace Mirid.Models
                 var file = Path.Combine(driverProjectFile.DirectoryName, fileName);
 
                 var fullName = Path.GetFileNameWithoutExtension(driverProjectFile.Name);
-                Drivers.Add(new MFDriver(this, 
-                                         file, 
+                Drivers.Add(new MFDriver(this,
+                                         file,
                                          Assets.GetSampleForName(Path.GetFileNameWithoutExtension(file) + "_Sample"),
                                          docsOverridePath));
             }
