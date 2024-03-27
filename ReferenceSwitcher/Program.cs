@@ -28,12 +28,7 @@ namespace ReferenceSwitcher
             //switcher.SwitchGPS_Tracker(publish: false);
             //switcher.SwitchMeadowProjectLab(publish: false);
 
-            //switcher.SwitchJuegoSamples(publish: false);
-            //switcher.SwitchMeadowCoreSamples(publish: false);
-            //switcher.SwitchMeadowCloudSamples(publish: false);
-            //switcher.SwitchMeadowProjectSamples(publish: false);
-            //switcher.SwitchMeadowDesktopSamples(publish: false);
-            //switcher.SwitchMeadowProjectLabSamples(publish: false);
+            switcher.SwitchMeadowSamples(publish: true);
         }
     }
 }
