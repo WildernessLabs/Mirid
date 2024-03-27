@@ -10,6 +10,7 @@ namespace ReferenceSwitcher
         Units,
         MQTTnet,
         Logging,
+        LogProviders,
 
         Modbus,
         Contracts,
@@ -45,7 +46,8 @@ namespace ReferenceSwitcher
                 { MeadowRepo.Units, repoLoader.LoadRepo("Meadow.Units", "Meadow.Units/Source/") },
                 { MeadowRepo.Modbus, repoLoader.LoadRepo("Meadow.Modbus", "Meadow.Modbus/src/") },
                 { MeadowRepo.MQTTnet, repoLoader.LoadRepo("MQTTnet", "MQTTnet/Source/MQTTnet/") },
-                { MeadowRepo.Logging, repoLoader.LoadRepo("Meadow.Logging", "Meadow.Logging/Source/") },
+                { MeadowRepo.Logging, repoLoader.LoadRepo("Meadow.Logging", "Meadow.Logging/Source/Meadow.Logging/") },
+                { MeadowRepo.LogProviders, repoLoader.LoadRepo("Meadow.Logging", "Meadow.Logging/Source/Meadow.Logging.LogProviders/") },
                 { MeadowRepo.Contracts, repoLoader.LoadRepo("Meadow.Contracts", "Meadow.Contracts/Source/") },
                 { MeadowRepo.Core, repoLoader.LoadRepo("Meadow.Core", "Meadow.Core/source/") },
                 { MeadowRepo.Foundation, repoLoader.LoadRepo("Meadow.Foundation", "Meadow.Foundation/Source/", ProjectType.Drivers) },
