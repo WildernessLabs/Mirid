@@ -17,33 +17,33 @@ namespace Mirid
         public static string MFCoreGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation/tree/main/Source/Meadow.Foundation.Core/";
 
         public static string MFPeripheralsPath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Peripherals";
-        public static string MFDocsOverridePath = "../../../../../Documentation/docfx/api-override/Meadow.Foundation";
+        public static string MFDocsOverridePath = "../../../../../Documentation/docs/api/Meadow.Foundation";
         public static string MFGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation/tree/main/Source/Meadow.Foundation.Peripherals/";
 
         public static string MFFrameworksPath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Libraries_and_Frameworks";
         public static string MFFrameworksGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation/tree/main/Source/Meadow.Foundation.Libraries_and_Frameworks/";
 
         public static string MFGrovePath = "../../../../../Meadow.Foundation.Grove/Source/";
-        public static string MFGroveDocsOverridePath = "../../../../../Documentation/docfx/api-override/Meadow.Foundation.Grove";
+        public static string MFGroveDocsOverridePath = "../../../../../Documentation/docs/api/Meadow.Foundation.Grove";
         public static string MFGroveGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.Grove/tree/main/Source/";
 
         public static string MFFeatherwingPath = "../../../../../Meadow.Foundation.Featherwings/Source/";
-        public static string MFFeatherwingDocsOverridePath = "../../../../../Documentation/docfx/api-override/Meadow.Foundation.Featherwings";
+        public static string MFFeatherwingDocsOverridePath = "../../../../../Documentation/docs/api/Meadow.Foundation.Featherwings";
         public static string MFFeatherGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.FeatherWings/tree/main/Source/";
 
         public static string MFMikroBusPath = "../../../../../Meadow.Foundation.mikroBUS/Source/";
-        public static string MFMikroBusDocsOverridePath = "../../../../../Documentation/docfx/api-override/Meadow.Foundation.MikroBus";
+        public static string MFMikroBusDocsOverridePath = "../../../../../Documentation/docs/api/Meadow.Foundation.MikroBus";
         public static string MFMikroBusGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.MikroBus/tree/main/Source/";
 
         public static string MFCompositePath = "../../../../../Meadow.Foundation.CompositeDevices/Source/";
-        public static string MFCompositeDocsOverridePath = "../../../../../Documentation/docfx/api-override/Meadow.Foundation.CompositeDevices";
+        public static string MFCompositeDocsOverridePath = "../../../../../Documentation/docs/api/Meadow.Foundation.CompositeDevices";
         public static string MFCompositeGitHubUrl = "https://github.com/wildernesslabs/meadow.foundation.compositedevices/tree/main/Source/";
 
 
         static readonly Dictionary<string, MFDriverSet> driverSets = new Dictionary<string, MFDriverSet>();
 
         static readonly string CORE_PERIPHERALS = "Core Peripherals";
-        //static readonly string LIBRARIES_AND_FRAMEWORKS = "Libraries and Frameworks";
+        static readonly string LIBRARIES_AND_FRAMEWORKS = "Libraries and Frameworks";
         static readonly string EXTERNAL_PERIPHERALS = "External Peripherals";
         static readonly string FEATHERWINGS = "FeatherWings";
         static readonly string SEEED_STUDIO_GROVE = "Seeed Studio Grove";
@@ -75,13 +75,13 @@ namespace Mirid
 
         static void UpdateDocs()
         {
-            UpdatePeripheralDocs(driverSets[CORE_PERIPHERALS]);
+            //UpdatePeripheralDocs(driverSets[CORE_PERIPHERALS]);
             //UpdatePeripheralDocs(driverSets[LIBRARIES_AND_FRAMEWORKS]);
             UpdatePeripheralDocs(driverSets[EXTERNAL_PERIPHERALS]);
             UpdatePeripheralDocs(driverSets[FEATHERWINGS]);
             UpdatePeripheralDocs(driverSets[SEEED_STUDIO_GROVE]);
             UpdatePeripheralDocs(driverSets[MIKROBUS]);
-            // UpdatePeripheralDocs(driverSets[COMPOSITE_DEVICES]);
+            UpdatePeripheralDocs(driverSets[COMPOSITE_DEVICES]);
         }
 
         static void LoadDriverSets()

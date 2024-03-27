@@ -6,12 +6,12 @@
         public static string InProgressBadgeHtml => $"<img alt=\"{inProgressAltText}\" src=\"{inProgressBadgeLink}\"/>";
         public static string WorkingBadgeHtml => $"<img alt=\"{workingAltText}\" src=\"{workingBadgeLink}\"/>";
 
-        public static string BlockedBadgeHtmlwStyle => $"<img src=\"{blockedBadgeLink}\" style=\"{headerStyle}\" alt=\"{blockedAltText}\" />";
-        public static string InProgressBadgeHtmlwStyle => $"<img src=\"{inProgressBadgeLink}\" style=\"{headerStyle}\" alt=\"{inProgressAltText}\" />";
-        public static string WorkingBadgeHtmlwStyle => $"<img src=\"{workingBadgeLink}\" style=\"{headerStyle}\" alt=\"{workingAltText}\" />";
+        public static string BlockedBadgeHtmlwStyle => $"<img src=\"{blockedBadgeLink}\" style={headerStyle} alt=\"{blockedAltText}\" />";
+        public static string InProgressBadgeHtmlwStyle => $"<img src=\"{inProgressBadgeLink}\" style={headerStyle} alt=\"{inProgressAltText}\" />";
+        public static string WorkingBadgeHtmlwStyle => $"<img src=\"{workingBadgeLink}\" style={headerStyle} alt=\"{workingAltText}\" />";
 
 
-        static readonly string headerStyle = "width: auto; height: -webkit-fill-available;";
+        static readonly string headerStyle = "{{ width: \"auto\", height: \"-webkit-fill-available\" }}";
 
         static readonly string blockedBadgeLink = "https://img.shields.io/badge/Blocked-red";
         static readonly string inProgressBadgeLink = "https://img.shields.io/badge/InProgress-yellow";
