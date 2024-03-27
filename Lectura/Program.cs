@@ -67,9 +67,12 @@ namespace Lectura
             var sampleFile = folder.GetFiles("MeadowApp.cs").FirstOrDefault();
             if (sampleFile == null)
             {
-                return string.Empty;
+                sampleFile = folder.GetFiles("Program.cs").FirstOrDefault();
+                if (sampleFile == null)
+                {
+                    return string.Empty;
+                }
             }
-
 
             return GetSnipSnop(sampleFile);
         }
