@@ -199,12 +199,13 @@ namespace ReferenceSwitcher
         {
             SwitchRepo(Repos[MeadowRepo.MeadowSamples].ProjectFiles,
                 new IEnumerable<FileInfo>[] {
+                    Repos[MeadowRepo.Core].ProjectFiles,
+                    Repos[MeadowRepo.LogProviders].ProjectFiles,
                     Repos[MeadowRepo.amqpnetlite].ProjectFiles,
                     Repos[MeadowRepo.Maple].ProjectFiles,
                     Repos[MeadowRepo.Modbus].ProjectFiles,
                     Repos[MeadowRepo.ProjectLab].ProjectFiles,
                     Repos[MeadowRepo.Juego].ProjectFiles,
-                    Repos[MeadowRepo.Core].ProjectFiles,
                     Repos[MeadowRepo.MQTTnet].ProjectFiles,
                     Repos[MeadowRepo.Foundation].ProjectFiles,
                     Repos[MeadowRepo.FoundationGrove].ProjectFiles,
