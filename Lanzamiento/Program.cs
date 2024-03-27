@@ -7,11 +7,11 @@ namespace Lanzamiento
 {
     internal class Program
     {
-        static readonly string ROOT_DEV_DIRECTORY = @"G:\1603Dev";
-        static readonly string ROOT_MAIN_DIRECTORY = @"G:\1603Main";
+        static readonly string ROOT_DEV_DIRECTORY = @"G:\1100";
+        static readonly string ROOT_MAIN_DIRECTORY = @"G:\1100Main";
         static readonly string NUGET_DIRECTORY = @"G:\LocalNuget";
-        static readonly string VERSION = "1.6.0.5-beta";
-
+        static readonly string VERSION = "1.10.0";
+        static readonly string NUGET_TOKEN = "";
         static readonly string TIMESTAMP = "2023-10-31 6:52:00";
 
         static readonly bool testBuild = false;
@@ -19,10 +19,10 @@ namespace Lanzamiento
         static readonly bool cloneRepos = true;
         static readonly bool tagRelease = true;
         static readonly bool publishNugets = true;
-        static readonly bool syncFolders = false;
-        static readonly bool pushVersionBranch = false;
+        static readonly bool syncFolders = true;
+        static readonly bool pushVersionBranch = true;
 
-        static void Main(string[] args)
+        static void Main(string[] _)
         {
             var now = DateTime.Now;
 
@@ -51,13 +51,18 @@ namespace Lanzamiento
                 }
             }
 
+            var allProjects = new List<FileInfo>();
+
             //sort project dependancies 
             foreach (var repo in Repos.Repositories)
             {
                 var path = Path.Combine(ROOT_DEV_DIRECTORY, repo.Key, repo.Value.SourceDirectory);
                 var repos = RepoLoader.GetCsProjFiles(path, ProjectType.All);
                 repo.Value.ProjectFiles = RefSwitcher.SortProjectsByLocalDependencies(repos);
+                allProjects.AddRange(repo.Value.ProjectFiles);
             }
+
+            var sortedProjects = RefSwitcher.SortProjectsByLocalDependencies(allProjects);
 
             //update projects to swap local refs to nugets
             foreach (var repo in Repos.Repositories)
@@ -68,20 +73,17 @@ namespace Lanzamiento
                 Console.WriteLine($"Prepared {repo.Key} for publishing");
             }
 
-            //build the projects
-            foreach (var repo in Repos.Repositories)
+            foreach (var project in sortedProjects)
             {
-                foreach (var project in repo.Value.ProjectFiles)
+                if (Repos.ExcludedProjects.Any(project.DirectoryName.Contains))
                 {
-                    if (Repos.ExcludedProjects.Any(project.DirectoryName.Contains))
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    if (buildNugets)
-                    {
-                        BuildProject(project, ROOT_DEV_DIRECTORY, NUGET_DIRECTORY, VERSION);
-                    }
+                if (buildNugets)
+                {
+                    //Console.WriteLine($"Building {project.Name}");
+                    BuildProject(project, ROOT_DEV_DIRECTORY, NUGET_DIRECTORY, VERSION);
                 }
             }
 
@@ -245,7 +247,7 @@ namespace Lanzamiento
             {
                 ExecuteCommand(fullPath, $"git tag {version}");
                 ExecuteCommand(fullPath, $"git push origin --tags");
-                Console.Write($"Tagged {githubRepo}/{githubRepo}");
+                Console.WriteLine($"Tagged {githubRepo}/{githubRepo}");
             }
         }
 
