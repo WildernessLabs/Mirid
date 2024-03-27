@@ -268,5 +268,28 @@
 
             return true;
         }
+
+        public static bool RemoveMeadowConfig(FileInfo file)
+        {
+            //load project
+            var lines = File.ReadAllLines(file.FullName).ToList();
+
+            for (int i = 0; i < lines.Count; i++)
+            {
+                if (lines[i].Contains("ItemGroup") &&
+                    lines[i + 1].Contains("Update=\"meadow.config.yaml") &&
+                    lines[i + 2].Contains("CopyToOutputDirectory") &&
+                    lines[i + 3].Contains("None") &&
+                    lines[i + 4].Contains("ItemGroup"))
+                {
+                    //delete 5 lines
+                    lines.RemoveRange(i, 5);
+
+                    File.WriteAllLines(file.FullName, lines.ToArray());
+                }
+            }
+
+            return true;
+        }
     }
 }
