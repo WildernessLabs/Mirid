@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection.Metadata;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace Mirid.Models
@@ -60,21 +58,53 @@ namespace Mirid.Models
                 if (text?.Length > 5)
                 {
                     int uidStart = text.IndexOf("uid:") + 5;
-                    UID = text.Substring(uidStart, text.IndexOfAny(new char[]{ '\r', '\n'}, uidStart) - uidStart);
+                    UID = text.Substring(uidStart, text.IndexOfAny(new char[] { '\r', '\n' }, uidStart) - uidStart);
                 }
             }
+        }
+
+        string GetRootDocsPath(MFDriver driver)
+        {
+            string rootPath;
+
+            if (driver.FilePath.Contains(".CompositeDevices"))
+            {
+                rootPath = "/docs/api/Meadow.Foundation.CompositeDevices/";
+            }
+            else if (driver.Namespace.Contains(".Grove"))
+            {
+                rootPath = "/docs/api/Meadow.Foundation.Grove/";
+            }
+            else if (driver.Namespace.Contains(".FeatherWings"))
+            {
+                rootPath = "/docs/api/Meadow.Foundation.FeatherWings/";
+            }
+            else if (driver.Namespace.Contains(".mikroBUS"))
+            {
+                rootPath = "/docs/api/Meadow.Foundation.mikroBUS/";
+            }
+            else if (driver.Namespace.Contains(".MBus"))
+            {
+                rootPath = "/docs/api/Meadow.Foundation.MBus/";
+            }
+            else
+            {
+                rootPath = "/docs/api/Meadow.Foundation/";
+            }
+            return rootPath;
         }
 
         public void CreateOverride()
         {
             var sb = new StringBuilder();
-            sb.AppendLine( "---");
+            sb.AppendLine("---");
             sb.AppendLine($"uid: {driver.Namespace}.{driver.Name}");
-            sb.AppendLine("remarks: *content");
-            sb.AppendLine( "---");
+            sb.AppendLine($"slug: {GetRootDocsPath(driver)}{driver.Namespace}.{driver.Name}");
+            sb.AppendLine("---");
             sb.AppendLine("");
             sb.AppendLine("");
 
+            //let's try and get the discription from the csproj
             File.WriteAllText(FullPath, sb.ToString());
 
             ReadDocsFile();
@@ -118,8 +148,8 @@ namespace Mirid.Models
             snipSnop.AppendLine();
 
             snipSnop.Append($"[Sample project(s) available on GitHub]({githubUrl})");
-         //   snipSnop.Append(githubUrl);
-         //   snipSnop.Append($"{driver.Name})");
+            //   snipSnop.Append(githubUrl);
+            //   snipSnop.Append($"{driver.Name})");
             snipSnop.AppendLine();
             snipSnop.AppendLine();
 
@@ -141,30 +171,30 @@ namespace Mirid.Models
             int tableLineStart = 5;
             int tableLineEnd = 0;
 
-            for(int i = 0; i < lines.Count; i++)
+            for (int i = 0; i < lines.Count; i++)
             {
                 //find first | 
-                if(isTableStarted == false && 
-                    lines[i].Length > 0 && 
+                if (isTableStarted == false &&
+                    lines[i].Length > 0 &&
                     lines[i][0] == '|')
                 {
                     isTableStarted = true;
                     tableLineStart = i;
                 }
-                else if(isTableStarted == true && 
-                    lines[i].Length > 0 && 
+                else if (isTableStarted == true &&
+                    lines[i].Length > 0 &&
                     lines[i][0] == '|')
                 {
                     tableLineEnd = i;
                 }
-                else if(isTableStarted == true)
+                else if (isTableStarted == true)
                 {
                     break;
                 }
             }
 
             //delete the header table
-            for(int i = 0; i < tableLineEnd - tableLineStart + 1; i++)
+            for (int i = 0; i < tableLineEnd - tableLineStart + 1; i++)
             {
                 lines.RemoveAt(tableLineStart);
             }
@@ -184,7 +214,7 @@ namespace Mirid.Models
                 table.Add($"| Datasheet(s) | [GitHub]({githubDatasheetUrl}) |");
             }
 
-            var nugetUrl = $"<a href=\"https://www.nuget.org/packages/{packageName}/\" target=\"_blank\"><img src=\"https://img.shields.io/nuget/v/{packageName}.svg?label={packageName}\" alt=\"NuGet Gallery for {packageName}\" /></a>"; 
+            var nugetUrl = $"<a href=\"https://www.nuget.org/packages/{packageName}/\" target=\"_blank\"><img src=\"https://img.shields.io/nuget/v/{packageName}.svg?label={packageName}\" alt=\"NuGet Gallery for {packageName}\" /></a>";
             table.Add($"| NuGet package | {nugetUrl} |");
 
             //inject new rows at index 
