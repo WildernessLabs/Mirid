@@ -188,21 +188,7 @@ public static class PeripheralDocsOutput
             prefix = "/docs/api/Meadow.Foundation/";
         }
 
-        string modifiedPackageName;
-
-        //hacks for Grove
-        if (package.PackageName.Contains(".4"))
-        {
-            modifiedPackageName = package.PackageName.Replace(".4", ".Four");
-        }
-        else if (package.PackageName.Contains(".3-"))
-        {
-            modifiedPackageName = package.PackageName.Replace(".3-", ".Three");
-        }
-        else
-        {
-            modifiedPackageName = package.PackageName;
-        }
+        string modifiedPackageName = package.PackageName;
 
         var postFix = hasMultipleDrivers ? "Base" : string.Empty;
 
