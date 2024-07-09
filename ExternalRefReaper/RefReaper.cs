@@ -19,7 +19,7 @@
                 {
                     guidsToRemove.Add(GetGuidString(lines[i], true));
                 }
-                else if (lines[i].Contains("..\\"))
+                else if (lines[i].Contains("..\\") && lines[i].Contains("}\""))
                 {
                     guidsToRemove.Add(GetGuidString(lines[i], true));
                 }
