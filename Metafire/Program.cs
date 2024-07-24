@@ -7,7 +7,7 @@ namespace Metafire;
 internal class Program
 {
     static readonly string ROOT_DIRECTORY = @"h:\WL";
-    static readonly string NUGET_VERSION = "1.10.0";
+    static readonly string NUGET_VERSION = "1.11.0";
 
     static void Main(string[] args)
     {
