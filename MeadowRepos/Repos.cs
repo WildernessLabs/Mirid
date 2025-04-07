@@ -4,7 +4,7 @@
     {
         public static Dictionary<string, GitRepo> Repositories { get; set; }
 
-        public static readonly string[] ExcludedProjects = { "Training", "Simulated", "Sample", "sample", "Test", "test", "Utilities", "Update", "client", "Demo", "Prototype", "ProKit", "HackKit", "Mobile", "mobile" };
+        public static readonly string[] ExcludedProjects = { "Training", "Simulated", "Sample", "sample", "Test", "test", "Utilities", "Update", "client", "Demo", "Prototype", "ProKit", "HackKit", "Mobile", "mobile", "Maui" };
 
         static Repos()
         {
@@ -41,7 +41,7 @@
             AddRepo("MQTTnet", org, "Source\\MQTTnet", new List<string>());
             AddRepo("Meadow.Logging", org, "Source", new List<string>());
 
-            AddRepo("Meadow.Contracts", org, "Source\\Meadow.Contracts", new List<string> { "Meadow.Units", "Meadow.Logging" });
+            AddRepo("Meadow.Contracts", org, "Source", new List<string> { "Meadow.Units", "Meadow.Logging" });
             AddRepo("Meadow.Modbus", org, "src", new List<string> { "Meadow.Contracts" });
             AddRepo("Maple", org, "Source", new List<string> { "Meadow.Logging" });
             AddRepo("Meadow.TensorFlow", org, "Source", new List<string> { "Meadow.Logging" });
