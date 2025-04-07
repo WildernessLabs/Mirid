@@ -1,11 +1,86 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace ReferenceSwitcher
 {
     public partial class RefSwitcher
     {
+        public static string DirectoryPropsFileName = "Directory.Packages.props";
+        public static string MeadowPropsFileName = "Meadow.Packages.props";
+
+        public static void UpdatePackageProps(string meadowPropsPath, string rootFolder)
+        {
+            //find contracts package props in Meadow.Contracts sub folder
+            var contractsFolder = Path.Combine(rootFolder, "Meadow.Contracts");
+
+            //search for "Project.Packages.props" in contracts folder
+            var contractsPackageProps = new List<FileInfo>();
+            var files = Directory.GetFiles(contractsFolder, DirectoryPropsFileName, SearchOption.AllDirectories);
+
+            var propsFile = files.FirstOrDefault();
+
+            var lines = File.ReadAllLines(propsFile).ToList();
+
+            for (int i = 0; i < lines.Count; i++)
+            {
+                if (lines[i].Contains("</Project>"))
+                {
+                    lines.Insert(i, $"  <Import Project=\"{MeadowPropsFileName}\" />");
+                    File.WriteAllText(propsFile, string.Join(Environment.NewLine, lines));
+                    break;
+                }
+            }
+
+            //now find every instance of Directory.Packages.props in rootFolder other than contractsPacakgeProps
+            var allFiles = Directory.GetFiles(rootFolder, DirectoryPropsFileName, SearchOption.AllDirectories);
+
+            foreach (var file in allFiles)
+            {
+                if (file != propsFile)
+                {
+                    File.Copy(propsFile, file, true);
+                }
+                var path = Path.GetDirectoryName(file);
+
+                File.Copy(meadowPropsPath, Path.Combine(path!, MeadowPropsFileName), true);
+            }
+        }
+
+        public static string GenerateMeadowPackageProps(IEnumerable<FileInfo> projects, string nugetVersion, string folder)
+        {
+            //create a new file
+            StringBuilder output = new();
+            var fullPath = Path.Combine(folder, "Meadow.Packages.props");
+
+            //write header
+            output.AppendLine($"<Project>");
+            output.AppendLine($"  <ItemGroup>");
+
+            foreach (var proj in projects)
+            {
+                //crawl all projects ... add dependency with version
+                var info = GetNugetInfoFromFileInfo(proj);
+
+                if (info != null)
+                {
+                    var packageName = info.Item1;
+                    output.AppendLine($"    <PackageVersion Include=\"{packageName}\" Version=\"{nugetVersion}\" />");
+                }
+            }
+
+            //close it out
+            output.AppendLine($"  </ItemGroup>");
+            output.AppendLine($"</Project>");
+            //write file
+            File.WriteAllText(fullPath, output.ToString());
+
+            return fullPath;
+        }
+
+
         public static IEnumerable<FileInfo> SortProjectsByLocalDependencies(IEnumerable<FileInfo> projectsToUpdate)
         {
             var unsortedList = new List<FileInfo>();
@@ -21,6 +96,12 @@ namespace ReferenceSwitcher
                     {
                         continue;
                     }
+
+                    if (file.Name.Contains("Blazor"))
+                    {
+                        int g = 9;
+                    }
+
                     var referencedProjects = GetListOfProjectReferencesInProject(file);
 
                     //nugetized ... add it
@@ -30,7 +111,7 @@ namespace ReferenceSwitcher
                         continue;
                     }
 
-                    //we have references  ... check each if they're referening projects in the sorted list
+                    //we have references  ... check each if they're referencing projects in the sorted list
                     bool referencesSortedProjects = true;
                     foreach (var p in referencedProjects)
                     {
@@ -166,9 +247,19 @@ namespace ReferenceSwitcher
             var newLines = new List<string>();
 
             string newLine;
+            bool skipUntilClose = false;
 
             foreach (var line in lines)
             {
+                if (skipUntilClose)
+                {
+                    if (line.Contains("</ProjectReference>"))
+                    {
+                        skipUntilClose = false;
+                    }
+                    continue;
+                }
+
                 //skip the line we're removing
                 if (line.Contains("ProjectReference") && line.Contains($"\\{fileName}\""))
                 {
@@ -182,13 +273,25 @@ namespace ReferenceSwitcher
                     {
                         //Console.WriteLine($"Nuget: {nugetInfo.Item1} Version: {nugetInfo.Item2}");
 
-
                         if (version != null)
+                        {
                             newLine = $"    <PackageReference Include=\"{nugetInfo.Item1}\" Version=\"{version}\" />";
+                        }
                         else
-                            newLine = $"    <PackageReference Include=\"{nugetInfo.Item1}\" Version=\"*\" />";
+                        {
+                            newLine = $"    <PackageReference Include=\"{nugetInfo.Item1}\" />";
+                        }
 
                         newLines.Add(newLine);
+
+                        if (line.Contains("/>"))
+                        {
+                            skipUntilClose = false;
+                        }
+                        else
+                        {
+                            skipUntilClose = true;
+                        }
                     }
                 }
                 else
@@ -213,7 +316,14 @@ namespace ReferenceSwitcher
                     line = sr.ReadLine();
 
                     if (line == null)
+                    {
                         break;
+                    }
+
+                    if (line.Contains("</ProjectReference"))
+                    {
+                        continue;
+                    }
 
                     if (line.Contains("ProjectReference"))
                     {
