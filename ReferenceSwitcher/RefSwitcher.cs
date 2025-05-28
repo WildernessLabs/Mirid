@@ -22,6 +22,12 @@ namespace ReferenceSwitcher
 
             var propsFile = files.FirstOrDefault();
 
+            if (propsFile == null)
+            {
+                Console.WriteLine($"Could not find {DirectoryPropsFileName} in {contractsFolder}");
+                return;
+            }
+
             var lines = File.ReadAllLines(propsFile).ToList();
 
             for (int i = 0; i < lines.Count; i++)
@@ -55,6 +61,9 @@ namespace ReferenceSwitcher
             StringBuilder output = new();
             var fullPath = Path.Combine(folder, "Meadow.Packages.props");
 
+            // Keep track of package names to detect duplicates
+            HashSet<string> packageNames = new(StringComparer.OrdinalIgnoreCase);
+
             //write header
             output.AppendLine($"<Project>");
             output.AppendLine($"  <ItemGroup>");
@@ -67,6 +76,12 @@ namespace ReferenceSwitcher
                 if (info != null)
                 {
                     var packageName = info.Item1;
+
+                    if (!packageNames.Add(packageName))
+                    {
+                        throw new InvalidOperationException($"Duplicate package name detected: {packageName}");
+                    }
+
                     output.AppendLine($"    <PackageVersion Include=\"{packageName}\" Version=\"{nugetVersion}\" />");
                 }
             }
@@ -74,12 +89,28 @@ namespace ReferenceSwitcher
             //close it out
             output.AppendLine($"  </ItemGroup>");
             output.AppendLine($"</Project>");
+
             //write file
             File.WriteAllText(fullPath, output.ToString());
 
             return fullPath;
         }
 
+        public static IEnumerable<FileInfo> RemoveNonPackageProjects(IEnumerable<FileInfo> projectsToUpdate)
+        {
+            var filteredProjects = new List<FileInfo>();
+            foreach (var proj in projectsToUpdate)
+            {
+                if (proj.Name.Contains("Sample", StringComparison.OrdinalIgnoreCase) ||
+                    proj.Name.Contains("Test", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+                filteredProjects.Add(proj);
+
+            }
+            return filteredProjects;
+        }
 
         public static IEnumerable<FileInfo> SortProjectsByLocalDependencies(IEnumerable<FileInfo> projectsToUpdate)
         {
@@ -88,61 +119,55 @@ namespace ReferenceSwitcher
 
             unsortedList.AddRange(projectsToUpdate);
 
-            while (sortedList.Count < unsortedList.Count)
+            foreach (var file in unsortedList)
             {
-                foreach (var file in unsortedList)
-                {   //already added
-                    if (sortedList.Contains(file))
-                    {
-                        continue;
-                    }
-
-                    if (file.Name.Contains("Blazor"))
-                    {
-                        int g = 9;
-                    }
-
-                    var referencedProjects = GetListOfProjectReferencesInProject(file);
-
-                    //nugetized ... add it
-                    if (referencedProjects.Count == 0)
-                    {
-                        sortedList.Add(file);
-                        continue;
-                    }
-
-                    //we have references  ... check each if they're referencing projects in the sorted list
-                    bool referencesSortedProjects = true;
-                    foreach (var p in referencedProjects)
-                    {
-                        var refProjFileInfo = GetFileInfoForProjectName(p, projectsToUpdate);
-
-                        if (refProjFileInfo == null)
-                        {   //external ref, ignore
-                            continue;
-                        }
-
-                        if (sortedList.Contains(refProjFileInfo) == false)
-                        {
-                            referencesSortedProjects = false;
-                            break;
-                        }
-
-                        if (refProjFileInfo == null)
-                        {   //referenced project outside of foundation (probably core)
-                            continue;
-                        }
-                    }
-
-                    if (referencesSortedProjects == true)
-                    {
-                        sortedList.Add(file);
-                    }
-                    else
-                    {
-                    }
+                var referencedProjects = GetListOfProjectReferencesInProject(file);
+                //if it has no local dependencies, add it to the sorted list
+                if (referencedProjects.Count == 0)
+                {
+                    sortedList.Add(file);
                 }
             }
+
+            //remove all items from unsorted list that are in the sorted list
+            unsortedList.RemoveAll(f => sortedList.Contains(f));
+
+            while (unsortedList.Count > 0)
+            {
+                //get the first project in the unsorted list
+                var file = unsortedList[0];
+                unsortedList.Remove(file);
+
+                var referencedProjects = GetListOfProjectReferencesInProject(file);
+
+                //check to see if all referenced projects are in the sorted list ... if not ... add it to the unsorted list and move on
+                bool allRefsSorted = true;
+                foreach (var p in referencedProjects)
+                {
+                    var refProjFileInfo = GetFileInfoForProjectName(p, projectsToUpdate);
+                    if (refProjFileInfo == null)
+                    {   //external ref, ignore
+                        continue;
+                    }
+                    if (sortedList.Contains(refProjFileInfo) == false)
+                    {
+                        allRefsSorted = false;
+
+                        break;
+                    }
+                }
+
+                if (allRefsSorted)
+                {
+                    //all refs are sorted, add it to the sorted list
+                    sortedList.Add(file);
+                }
+                else
+                {
+                    unsortedList.Add(file);
+                }
+            }
+
             return sortedList;
         }
 
@@ -332,16 +357,10 @@ namespace ReferenceSwitcher
 
                         var projectName = line.Substring(firstQuote + 1, secondQuote - firstQuote - 1);
 
-                        //  var projectName = Path.GetFileNameWithoutExtension(projPath);
-
-                        //Console.WriteLine($"Found project ref: {projectName}");
-
                         projects.Add(projectName);
                     }
                 }
             }
-
-            //Console.WriteLine($"Found {projects.Count} project refs in {fileInfo.Name}");
 
             return projects;
         }
@@ -384,7 +403,7 @@ namespace ReferenceSwitcher
             return nugets;
         }
 
-        public static Tuple<string, string> GetNugetInfoFromFileInfo(FileInfo file)
+        public static Tuple<string, string>? GetNugetInfoFromFileInfo(FileInfo file)
         {
             var lines = File.ReadAllLines(file.FullName);
 
@@ -423,7 +442,7 @@ namespace ReferenceSwitcher
             return null;
         }
 
-        static FileInfo GetFileForPackageId(IEnumerable<FileInfo> fileInfos, string packageId)
+        static FileInfo? GetFileForPackageId(IEnumerable<FileInfo> fileInfos, string packageId)
         {
             foreach (var f in fileInfos)
             {

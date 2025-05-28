@@ -4,7 +4,7 @@
     {
         public static Dictionary<string, GitRepo> Repositories { get; set; }
 
-        public static readonly string[] ExcludedProjects = { "Training", "Simulated", "Sample", "sample", "Test", "test", "Utilities", "Update", "client", "Demo", "Prototype", "ProKit", "HackKit", "Mobile", "mobile", "Maui" };
+        public static readonly string[] ExcludedProjects = { "SimulatorHost", "Training", "Simulated", "Sample", "sample", "Test", "test", "Utilities", "Update", "client", "Demo", "Prototype", "ProKit", "HackKit", "Mobile", "mobile", "Maui" };
 
         static Repos()
         {
