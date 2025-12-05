@@ -4,7 +4,7 @@
     {
         public static Dictionary<string, GitRepo> Repositories { get; set; }
 
-        public static readonly string[] ExcludedProjects = { "SimulatorHost", "Training", "Simulated", "Sample", "sample", "Test", "test", "Utilities", "Update", "client", "Demo", "Prototype", "ProKit", "HackKit", "Mobile", "mobile", "Maui" };
+        public static readonly string[] ExcludedProjects = { "SimulatorHost", "Training", "Simulated", "Sample", "sample", "Test", "test", "Utilities", "Update", "client", "Demo", "Prototype", "ProKit", "HackKit", "Mobile", "mobile", "Maui", "Tools" };
 
         static Repos()
         {
@@ -53,7 +53,7 @@
             AddRepo("Meadow.Foundation.CompositeDevices", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation" });
             AddRepo("Meadow.Foundation.Featherwings", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation" });
             AddRepo("Meadow.Foundation.Grove", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation" });
-            AddRepo("Meadow.Foundation.mikroBus", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation", "Meadow.ProjectLab", "Meadow.Foundation.MBus" });
+            // AddRepo("Meadow.Foundation.mikroBus", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation", "Meadow.ProjectLab", "Meadow.Foundation.MBus" });
 
             AddRepo("Meadow.ProjectLab", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation", "Meadow.Modbus" });
             AddRepo("GNSS_Sensor_Tracker", org, "Source", new List<string> { "Meadow.Core", "Meadow.Foundation" });

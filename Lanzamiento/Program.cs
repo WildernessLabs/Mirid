@@ -1,5 +1,6 @@
 ﻿using ExternalRefReaper;
 using MeadowRepos;
+using Mirid;
 using ReferenceSwitcher;
 using System.Diagnostics;
 
@@ -7,10 +8,9 @@ namespace Lanzamiento
 {
     internal class Program
     {
-        static readonly string ROOT_DEV_DIRECTORY = @"G:\1100";
-        static readonly string ROOT_MAIN_DIRECTORY = @"G:\1100Main";
+        static readonly string ROOT_DEV_DIRECTORY = @"G:\2500";
         static readonly string NUGET_DIRECTORY = @"G:\LocalNuget";
-        static readonly string VERSION = "1.10.0";
+        static readonly string VERSION = "2.5.0";
         static readonly string NUGET_TOKEN = "";
         static readonly string TIMESTAMP = "2023-10-31 6:52:00";
 
@@ -19,8 +19,7 @@ namespace Lanzamiento
         static readonly bool cloneRepos = true;
         static readonly bool tagRelease = true;
         static readonly bool publishNugets = true;
-        static readonly bool syncFolders = true;
-        static readonly bool pushVersionBranch = true;
+        static readonly bool pushVersionBranch = false;
 
         static void Main(string[] _)
         {
@@ -29,7 +28,6 @@ namespace Lanzamiento
             Console.WriteLine($"Hello Lanzamiento - {now}");
 
             ValidateDirectory(ROOT_DEV_DIRECTORY);
-            ValidateDirectory(ROOT_MAIN_DIRECTORY);
             ValidateDirectory(NUGET_DIRECTORY);
 
             Repos.PopulateRepos();
@@ -37,7 +35,6 @@ namespace Lanzamiento
             Console.WriteLine($"Loaded {Repos.Repositories.Count} repos");
 
             string sourceBranch = "develop";
-            string updateBranch = "main";
             string targetBranch = $"v{VERSION}";
 
             foreach (var repo in Repos.Repositories)
@@ -46,8 +43,6 @@ namespace Lanzamiento
                 {
                     CloneRepo(ROOT_DEV_DIRECTORY, repo.Value.GitHubOrg, repo.Value.Name);
                     SetLocalRepoBranch(ROOT_DEV_DIRECTORY, repo.Value.Name, sourceBranch);
-                    //   var hash = GetCommitForTimeStamp(ROOT_DEV_DIRECTORY, repo.Value.Name, sourceBranch, $"{TIMESTAMP}");
-                    //   SetHeadToCommit(ROOT_DEV_DIRECTORY, repo.Value.Name, hash);
                 }
             }
 
@@ -62,13 +57,19 @@ namespace Lanzamiento
                 allProjects.AddRange(repo.Value.ProjectFiles);
             }
 
-            var sortedProjects = RefSwitcher.SortProjectsByLocalDependencies(allProjects);
+            var filterdProjects = RefSwitcher.RemoveNonPackageProjects(allProjects);
+            var sortedProjects = RefSwitcher.SortProjectsByLocalDependencies(filterdProjects);
+
+            var packagePropsPath = RefSwitcher.GenerateMeadowPackageProps(sortedProjects, VERSION, ROOT_DEV_DIRECTORY);
+
+            RefSwitcher.UpdatePackageProps(packagePropsPath, ROOT_DEV_DIRECTORY);
 
             //update projects to swap local refs to nugets
             foreach (var repo in Repos.Repositories)
             {
-                Nugetize(repo.Value, VERSION);
+                Nugetize(repo.Value, version: null); //package props .... no version
                 RemoveExternalReferences(ROOT_DEV_DIRECTORY, repo.Value);
+                UpdateProjectVersionMetaData();
 
                 Console.WriteLine($"Prepared {repo.Key} for publishing");
             }
@@ -100,7 +101,7 @@ namespace Lanzamiento
                 }
             }
 
-            if (syncFolders)
+            if (pushVersionBranch)
             {
                 foreach (var repo in Repos.Repositories)
                 {
@@ -109,15 +110,9 @@ namespace Lanzamiento
                         continue;
                     }
 
-                    CloneRepo(ROOT_MAIN_DIRECTORY, repo.Value.GitHubOrg, repo.Value.Name);
-                    SetLocalRepoBranch(ROOT_MAIN_DIRECTORY, repo.Value.Name, updateBranch);
-                    CreateNewBranch(ROOT_MAIN_DIRECTORY, repo.Value.Name, targetBranch);
-                    SetLocalRepoBranch(ROOT_MAIN_DIRECTORY, repo.Value.Name, targetBranch);
-                    SyncFolder(ROOT_DEV_DIRECTORY, ROOT_MAIN_DIRECTORY, repo.Value.Name);
-
-                    if (pushVersionBranch && testBuild == false)
+                    if (testBuild == false)
                     {
-                        PushVersionBranch(ROOT_MAIN_DIRECTORY, repo.Value.Name, VERSION);
+                        PushVersionBranch(ROOT_DEV_DIRECTORY, repo.Value.Name, VERSION);
                     }
                 }
             }
@@ -133,6 +128,19 @@ namespace Lanzamiento
             FolderManager.CopyAndDeleteFiles(fullPathSource, fullPathTarget);
         }
 
+        static void UpdateProjectVersionMetaData()
+        {
+            foreach (var repo in Repos.Repositories)
+            {
+                var path = Path.Combine(ROOT_DEV_DIRECTORY, repo.Key, repo.Value.SourceDirectory);
+                var projectFiles = RepoLoader.GetCsProjFiles(path, ProjectType.All);
+
+                foreach (var proj in projectFiles)
+                {
+                    ProjectWriter.AddUpdateProperty(proj, "Version", $"{VERSION}");
+                }
+            }
+        }
 
         static void PushVersionBranch(string directory, string githubRepo, string version)
         {
@@ -160,11 +168,20 @@ namespace Lanzamiento
         {
             var files = Directory.GetFiles(directory, $"*{version}*.nupkg");
 
+
+
             foreach (var file in files)
             {
-                if (0 == ExecuteCommand(directory, $"dotnet nuget push --api-key {NUGET_TOKEN} {file} -s https://api.nuget.org/v3/index.json", false))
+                var command = $"dotnet nuget push --api-key {NUGET_TOKEN} {file} -s https://api.nuget.org/v3/index.json";
+
+                for (int i = 0; i < 5; i++)
                 {
-                    Console.WriteLine($"Published {file}");
+                    if (0 == ExecuteCommand(directory, command, false))
+                    {
+                        Console.WriteLine($"Published {file}");
+                        break;
+                    }
+                    Thread.Sleep(500);
                 }
             }
         }
@@ -190,7 +207,7 @@ namespace Lanzamiento
 
             if (string.IsNullOrEmpty(slnFile))
             {
-                UpdateConsoleMessage($"*** Could not find solution for {repo.Name} to remove refs - ok for Meadow.Logging and MQTTnet");
+                UpdateConsoleMessage($"*** Could not find solution for {repo.Name} to remove refs - ok for Meadow.Logging, Meadow.Units and MQTTnet");
                 return;
             }
 
@@ -334,7 +351,7 @@ namespace Lanzamiento
             catch (Exception ex)
             {
                 // Handle any exceptions that occur during process execution.
-                Console.WriteLine("Error executing the command:");
+                Console.WriteLine($"Error executing the command: {command}");
                 Console.WriteLine(ex.Message);
                 throw; // Re-throw the exception to propagate it further if needed.
             }

@@ -47,7 +47,6 @@ namespace Mirid
         static readonly string EXTERNAL_PERIPHERALS = "External Peripherals";
         static readonly string FEATHERWINGS = "FeatherWings";
         static readonly string SEEED_STUDIO_GROVE = "Seeed Studio Grove";
-        static readonly string MIKROBUS = "mikroBUS";
         static readonly string COMPOSITE_DEVICES = "Composite Devices";
 
         static void Main(string[] args)
@@ -75,12 +74,11 @@ namespace Mirid
 
         static void UpdateDocs()
         {
-            //UpdatePeripheralDocs(driverSets[CORE_PERIPHERALS]);
-            UpdatePeripheralDocs(driverSets[LIBRARIES_AND_FRAMEWORKS]);
+            UpdatePeripheralDocs(driverSets[CORE_PERIPHERALS]);
+            //UpdatePeripheralDocs(driverSets[LIBRARIES_AND_FRAMEWORKS]);
             UpdatePeripheralDocs(driverSets[EXTERNAL_PERIPHERALS]);
             UpdatePeripheralDocs(driverSets[FEATHERWINGS]);
             UpdatePeripheralDocs(driverSets[SEEED_STUDIO_GROVE]);
-            UpdatePeripheralDocs(driverSets[MIKROBUS]);
             UpdatePeripheralDocs(driverSets[COMPOSITE_DEVICES]);
         }
 
@@ -95,6 +93,7 @@ namespace Mirid
                 githubUrl: MFCoreGitHubUrl);
             Console.WriteLine($"Processed {coreDriverSet.DriverPackages.Count} packages with {GetDriverCount(coreDriverSet)} drivers");
 
+            /*
             Console.WriteLine($"Load {LIBRARIES_AND_FRAMEWORKS} driver set");
             var frameworksDriverSet = new MFDriverSet(LIBRARIES_AND_FRAMEWORKS,
                 MFSourcePath,
@@ -102,6 +101,7 @@ namespace Mirid
                 MFDocsOverridePath,
                 MFFrameworksGitHubUrl);
             Console.WriteLine($"Processed {frameworksDriverSet.DriverPackages.Count} packages with {GetDriverCount(frameworksDriverSet)} drivers");
+            */
 
 
             Console.WriteLine($"Load {EXTERNAL_PERIPHERALS} driver set");
@@ -112,20 +112,13 @@ namespace Mirid
                 MFGitHubUrl);
             Console.WriteLine($"Processed {peripheralsDriverSet.DriverPackages.Count} packages with {GetDriverCount(peripheralsDriverSet)} drivers");
 
-
             Console.WriteLine($"Load {SEEED_STUDIO_GROVE} driver set");
             var groveDriverSet = new MFDriverSet(SEEED_STUDIO_GROVE, MFSourcePath, MFGrovePath, MFGroveDocsOverridePath, MFGroveGitHubUrl);
             Console.WriteLine($"Processed {groveDriverSet.DriverPackages.Count} packages with {GetDriverCount(groveDriverSet)} drivers");
 
-
             Console.WriteLine($"Load {FEATHERWINGS} driver set");
             var featherDriverSet = new MFDriverSet(FEATHERWINGS, MFSourcePath, MFFeatherwingPath, MFFeatherwingDocsOverridePath, MFFeatherGitHubUrl);
             Console.WriteLine($"Processed {featherDriverSet.DriverPackages.Count} packages with {GetDriverCount(featherDriverSet)} drivers");
-
-
-            Console.WriteLine($"Load {MIKROBUS} driver set");
-            var mikroBusDriverSet = new MFDriverSet(MIKROBUS, MFSourcePath, MFMikroBusPath, MFMikroBusDocsOverridePath, MFMikroBusGitHubUrl);
-            Console.WriteLine($"Processed {mikroBusDriverSet.DriverPackages.Count} packages packages with {GetDriverCount(mikroBusDriverSet)} drivers");
 
             Console.WriteLine($"Load {COMPOSITE_DEVICES} driver set");
             var compositeDriverSet = new MFDriverSet(COMPOSITE_DEVICES, MFSourcePath, MFCompositePath, MFCompositeDocsOverridePath, MFCompositeGitHubUrl);
@@ -134,11 +127,10 @@ namespace Mirid
 
             //common location so we can turn em off and on ... order counts
             driverSets.Add(CORE_PERIPHERALS, coreDriverSet);
-            driverSets.Add(LIBRARIES_AND_FRAMEWORKS, frameworksDriverSet);
+            //driverSets.Add(LIBRARIES_AND_FRAMEWORKS, frameworksDriverSet);
             driverSets.Add(EXTERNAL_PERIPHERALS, peripheralsDriverSet);
             driverSets.Add(SEEED_STUDIO_GROVE, groveDriverSet);
             driverSets.Add(FEATHERWINGS, featherDriverSet);
-            driverSets.Add(MIKROBUS, mikroBusDriverSet);
             driverSets.Add(COMPOSITE_DEVICES, compositeDriverSet);
 
             int total = 0;
