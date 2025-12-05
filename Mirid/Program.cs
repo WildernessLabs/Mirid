@@ -393,15 +393,30 @@ class Program
                     driver.CreateDocsOverride();
                 }
 
-                var relativePath = Path.GetRelativePath(driverSet.DriverSetSourcePath, Path.GetDirectoryName(driver.FilePath)!);
+                var driverDir = Path.GetDirectoryName(driver.FilePath);
+                if (string.IsNullOrEmpty(driverDir))
+                {
+                    Console.WriteLine($"Warning: Could not get directory for {driver.Name}");
+                    continue;
+                }
+                
+                var relativePath = Path.GetRelativePath(driverSet.DriverSetSourcePath, driverDir);
                 // Driver folder hack
                 if (Path.GetFileName(relativePath) == "Drivers")
                 {
-                    relativePath = Path.GetDirectoryName(relativePath)!;
+                    var parentDir = Path.GetDirectoryName(relativePath);
+                    if (!string.IsNullOrEmpty(parentDir))
+                    {
+                        relativePath = parentDir;
+                    }
                 }
                 if (Path.GetFileName(relativePath) == "Driver")
                 {
-                    relativePath = Path.GetDirectoryName(relativePath)!;
+                    var parentDir = Path.GetDirectoryName(relativePath);
+                    if (!string.IsNullOrEmpty(parentDir))
+                    {
+                        relativePath = parentDir;
+                    }
                 }
 
                 var uri = new Uri(driverSet.GitHubUrl);
