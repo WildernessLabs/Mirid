@@ -1,11 +1,19 @@
 ﻿namespace Mirid
 {
-    public static class FileCrawler
+    public class FileCrawler : IFileCrawler
     {
-        public static FileInfo[] GetAllProjectsInFolders(string path, bool filter = true)
+        private readonly IFileSystem _fileSystem;
+        private static readonly IFileSystem _defaultFileSystem = new FileSystem();
+
+        public FileCrawler(IFileSystem fileSystem)
+        {
+            _fileSystem = fileSystem;
+        }
+
+        FileInfo[] IFileCrawler.GetAllProjectsInFolders(string path, bool filter)
         {
             //check if path exists first
-            if (Directory.Exists(path))
+            if (_fileSystem.DirectoryExists(path))
             {
                 var files = GetCsProjFiles(path);
 
@@ -23,17 +31,17 @@
             }
         }
 
-        public static FileInfo GetFileInfo(string path)
+        FileInfo IFileCrawler.GetFileInfo(string path)
         {
             return new FileInfo(path);
         }
 
-        static FileInfo[] GetCsProjFiles(string path)
+        FileInfo[] GetCsProjFiles(string path)
         {
-            return (new DirectoryInfo(path)).GetFiles("*.csproj", SearchOption.AllDirectories);
+            return _fileSystem.GetFiles(path, "*.csproj", SearchOption.AllDirectories);
         }
 
-        public static List<FileInfo> GetSampleProjects(FileInfo[] projects)
+        List<FileInfo> IFileCrawler.GetSampleProjects(FileInfo[] projects)
         {
             var samples = new List<FileInfo>();
 
@@ -48,7 +56,7 @@
             return samples;
         }
 
-        public static List<FileInfo> GetDriverProjects(FileInfo[] projects)
+        List<FileInfo> IFileCrawler.GetDriverProjects(FileInfo[] projects)
         {
             var drivers = new List<FileInfo>();
 
@@ -63,5 +71,25 @@
             return drivers;
         }
 
+        // Static methods for backwards compatibility
+        public static FileInfo[] GetAllProjectsInFolders(string path, bool filter = true)
+        {
+            return ((IFileCrawler)new FileCrawler(_defaultFileSystem)).GetAllProjectsInFolders(path, filter);
+        }
+
+        public static FileInfo GetFileInfo(string path)
+        {
+            return ((IFileCrawler)new FileCrawler(_defaultFileSystem)).GetFileInfo(path);
+        }
+
+        public static List<FileInfo> GetSampleProjects(FileInfo[] projects)
+        {
+            return ((IFileCrawler)new FileCrawler(_defaultFileSystem)).GetSampleProjects(projects);
+        }
+
+        public static List<FileInfo> GetDriverProjects(FileInfo[] projects)
+        {
+            return ((IFileCrawler)new FileCrawler(_defaultFileSystem)).GetDriverProjects(projects);
+        }
     }
 }
