@@ -1,10 +1,19 @@
 ﻿namespace Mirid
 {
-    public class ProjectWriter
+    public class ProjectWriter : IProjectWriter
     {
-        public static bool AddOrReplaceReference(FileInfo project, string reference, string lineMatch)
+        private readonly IFileSystem _fileSystem;
+        private static readonly IFileSystem _defaultFileSystem = new FileSystem();
+        private static readonly ProjectWriter _defaultInstance = new ProjectWriter(_defaultFileSystem);
+
+        public ProjectWriter(IFileSystem fileSystem)
         {
-            var lines = File.ReadAllLines(project.FullName).ToList();
+            _fileSystem = fileSystem;
+        }
+
+        bool IProjectWriter.AddOrReplaceReference(FileInfo project, string reference, string lineMatch)
+        {
+            var lines = _fileSystem.ReadAllLines(project.FullName).ToList();
 
             var indexes = new List<int>();
 
@@ -40,7 +49,7 @@
 
             if (found == true)
             {
-                File.WriteAllLines(project.FullName, lines.ToArray());
+                _fileSystem.WriteAllLines(project.FullName, lines.ToArray());
                 return true;
             }
 
@@ -71,14 +80,14 @@
             //insert 
             lines.Insert(indexItemGroup + 1, reference);
 
-            File.WriteAllLines(project.FullName, lines.ToArray());
+            _fileSystem.WriteAllLines(project.FullName, lines.ToArray());
 
             return true;
         }
 
-        public static bool AddReference(FileInfo project, string reference)
+        bool IProjectWriter.AddReference(FileInfo project, string reference)
         {
-            var lines = File.ReadAllLines(project.FullName).ToList();
+            var lines = _fileSystem.ReadAllLines(project.FullName).ToList();
 
             for (int i = 0; i < lines.Count; i++)
             {
@@ -115,12 +124,12 @@
             //insert 
             lines.Insert(indexItemGroup + 1, reference);
 
-            File.WriteAllLines(project.FullName, lines.ToArray());
+            _fileSystem.WriteAllLines(project.FullName, lines.ToArray());
 
             return true;
         }
 
-        public static bool AddReference(FileInfo project, FileInfo reference)
+        bool IProjectWriter.AddReference(FileInfo project, FileInfo reference)
         {
             if (project == null || reference == null)
             {
@@ -128,12 +137,12 @@
             }
 
             var relativePath = Path.GetRelativePath(Path.GetDirectoryName(project.FullName), reference.FullName);
-            return AddReference(project, $"    <ProjectReference Include=\"{relativePath}\"/>");
+            return ((IProjectWriter)this).AddReference(project, $"    <ProjectReference Include=\"{relativePath}\"/>");
         }
 
-        public static bool AddNuget(FileInfo project, string packageName)
+        bool IProjectWriter.AddNuget(FileInfo project, string packageName)
         {
-            var lines = File.ReadAllLines(project.FullName).ToList();
+            var lines = _fileSystem.ReadAllLines(project.FullName).ToList();
 
             //find references 
             int indexItemGroup = -1;
@@ -163,19 +172,19 @@
             //insert 
             lines.Insert(indexItemGroup + 1, reference);
 
-            File.WriteAllLines(project.FullName, lines.ToArray());
+            _fileSystem.WriteAllLines(project.FullName, lines.ToArray());
 
             return true;
         }
 
-        public static bool RemoveReference(FileInfo project, FileInfo reference)
+        bool IProjectWriter.RemoveReference(FileInfo project, FileInfo reference)
         {
             if (project == null || reference == null)
             {
                 return false;
             }
 
-            var lines = File.ReadAllLines(project.FullName).ToList();
+            var lines = _fileSystem.ReadAllLines(project.FullName).ToList();
 
             //find references 
             for (int i = 0; i < lines.Count; i++)
@@ -186,15 +195,15 @@
                 }
             }
 
-            File.WriteAllLines(project.FullName, lines.ToArray());
+            _fileSystem.WriteAllLines(project.FullName, lines.ToArray());
 
             return true;
         }
 
-        public static bool DeleteProperty(FileInfo file, string property)
+        bool IProjectWriter.DeleteProperty(FileInfo file, string property)
         {
             //load project
-            var lines = File.ReadAllLines(file.FullName).ToList();
+            var lines = _fileSystem.ReadAllLines(file.FullName).ToList();
 
             //find property
             for (int i = 0; i < lines.Count; i++)
@@ -206,15 +215,15 @@
                 }
             }
 
-            File.WriteAllLines(file.FullName, lines.ToArray());
+            _fileSystem.WriteAllLines(file.FullName, lines.ToArray());
 
             return true;
         }
 
-        public static bool AddUpdateProperty(FileInfo file, string property, string value)
+        bool IProjectWriter.AddUpdateProperty(FileInfo file, string property, string value)
         {
             //load project
-            var lines = File.ReadAllLines(file.FullName).ToList();
+            var lines = _fileSystem.ReadAllLines(file.FullName).ToList();
 
             List<int> indexes = new();
 
@@ -264,15 +273,15 @@
                 lines.Insert(indexProperyGroup + 1, $"    <{property}>{value}</{property}>");
             }
 
-            File.WriteAllLines(file.FullName, lines.ToArray());
+            _fileSystem.WriteAllLines(file.FullName, lines.ToArray());
 
             return true;
         }
 
-        public static bool RemoveMeadowConfig(FileInfo file)
+        bool IProjectWriter.RemoveMeadowConfig(FileInfo file)
         {
             //load project
-            var lines = File.ReadAllLines(file.FullName).ToList();
+            var lines = _fileSystem.ReadAllLines(file.FullName).ToList();
 
             for (int i = 0; i < lines.Count; i++)
             {
@@ -285,11 +294,52 @@
                     //delete 5 lines
                     lines.RemoveRange(i, 5);
 
-                    File.WriteAllLines(file.FullName, lines.ToArray());
+                    _fileSystem.WriteAllLines(file.FullName, lines.ToArray());
                 }
             }
 
             return true;
+        }
+
+        // Static methods for backwards compatibility
+        public static bool AddOrReplaceReference(FileInfo project, string reference, string lineMatch)
+        {
+            return ((IProjectWriter)_defaultInstance).AddOrReplaceReference(project, reference, lineMatch);
+        }
+
+        public static bool AddReference(FileInfo project, string reference)
+        {
+            return ((IProjectWriter)_defaultInstance).AddReference(project, reference);
+        }
+
+        public static bool AddReference(FileInfo project, FileInfo reference)
+        {
+            return ((IProjectWriter)_defaultInstance).AddReference(project, reference);
+        }
+
+        public static bool AddNuget(FileInfo project, string packageName)
+        {
+            return ((IProjectWriter)_defaultInstance).AddNuget(project, packageName);
+        }
+
+        public static bool RemoveReference(FileInfo project, FileInfo reference)
+        {
+            return ((IProjectWriter)_defaultInstance).RemoveReference(project, reference);
+        }
+
+        public static bool DeleteProperty(FileInfo file, string property)
+        {
+            return ((IProjectWriter)_defaultInstance).DeleteProperty(file, property);
+        }
+
+        public static bool AddUpdateProperty(FileInfo file, string property, string value)
+        {
+            return ((IProjectWriter)_defaultInstance).AddUpdateProperty(file, property, value);
+        }
+
+        public static bool RemoveMeadowConfig(FileInfo file)
+        {
+            return ((IProjectWriter)_defaultInstance).RemoveMeadowConfig(file);
         }
     }
 }
