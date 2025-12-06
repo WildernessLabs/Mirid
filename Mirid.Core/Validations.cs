@@ -40,15 +40,16 @@
     public class Validations
     {
         private static readonly IFileSystem _defaultFileSystem = new FileSystem();
+        private static readonly ProjectValidator _defaultInstance = new ProjectValidator(_defaultFileSystem);
 
         public static bool DoesProjectContainMatchingClass(FileInfo projectFile)
         {
-            return ((IProjectValidator)new ProjectValidator(_defaultFileSystem)).DoesProjectContainMatchingClass(projectFile);
+            return ((IProjectValidator)_defaultInstance).DoesProjectContainMatchingClass(projectFile);
         }
 
         public static bool IsProjectInMatchingFolder(FileInfo projectFile)
         {
-            return ((IProjectValidator)new ProjectValidator(_defaultFileSystem)).IsProjectInMatchingFolder(projectFile);
+            return ((IProjectValidator)_defaultInstance).IsProjectInMatchingFolder(projectFile);
         }
     }
 }

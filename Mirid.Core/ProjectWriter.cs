@@ -4,6 +4,7 @@
     {
         private readonly IFileSystem _fileSystem;
         private static readonly IFileSystem _defaultFileSystem = new FileSystem();
+        private static readonly ProjectWriter _defaultInstance = new ProjectWriter(_defaultFileSystem);
 
         public ProjectWriter(IFileSystem fileSystem)
         {
@@ -303,42 +304,42 @@
         // Static methods for backwards compatibility
         public static bool AddOrReplaceReference(FileInfo project, string reference, string lineMatch)
         {
-            return ((IProjectWriter)new ProjectWriter(_defaultFileSystem)).AddOrReplaceReference(project, reference, lineMatch);
+            return ((IProjectWriter)_defaultInstance).AddOrReplaceReference(project, reference, lineMatch);
         }
 
         public static bool AddReference(FileInfo project, string reference)
         {
-            return ((IProjectWriter)new ProjectWriter(_defaultFileSystem)).AddReference(project, reference);
+            return ((IProjectWriter)_defaultInstance).AddReference(project, reference);
         }
 
         public static bool AddReference(FileInfo project, FileInfo reference)
         {
-            return ((IProjectWriter)new ProjectWriter(_defaultFileSystem)).AddReference(project, reference);
+            return ((IProjectWriter)_defaultInstance).AddReference(project, reference);
         }
 
         public static bool AddNuget(FileInfo project, string packageName)
         {
-            return ((IProjectWriter)new ProjectWriter(_defaultFileSystem)).AddNuget(project, packageName);
+            return ((IProjectWriter)_defaultInstance).AddNuget(project, packageName);
         }
 
         public static bool RemoveReference(FileInfo project, FileInfo reference)
         {
-            return ((IProjectWriter)new ProjectWriter(_defaultFileSystem)).RemoveReference(project, reference);
+            return ((IProjectWriter)_defaultInstance).RemoveReference(project, reference);
         }
 
         public static bool DeleteProperty(FileInfo file, string property)
         {
-            return ((IProjectWriter)new ProjectWriter(_defaultFileSystem)).DeleteProperty(file, property);
+            return ((IProjectWriter)_defaultInstance).DeleteProperty(file, property);
         }
 
         public static bool AddUpdateProperty(FileInfo file, string property, string value)
         {
-            return ((IProjectWriter)new ProjectWriter(_defaultFileSystem)).AddUpdateProperty(file, property, value);
+            return ((IProjectWriter)_defaultInstance).AddUpdateProperty(file, property, value);
         }
 
         public static bool RemoveMeadowConfig(FileInfo file)
         {
-            return ((IProjectWriter)new ProjectWriter(_defaultFileSystem)).RemoveMeadowConfig(file);
+            return ((IProjectWriter)_defaultInstance).RemoveMeadowConfig(file);
         }
     }
 }

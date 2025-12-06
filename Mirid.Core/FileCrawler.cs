@@ -4,6 +4,7 @@
     {
         private readonly IFileSystem _fileSystem;
         private static readonly IFileSystem _defaultFileSystem = new FileSystem();
+        private static readonly FileCrawler _defaultInstance = new FileCrawler(_defaultFileSystem);
 
         public FileCrawler(IFileSystem fileSystem)
         {
@@ -74,22 +75,22 @@
         // Static methods for backwards compatibility
         public static FileInfo[] GetAllProjectsInFolders(string path, bool filter = true)
         {
-            return ((IFileCrawler)new FileCrawler(_defaultFileSystem)).GetAllProjectsInFolders(path, filter);
+            return ((IFileCrawler)_defaultInstance).GetAllProjectsInFolders(path, filter);
         }
 
         public static FileInfo GetFileInfo(string path)
         {
-            return ((IFileCrawler)new FileCrawler(_defaultFileSystem)).GetFileInfo(path);
+            return ((IFileCrawler)_defaultInstance).GetFileInfo(path);
         }
 
         public static List<FileInfo> GetSampleProjects(FileInfo[] projects)
         {
-            return ((IFileCrawler)new FileCrawler(_defaultFileSystem)).GetSampleProjects(projects);
+            return ((IFileCrawler)_defaultInstance).GetSampleProjects(projects);
         }
 
         public static List<FileInfo> GetDriverProjects(FileInfo[] projects)
         {
-            return ((IFileCrawler)new FileCrawler(_defaultFileSystem)).GetDriverProjects(projects);
+            return ((IFileCrawler)_defaultInstance).GetDriverProjects(projects);
         }
     }
 }
