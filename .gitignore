@@ -7,6 +7,7 @@
 
 # Local machine config (paths are machine-specific)
 mirid.config.json
+nuget-tokens.json
 
 # User-specific files
 *.rsuser

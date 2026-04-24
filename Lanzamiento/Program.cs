@@ -3,6 +3,7 @@ using MeadowRepos;
 using Mirid;
 using ReferenceSwitcher;
 using System.Diagnostics;
+using System.Text.Json;
 
 namespace Lanzamiento
 {
@@ -26,19 +27,12 @@ namespace Lanzamiento
                 VERSION = args[0];
                 ROOT_DEV_DIRECTORY = args[1];
                 NUGET_DIRECTORY = args[2];
-                NUGET_TOKEN = args.Length >= 4 ? args[3] : Environment.GetEnvironmentVariable("NUGET_TOKEN") ?? "";
             }
             else
             {
-                Console.WriteLine("Usage: Lanzamiento <version> <root-dev-directory> <nuget-directory> [nuget-token]");
-                Console.WriteLine("  nuget-token can also be set via the NUGET_TOKEN environment variable");
+                Console.WriteLine("Usage: Lanzamiento <version> <root-dev-directory> <nuget-directory>");
+                Console.WriteLine("  NuGet tokens are read from nuget-tokens.json next to the executable");
                 Console.WriteLine("  Example: Lanzamiento 2.5.0 G:\\2500 G:\\LocalNuget");
-                return;
-            }
-
-            if (string.IsNullOrEmpty(NUGET_TOKEN) && publishNugets)
-            {
-                Console.WriteLine("Error: NuGet token required for publishing. Pass as 4th arg or set NUGET_TOKEN environment variable.");
                 return;
             }
 
@@ -52,6 +46,18 @@ namespace Lanzamiento
             Repos.PopulateRepos();
 
             Console.WriteLine($"Loaded {Repos.Repositories.Count} repos");
+
+            if (publishNugets)
+            {
+                var org = Repos.Repositories.Values.First().GitHubOrg;
+                NUGET_TOKEN = LoadNugetToken(org);
+
+                if (string.IsNullOrEmpty(NUGET_TOKEN))
+                {
+                    Console.WriteLine($"Error: no NuGet token found for org '{org}'. Add it to nuget-tokens.json next to the executable.");
+                    return;
+                }
+            }
 
             string sourceBranch = "develop";
             string targetBranch = $"v{VERSION}";
@@ -339,6 +345,20 @@ namespace Lanzamiento
             }
 
             return exitCode;
+        }
+
+        static string LoadNugetToken(string org)
+        {
+            var tokensPath = Path.Combine(AppContext.BaseDirectory, "nuget-tokens.json");
+
+            if (!File.Exists(tokensPath))
+            {
+                Console.WriteLine($"nuget-tokens.json not found at {tokensPath}");
+                return "";
+            }
+
+            var tokens = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(tokensPath));
+            return tokens?.GetValueOrDefault(org) ?? "";
         }
 
         static void ValidateDirectory(string directory)
