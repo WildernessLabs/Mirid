@@ -175,40 +175,39 @@ namespace Mirid.Models
 
         public void UpdateDocHeader(string packageName, string githubCodeUrl, string githubDatasheetUrl = null)
         {
-            //split by line
+            if (string.IsNullOrWhiteSpace(text)) return;
+
             var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
-            bool isTableStarted = false;
-            int tableLineStart = 5;
-            int tableLineEnd = 0;
+            int tableLineStart = -1;
+            int tableLineEnd = -1;
 
             for (int i = 0; i < lines.Count; i++)
             {
-                //find first | 
-                if (isTableStarted == false &&
-                    lines[i].Length > 0 &&
-                    lines[i][0] == '|')
+                if (lines[i].Length > 0 && lines[i][0] == '|')
                 {
-                    isTableStarted = true;
-                    tableLineStart = i;
-                }
-                else if (isTableStarted == true &&
-                    lines[i].Length > 0 &&
-                    lines[i][0] == '|')
-                {
+                    if (tableLineStart == -1) tableLineStart = i;
                     tableLineEnd = i;
                 }
-                else if (isTableStarted == true)
+                else if (tableLineStart != -1)
                 {
                     break;
                 }
             }
 
-            //delete the header table
-            for (int i = 0; i < tableLineEnd - tableLineStart + 1; i++)
+            if (tableLineStart == -1)
             {
-                lines.RemoveAt(tableLineStart);
+                // No existing table — insert after the front-matter block (first blank line after ---)
+                tableLineStart = lines.FindIndex(l => l.TrimStart().StartsWith("---")) + 1;
+                while (tableLineStart < lines.Count && string.IsNullOrWhiteSpace(lines[tableLineStart]))
+                    tableLineStart++;
+                tableLineEnd = tableLineStart - 1;
             }
+
+            // Remove existing table rows
+            int rowCount = tableLineEnd - tableLineStart + 1;
+            for (int i = 0; i < rowCount; i++)
+                lines.RemoveAt(tableLineStart);
 
             //create the table 
             var table = new List<string>

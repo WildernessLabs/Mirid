@@ -24,29 +24,20 @@
 
         public string GetSnipSnop()
         {
+            if (meadowAppFileInfo == null || !File.Exists(meadowAppFileInfo.FullName))
+                return string.Empty;
+
             var text = File.ReadAllText(meadowAppFileInfo.FullName);
 
             int snipIndex = text.IndexOf(SNIP);
             int snopIndex = text.IndexOf(SNOP);
 
-            if(snipIndex == -1 || snopIndex == -1)
-            {
+            if (snipIndex == -1 || snopIndex == -1)
                 return string.Empty;
-            }
 
             snipIndex += SNIP.Length;
 
             return text.Substring(snipIndex, snopIndex - snipIndex);
-        }
-
-        string LoadFileText(string path)
-        {
-            if (File.Exists(path) == false)
-            {
-                throw new FileNotFoundException($"Couldn't find file {path}");
-            }
-
-            return File.ReadAllText(path);
         }
     }
 }
