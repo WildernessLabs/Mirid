@@ -1,4 +1,6 @@
-﻿using System.IO;
+using System;
+using System.IO;
+using System.Xml.Linq;
 
 namespace Mirid.Models
 {
@@ -12,14 +14,11 @@ namespace Mirid.Models
         public string Version { get; private set; }
         public string Authors { get; private set; }
 
-        //private
-        string projectText;
-        FileInfo fileInfo;
+        readonly FileInfo fileInfo;
 
         public MFPackageProject(FileInfo fileInfo)
         {
             this.fileInfo = fileInfo;
-            LoadDriverText(fileInfo.FullName);
             ParseElements();
         }
 
@@ -35,60 +34,39 @@ namespace Mirid.Models
             return true;
         }
 
-        //could do this on demand but I'm not really worried about memory
         void ParseElements()
         {
-            AssemblyName = GetElement("AssemblyName");
-            CompanyName = GetElement("Company");
-            Version = GetElement("Version");
-            PackageId = GetElement("PackageId");
-            Description = GetElement("Description");
-            GeneratePackageOnBuild = GetElement("GeneratePackageOnBuild");
-            Authors = GetElement("Authors");
+            if (!File.Exists(fileInfo.FullName))
+            {
+                throw new FileNotFoundException($"Couldn't find driver project {fileInfo.FullName}");
+            }
+
+            XDocument doc;
+            try
+            {
+                doc = XDocument.Load(fileInfo.FullName);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error parsing project file {fileInfo.FullName}: {ex.Message}");
+                return;
+            }
+
+            AssemblyName = GetElement(doc, "AssemblyName");
+            CompanyName = GetElement(doc, "Company");
+            Version = GetElement(doc, "Version");
+            PackageId = GetElement(doc, "PackageId");
+            Description = GetElement(doc, "Description");
+            GeneratePackageOnBuild = GetElement(doc, "GeneratePackageOnBuild");
+            Authors = GetElement(doc, "Authors");
 
             if (string.IsNullOrWhiteSpace(PackageId))
             {
-                //parse the project name
                 PackageId = "Meadow.Foundation." + Path.GetFileNameWithoutExtension(fileInfo.Name);
             }
         }
 
-        void LoadDriverText(string path)
-        {
-            if (File.Exists(path) == false)
-            {
-                throw new FileNotFoundException($"Couldn't find driver project {path}");
-            }
-
-            try
-            {
-                projectText = File.ReadAllText(path);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error reading project file {path}: {ex.Message}");
-                projectText = string.Empty;
-            }
-        }
-
-        string GetElement(string element)
-        {
-            int index = projectText.IndexOf(element);
-
-            if (index == -1)
-            {
-                return string.Empty;
-            }
-
-            int start = projectText.IndexOf(">", index) + 1;
-            int end = projectText.IndexOf("<", start);
-
-            if (start <= 0 || end < 0 || end <= start)
-            {
-                return string.Empty;
-            }
-
-            return projectText.Substring(start, end - start);
-        }
+        static string GetElement(XDocument doc, string elementName)
+            => doc.Descendants(elementName).FirstOrDefault()?.Value ?? string.Empty;
     }
 }
