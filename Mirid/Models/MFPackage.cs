@@ -92,9 +92,7 @@ namespace Mirid.Models
             else
             {
                 var fileName = GetSimpleName(driverProjectFile.Name) + ".cs";
-                var file = Path.Combine(driverProjectFile.DirectoryName, fileName);
-
-                var fullName = Path.GetFileNameWithoutExtension(driverProjectFile.Name);
+                var file = Path.Combine(driverProjectFile.DirectoryName ?? string.Empty, fileName);
                 Drivers.Add(new MFDriver(this,
                                          file,
                                          Assets.GetSampleForName(Path.GetFileNameWithoutExtension(file) + "_Sample"),
