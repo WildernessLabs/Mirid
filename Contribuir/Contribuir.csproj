@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MeadowRepos\MeadowRepos.csproj" />
-    <ProjectReference Include="..\Mirid.Core\Mirid.Core.csproj" />
   </ItemGroup>
 
 </Project>

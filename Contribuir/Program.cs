@@ -1,7 +1,7 @@
 ﻿using MeadowRepos;
 using System.Text;
 
-namespace Lectura
+namespace Contribuir
 {
     internal class Program
     {
