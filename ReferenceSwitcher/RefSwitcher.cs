@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace ReferenceSwitcher
 {
@@ -330,141 +331,70 @@ namespace ReferenceSwitcher
 
         static List<string> GetListOfProjectReferencesInProject(FileInfo fileInfo)
         {
-            var projects = new List<string>();
-
-            using (var sr = fileInfo.OpenText())
+            XDocument doc;
+            try { doc = XDocument.Load(fileInfo.FullName); }
+            catch (Exception ex)
             {
-                string line;
-
-                while (true)
-                {
-                    line = sr.ReadLine();
-
-                    if (line == null)
-                    {
-                        break;
-                    }
-
-                    if (line.Contains("</ProjectReference"))
-                    {
-                        continue;
-                    }
-
-                    if (line.Contains("ProjectReference"))
-                    {
-                        int firstQuote = line.LastIndexOf("\\");
-                        int secondQuote = line.IndexOf("\"", firstQuote + 1);
-
-                        var projectName = line.Substring(firstQuote + 1, secondQuote - firstQuote - 1);
-
-                        projects.Add(projectName);
-                    }
-                }
+                Console.WriteLine($"Error parsing {fileInfo.Name}: {ex.Message}");
+                return new List<string>();
             }
 
-            return projects;
+            return doc.Descendants("ProjectReference")
+                .Select(r => Path.GetFileName(r.Attribute("Include")?.Value ?? string.Empty))
+                .Where(name => !string.IsNullOrEmpty(name))
+                .ToList();
         }
 
         static List<string> GetListOfNugetReferencesInProject(FileInfo fileInfo)
         {
-            var nugets = new List<string>();
-
-            using (var sr = fileInfo.OpenText())
+            XDocument doc;
+            try { doc = XDocument.Load(fileInfo.FullName); }
+            catch (Exception ex)
             {
-                string line;
-
-                while (true)
-                {
-                    line = sr.ReadLine();
-
-                    if (line == null)
-                        break;
-
-                    if (line.Contains("PackageReference"))
-                    {
-                        int firstQuote = line.IndexOf("\"");
-                        int secondQuote = line.IndexOf("\"", firstQuote + 1);
-
-                        if (firstQuote == -1 || secondQuote == -1)
-                        {
-                            Console.WriteLine("malformed xml in " + fileInfo.Name);
-                            break;
-                        }
-
-                        var packageName = line.Substring(firstQuote + 1, secondQuote - firstQuote - 1);
-
-                        Console.WriteLine($"Found package: {packageName}");
-
-                        nugets.Add(packageName);
-                    }
-                }
+                Console.WriteLine($"Error parsing {fileInfo.Name}: {ex.Message}");
+                return new List<string>();
             }
+
+            var nugets = doc.Descendants("PackageReference")
+                .Select(r => r.Attribute("Include")?.Value ?? string.Empty)
+                .Where(name => !string.IsNullOrEmpty(name))
+                .ToList();
+
+            foreach (var n in nugets)
+                Console.WriteLine($"Found package: {n}");
 
             return nugets;
         }
 
         public static Tuple<string, string>? GetNugetInfoFromFileInfo(FileInfo file)
         {
-            var lines = File.ReadAllLines(file.FullName);
-
-            string packageId = string.Empty;
-            string version = string.Empty;
-
-            //we'll check for metadata that verifies if it's published
-            bool isPublished = false;
-
-            foreach (var line in lines)
+            XDocument doc;
+            try { doc = XDocument.Load(file.FullName); }
+            catch (Exception ex)
             {
-                if (line.Contains("PackageId"))
-                {
-                    var startIndex = line.IndexOf(">") + 1;
-                    var endIndex = line.LastIndexOf("<");
-
-                    if (endIndex < startIndex) continue;
-
-                    packageId = line[startIndex..endIndex];
-                    isPublished = true;
-                }
-
-                if (line.Contains("<Version>"))
-                {
-                    var startIndex = line.IndexOf(">") + 1;
-                    var endIndex = line.LastIndexOf("<");
-
-                    version = line[startIndex..endIndex];
-                }
+                Console.WriteLine($"Error parsing {file.Name}: {ex.Message}");
+                return null;
             }
 
-            if (isPublished)
-            {
-                return new Tuple<string, string>(packageId, version);
-            }
-            return null;
+            var packageId = doc.Descendants("PackageId").FirstOrDefault()?.Value;
+            if (string.IsNullOrEmpty(packageId))
+                return null;
+
+            var version = doc.Descendants("Version").FirstOrDefault()?.Value ?? string.Empty;
+
+            return new Tuple<string, string>(packageId, version);
         }
 
         static FileInfo? GetFileForPackageId(IEnumerable<FileInfo> fileInfos, string packageId)
         {
             foreach (var f in fileInfos)
             {
-                using (var sr = f.OpenText())
-                {
-                    string line;
+                XDocument doc;
+                try { doc = XDocument.Load(f.FullName); }
+                catch { continue; }
 
-                    while (true)
-                    {
-                        line = sr.ReadLine();
-
-                        if (line == null)
-                        {
-                            break;
-                        }
-
-                        if (line.Contains("PackageId") && line.Contains($">{packageId}<"))
-                        {
-                            return f;
-                        }
-                    }
-                }
+                if (doc.Descendants("PackageId").Any(e => e.Value == packageId))
+                    return f;
             }
 
             return null;
