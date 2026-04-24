@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Mirid.Models
@@ -67,6 +68,8 @@ namespace Mirid.Models
             //to process samples
             //var driverSamples = FileCrawler.GetSampleProjects(projectFiles);
 
+            var iconAbsPath = Path.Combine(MeadowFoundationSourcePath, "icon.png");
+
             foreach (var proj in driverProjectFiles)
             {
                 ProjectWriter.AddUpdateProperty(proj, "Nullable", "enable");
@@ -79,7 +82,9 @@ namespace Mirid.Models
                 ProjectWriter.AddUpdateProperty(proj, "PackageIcon", "icon.png");
                 ProjectWriter.AddUpdateProperty(proj, "RepositoryUrl", "https://github.com/WildernessLabs/Meadow.Foundation");
                 ProjectWriter.DeleteProperty(proj, "PackageIconUrl");
-                ProjectWriter.AddReference(proj, $"<None Include=\"..\\..\\..\\..\\icon.png\" Pack=\"true\" PackagePath=\"\"/>");
+
+                var iconRelPath = Path.GetRelativePath(proj.DirectoryName, iconAbsPath);
+                ProjectWriter.AddOrReplaceReference(proj, $"<None Include=\"{iconRelPath}\" Pack=\"true\" PackagePath=\"\"/>", "icon.png");
             }
         }
     }
