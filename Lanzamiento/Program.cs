@@ -8,10 +8,10 @@ namespace Lanzamiento
 {
     internal class Program
     {
-        static readonly string ROOT_DEV_DIRECTORY = @"G:\2500";
-        static readonly string NUGET_DIRECTORY = @"G:\LocalNuget";
-        static readonly string VERSION = "2.5.0";
-        static readonly string NUGET_TOKEN = "";
+        static string ROOT_DEV_DIRECTORY = @"G:\2500";
+        static string NUGET_DIRECTORY = @"G:\LocalNuget";
+        static string VERSION = "2.5.0";
+        static string NUGET_TOKEN = "";
         static readonly string TIMESTAMP = "2023-10-31 6:52:00";
 
         static readonly bool testBuild = false;
@@ -21,8 +21,22 @@ namespace Lanzamiento
         static readonly bool publishNugets = true;
         static readonly bool pushVersionBranch = false;
 
-        static void Main(string[] _)
+        static void Main(string[] args)
         {
+            if (args.Length >= 4)
+            {
+                VERSION = args[0];
+                ROOT_DEV_DIRECTORY = args[1];
+                NUGET_DIRECTORY = args[2];
+                NUGET_TOKEN = args[3];
+            }
+            else
+            {
+                Console.WriteLine("Usage: Lanzamiento <version> <root-dev-directory> <nuget-directory> <nuget-token>");
+                Console.WriteLine("  Example: Lanzamiento 2.5.0 G:\\2500 G:\\LocalNuget abc123token");
+                return;
+            }
+
             var now = DateTime.Now;
 
             Console.WriteLine($"Hello Lanzamiento - {now}");
