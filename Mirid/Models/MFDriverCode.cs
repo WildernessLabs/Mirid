@@ -1,4 +1,7 @@
 ﻿using System.IO;
+using System.Linq;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Mirid.Models
 {
@@ -49,13 +52,22 @@ namespace Mirid.Models
 
         string GetNamespace()
         {
-            foreach (var line in lines)
-            {
-                if (line.Contains("namespace"))
-                {
-                    return line.Substring("namespace ".Length).TrimEnd(';');
-                }
-            }
+            if (!File.Exists(Path)) return string.Empty;
+
+            var tree = CSharpSyntaxTree.ParseText(File.ReadAllText(Path));
+            var root = tree.GetRoot();
+
+            var fileScopedNs = root.DescendantNodes()
+                .OfType<FileScopedNamespaceDeclarationSyntax>()
+                .FirstOrDefault();
+            if (fileScopedNs != null)
+                return fileScopedNs.Name.ToString();
+
+            var blockNs = root.DescendantNodes()
+                .OfType<NamespaceDeclarationSyntax>()
+                .FirstOrDefault();
+            if (blockNs != null)
+                return blockNs.Name.ToString();
 
             return string.Empty;
         }
