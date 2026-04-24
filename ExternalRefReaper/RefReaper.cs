@@ -69,28 +69,5 @@
 
             return line[startIndex..endIndex];
         }
-
-        static (int Start, int End) GetExternalRefIndexes(List<string> lines)
-        {
-            int nestedProjectsIndex = -1;
-            int endGlobalSectionIndex = -1;
-
-            //Fine the line that contains "(NestedProjects)" in lines and it's EndGlobalSection
-            for (int i = 0; i < lines.Count; i++)
-            {
-                if (lines[i].Contains("GlobalSection(NestedProjects)"))
-                {
-                    nestedProjectsIndex = i;
-                }
-                if (nestedProjectsIndex != -1 &&
-                    lines[i].Contains("EndGlobalSection"))
-                {
-                    endGlobalSectionIndex = i;
-                    break;
-                }
-            }
-
-            return (nestedProjectsIndex, endGlobalSectionIndex);
-        }
     }
 }
