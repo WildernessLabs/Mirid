@@ -3,7 +3,6 @@
     <File Path="Release_steps.md" />
     <File Path="version.md" />
   </Folder>
-  <Project Path="ActionGen/ActionGen.csproj" />
   <Project Path="Contribuir/Contribuir.csproj" />
   <Project Path="ExternalRefReaper/ExternalRefReaper.csproj" />
   <Project Path="Lanzamiento/Lanzamiento.csproj" />
