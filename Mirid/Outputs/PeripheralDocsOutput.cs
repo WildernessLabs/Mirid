@@ -1,4 +1,5 @@
 ﻿using Mirid.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,25 +11,32 @@ public static class PeripheralDocsOutput
 {
     static readonly string[] driverIgnoreList = new string[] { "Animations", "Simulated" };
 
-    public static void WritePeripheralTables(List<MFDriverSet> driverSets)
+    public static void WritePeripheralTables(List<MFDriverSet> driverSets, string outputPath)
     {
         StringBuilder output = new();
 
-        int index = 0;
-
         foreach (var driverSet in driverSets)
         {
-            if (index < 3 || index > 5)
-            {
-                output.AppendLine();
-                output.AppendLine($"## {driverSet.SetName}");
-            }
+            output.AppendLine();
+            output.AppendLine($"## {driverSet.SetName}");
 
             WritePeripheralPackages(driverSet.DriverPackages, output, driverSet.DriverPackages.Count > 1);
-            index++;
         }
 
-        File.WriteAllText("PeripheralTablesCombined.md", output.ToString());
+        var generated = output.ToString();
+
+        if (File.Exists(outputPath))
+        {
+            var existing = File.ReadAllText(outputPath);
+            var splitIndex = existing.IndexOf("\n## ");
+            if (splitIndex != -1)
+            {
+                generated = existing.Substring(0, splitIndex + 1) + generated;
+            }
+        }
+
+        File.WriteAllText(outputPath, generated);
+        Console.WriteLine($"Peripheral tables written to {outputPath}");
     }
 
 

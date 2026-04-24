@@ -54,7 +54,7 @@ namespace Mirid
             if (!metadataOnly)
             {
                 UpdateDocs();
-                WritePeripheralTables(driverSets.Values.ToList());
+                WritePeripheralTables(driverSets.Values.ToList(), config.MFPeripheralTablesPath);
             }
             //RunDriverReport();
         }
@@ -144,12 +144,10 @@ namespace Mirid
             return count;
         }
 
-        static void WritePeripheralTables(List<MFDriverSet> driverSets)
+        static void WritePeripheralTables(List<MFDriverSet> driverSets, string outputPath)
         {
             Console.WriteLine("Write Peripheral Tables");
-
-            //  PeripheralDocsOutput.WritePeripheralTablesSimple(docSet.DriverPackages);
-            PeripheralDocsOutput.WritePeripheralTables(driverSets);
+            PeripheralDocsOutput.WritePeripheralTables(driverSets, outputPath);
         }
 
         static void RunDriverReport(List<MFDriverSet> driverSets)

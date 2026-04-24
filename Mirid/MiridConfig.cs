@@ -24,6 +24,7 @@ namespace Mirid
         public string MFFeatherwingDocsOverridePath { get; set; } = "../../../../../Documentation/docs/api/Meadow.Foundation.Featherwings";
         public string MFCompositePath { get; set; } = "../../../../../Meadow.Foundation.CompositeDevices/Source/";
         public string MFCompositeDocsOverridePath { get; set; } = "../../../../../Documentation/docs/api/Meadow.Foundation.CompositeDevices";
+        public string MFPeripheralTablesPath { get; set; } = "../../../../../Documentation/docs/Meadow/Meadow.Foundation/Peripherals/index.md";
 
         public static MiridConfig Load(string configPath)
         {
