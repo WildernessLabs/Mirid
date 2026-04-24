@@ -1,7 +1,0 @@
-PackageName,NumberOfDrivers,IsPublished,HasCompleteMetaData,HasDataSheet,NumberOfSamples,HasTestSuite
-Meadow.Foundation.Meadow.Foundation.MicroScheduler,7,False,False,False,0,False
-Meadow.Foundation.FtxEepromProgrammer,1,False,False,False,0,False
-Meadow.Foundation.ICs.IOExpanders.Cp2112,1,False,False,False,1,False
-Meadow.Foundation.Sensors.Distance.Hcsr04,1,False,False,True,1,False
-Meadow.Foundation.Sensors.Motion.Apds9960,1,False,False,True,1,False
-Meadow.Foundation.Transceivers.WaveshareSx1303,1,False,False,True,2,False
