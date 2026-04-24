@@ -40,6 +40,18 @@ namespace Mirid.Models
             ReadPackageData(DriverSetSourcePath, DocsOverridePath);
         }
 
+        static string FindIconPath(string startPath)
+        {
+            var dir = new DirectoryInfo(startPath);
+            while (dir != null)
+            {
+                var icon = Path.Combine(dir.FullName, "icon.png");
+                if (File.Exists(icon)) return icon;
+                dir = dir.Parent;
+            }
+            return null;
+        }
+
         protected virtual void ReadPackageData(string peripheralsPath, string docsOverridePath)
         {
             //Drivers
@@ -68,7 +80,7 @@ namespace Mirid.Models
             //to process samples
             //var driverSamples = FileCrawler.GetSampleProjects(projectFiles);
 
-            var iconAbsPath = Path.Combine(MeadowFoundationSourcePath, "icon.png");
+            var iconAbsPath = FindIconPath(DriverSetSourcePath);
             var repoUrl = GitHubUrl.Contains("/tree/")
                 ? GitHubUrl.Substring(0, GitHubUrl.IndexOf("/tree/"))
                 : GitHubUrl.TrimEnd('/');
@@ -86,8 +98,11 @@ namespace Mirid.Models
                 ProjectWriter.AddUpdateProperty(proj, "RepositoryUrl", repoUrl);
                 ProjectWriter.DeleteProperty(proj, "PackageIconUrl");
 
-                var iconRelPath = Path.GetRelativePath(proj.DirectoryName, iconAbsPath);
-                ProjectWriter.AddOrReplaceReference(proj, $"<None Include=\"{iconRelPath}\" Pack=\"true\" PackagePath=\"\"/>", "icon.png");
+                if (iconAbsPath != null)
+                {
+                    var iconRelPath = Path.GetRelativePath(proj.DirectoryName, iconAbsPath);
+                    ProjectWriter.AddOrReplaceReference(proj, $"<None Include=\"{iconRelPath}\" Pack=\"true\" PackagePath=\"\"/>", "icon.png");
+                }
             }
         }
     }
