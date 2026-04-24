@@ -5,8 +5,8 @@
         public DirectoryInfo DirectoryInfo { get; protected set; }
         FileInfo meadowAppFileInfo;
 
-        const string SNIP = "//<!=SNIP=>";
-        const string SNOP = "//<!=SNOP=>";
+        public const string SNIP = "//<!=SNIP=>";
+        public const string SNOP = "//<!=SNOP=>";
 
         public string Name => DirectoryInfo.Name;
 
@@ -22,13 +22,8 @@
             }
         }
 
-        public string GetSnipSnop()
+        public static string ExtractRaw(string text)
         {
-            if (meadowAppFileInfo == null || !File.Exists(meadowAppFileInfo.FullName))
-                return string.Empty;
-
-            var text = File.ReadAllText(meadowAppFileInfo.FullName);
-
             int snipIndex = text.IndexOf(SNIP);
             int snopIndex = text.IndexOf(SNOP);
 
@@ -41,6 +36,14 @@
                 return string.Empty;
 
             return text.Substring(snipIndex, snopIndex - snipIndex);
+        }
+
+        public string GetSnipSnop()
+        {
+            if (meadowAppFileInfo == null || !File.Exists(meadowAppFileInfo.FullName))
+                return string.Empty;
+
+            return ExtractRaw(File.ReadAllText(meadowAppFileInfo.FullName));
         }
     }
 }

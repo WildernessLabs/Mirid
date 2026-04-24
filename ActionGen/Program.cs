@@ -1,4 +1,6 @@
-﻿using System.Xml.Linq;
+﻿using MeadowRepos;
+using ReferenceSwitcher;
+using System.Xml.Linq;
 
 namespace ActionGen
 {
@@ -12,7 +14,7 @@ namespace ActionGen
         static void Main(string[] args)
         {
             //load all Meadow Foundation Projects
-            var projectFiles = GetCsProjFiles(MFSourcePath);
+            var projectFiles = RepoLoader.GetCsProjFiles(MFSourcePath, ProjectType.All);
 
             //filter out samples (so only drivers) - confirmed 110 for RC2-1
             var drivers = GetDriverProjects(projectFiles);
@@ -43,11 +45,6 @@ namespace ActionGen
 
             writer.WriteWorkflow(level1, "nuget-level1.yml");
             writer.WriteWorkflow(level2, "nuget-level2.yml");
-        }
-
-        static FileInfo[] GetCsProjFiles(string path)
-        {
-            return (new DirectoryInfo(path)).GetFiles("*.csproj", SearchOption.AllDirectories);
         }
 
         static FileInfo[] GetDriverProjects(FileInfo[] projectFiles)

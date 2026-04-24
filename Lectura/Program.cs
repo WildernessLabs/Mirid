@@ -88,27 +88,12 @@ namespace Lectura
             return GetSnipSnop(sampleFile);
         }
 
-        const string SNIP = "//<!=SNIP=>";
-        const string SNOP = "//<!=SNOP=>";
-
         static string GetSnipSnop(FileInfo sampleFile)
         {
-            var text = File.ReadAllText(sampleFile.FullName);
+            var rawText = MFDriverSample.ExtractRaw(File.ReadAllText(sampleFile.FullName));
 
-            int snipIndex = text.IndexOf(SNIP);
-            int snopIndex = text.IndexOf(SNOP);
-
-            if (snipIndex == -1 || snopIndex == -1)
-            {
+            if (string.IsNullOrEmpty(rawText))
                 return string.Empty;
-            }
-
-            snipIndex += SNIP.Length;
-
-            if (snopIndex <= snipIndex)
-                return string.Empty;
-
-            var rawText = text.Substring(snipIndex, snopIndex - snipIndex);
 
             var lines = rawText.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
 
