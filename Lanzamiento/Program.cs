@@ -212,9 +212,8 @@ namespace Lanzamiento
                 return;
             }
 
-            ExecuteCommand(rootDirectory, $"dotnet restore {project.FullName} --include-prerelease");
-            ExecuteCommand(rootDirectory, $"dotnet build -c Release --no-restore {project.FullName} /p:Version={version}");
-            ExecuteCommand(rootDirectory, $"dotnet pack -c Release --no-restore {project.FullName} /p:Version={version} --output {nugetDirectory}");
+            ExecuteCommand(rootDirectory, $"dotnet build -c Release {project.FullName} /p:Version={version}");
+            ExecuteCommand(rootDirectory, $"dotnet pack -c Release {project.FullName} /p:Version={version} --output {nugetDirectory}");
 
             UpdateConsoleMessage($"Built {Path.GetFileNameWithoutExtension(project.Name)} nuget");
         }
