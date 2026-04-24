@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Mirid": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    },
+    "Mirid (update metadata)": {
+      "commandName": "Project",
+      "commandLineArgs": "--update-metadata"
+    }
+  }
+}
