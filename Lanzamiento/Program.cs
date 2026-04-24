@@ -93,7 +93,10 @@ namespace Lanzamiento
             foreach (var repo in Repos.Repositories)
             {
                 Nugetize(repo.Value, version: null); //package props .... no version
-                RemoveExternalReferences(ROOT_DEV_DIRECTORY, repo.Value);
+                if (repo.Value.DependencyRepoNames.Any())
+                {
+                    RemoveExternalReferences(ROOT_DEV_DIRECTORY, repo.Value);
+                }
                 UpdateProjectVersionMetaData();
 
                 Console.WriteLine($"Prepared {repo.Key} for publishing");
