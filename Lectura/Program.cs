@@ -153,7 +153,7 @@ namespace Lectura
 
             output.AppendLine("## Installation");
             output.AppendLine();
-            output.AppendLine("You can install the library from within Visual studio using the the NuGet Package Manager or from the command line using the .NET CLI:");
+            output.AppendLine("You can install the library from within Visual Studio using the the NuGet Package Manager or from the command line using the .NET CLI:");
             output.AppendLine();
             output.AppendLine($"`dotnet add package {packageProject.PackageId}`");
 
