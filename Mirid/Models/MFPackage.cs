@@ -40,7 +40,7 @@ namespace Mirid.Models
 
 
         [Ignore]
-        public string Namespace => Drivers.First().Namespace;
+        public string Namespace => Drivers.FirstOrDefault()?.Namespace ?? string.Empty;
 
         [Ignore] //ToDo LINQ expression from driver list - count of drivers that have samples 
         public List<string> Samples { get; protected set; } = new List<string>();
