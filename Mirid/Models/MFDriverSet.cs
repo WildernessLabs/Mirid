@@ -69,6 +69,9 @@ namespace Mirid.Models
             //var driverSamples = FileCrawler.GetSampleProjects(projectFiles);
 
             var iconAbsPath = Path.Combine(MeadowFoundationSourcePath, "icon.png");
+            var repoUrl = GitHubUrl.Contains("/tree/")
+                ? GitHubUrl.Substring(0, GitHubUrl.IndexOf("/tree/"))
+                : GitHubUrl.TrimEnd('/');
 
             foreach (var proj in driverProjectFiles)
             {
@@ -80,7 +83,7 @@ namespace Mirid.Models
                 ProjectWriter.AddUpdateProperty(proj, "Company", "Wilderness Labs, Inc");
                 ProjectWriter.AddUpdateProperty(proj, "PackageProjectUrl", "http://developer.wildernesslabs.co/Meadow/Meadow.Foundation/");
                 ProjectWriter.AddUpdateProperty(proj, "PackageIcon", "icon.png");
-                ProjectWriter.AddUpdateProperty(proj, "RepositoryUrl", "https://github.com/WildernessLabs/Meadow.Foundation");
+                ProjectWriter.AddUpdateProperty(proj, "RepositoryUrl", repoUrl);
                 ProjectWriter.DeleteProperty(proj, "PackageIconUrl");
 
                 var iconRelPath = Path.GetRelativePath(proj.DirectoryName, iconAbsPath);
