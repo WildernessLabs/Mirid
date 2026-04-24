@@ -9,7 +9,6 @@
   <Project Path="Lanzamiento/Lanzamiento.csproj" />
   <Project Path="Lectura/Lectura.csproj" />
   <Project Path="MeadowRepos/MeadowRepos.csproj" />
-  <Project Path="Metafire/Metafire.csproj" />
   <Project Path="Mirid.Core/Mirid.Core.csproj" />
   <Project Path="Mirid/Mirid.csproj" />
   <Project Path="ReferenceSwitcher/ReferenceSwitcher.csproj" />
