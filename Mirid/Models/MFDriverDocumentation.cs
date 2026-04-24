@@ -53,12 +53,24 @@ namespace Mirid.Models
 
             if (File.Exists(FullPath))
             {
-                text = File.ReadAllText(FullPath); //ready for processing
+                try
+                {
+                    text = File.ReadAllText(FullPath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error reading docs file {FullPath}: {ex.Message}");
+                    return;
+                }
 
                 if (text?.Length > 5)
                 {
                     int uidStart = text.IndexOf("uid:") + 5;
-                    UID = text.Substring(uidStart, text.IndexOfAny(new char[] { '\r', '\n' }, uidStart) - uidStart);
+                    int uidEnd = text.IndexOfAny(new char[] { '\r', '\n' }, uidStart);
+                    if (uidStart > 4 && uidEnd > uidStart)
+                    {
+                        UID = text.Substring(uidStart, uidEnd - uidStart);
+                    }
                 }
             }
         }
@@ -104,8 +116,8 @@ namespace Mirid.Models
             sb.AppendLine("");
             sb.AppendLine("");
 
-            //let's try and get the discription from the csproj
-            File.WriteAllText(FullPath, sb.ToString());
+            try { File.WriteAllText(FullPath, sb.ToString()); }
+            catch (Exception ex) { Console.WriteLine($"Error writing docs file {FullPath}: {ex.Message}"); return; }
 
             ReadDocsFile();
         }
@@ -155,10 +167,9 @@ namespace Mirid.Models
 
             text = text.Insert(snipIndex, snipSnop.ToString());
 
-            //now that everything is stored in memory .... we need to update the docs file
-            File.WriteAllText(FullPath, text);
+            try { File.WriteAllText(FullPath, text); }
+            catch (Exception ex) { Console.WriteLine($"Error writing docs file {FullPath}: {ex.Message}"); return; }
 
-            //reload
             ReadDocsFile();
         }
 
@@ -226,10 +237,9 @@ namespace Mirid.Models
             //remove the trailing empty line
             lines.RemoveAt(lines.Count - 1);
 
-            //now that everything is stored in memory .... we need to update the docs file
-            File.WriteAllLines(FullPath, lines);
+            try { File.WriteAllLines(FullPath, lines); }
+            catch (Exception ex) { Console.WriteLine($"Error writing docs file {FullPath}: {ex.Message}"); return; }
 
-            //reload 
             ReadDocsFile();
         }
     }

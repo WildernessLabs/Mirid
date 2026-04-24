@@ -110,17 +110,12 @@ namespace Mirid.Models
             var lines = snipSnop.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
             //remove any lead in blank lines
-            while(true)
+            while (lines.Count > 0 && string.IsNullOrWhiteSpace(lines[0]))
             {
-                if(string.IsNullOrWhiteSpace(lines[0]) == true)
-                {
-                    lines.RemoveAt(0);
-                }
-                else
-                {
-                    break;
-                }
+                lines.RemoveAt(0);
             }
+
+            if (lines.Count == 0) return string.Empty;
 
             //find the index of the first non-space character
             int textStart = 0;

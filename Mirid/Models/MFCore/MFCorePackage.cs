@@ -37,7 +37,7 @@ namespace Mirid.Models
         {
         }
 
-        protected override void LoadDriverResouces(FileInfo driverProjectFile, string docsOverridePath)
+        protected override void LoadDriverResources(FileInfo driverProjectFile, string docsOverridePath)
         {
             if (File.Exists(driverProjectFile.FullName) == false)
             {
@@ -73,8 +73,10 @@ namespace Mirid.Models
 
         MFDriverSample GetSampleForDriver(FileInfo driverProjectFile, MFDriverCode driver)
         {
-            var directories = driverProjectFile.Directory.Parent.GetDirectories("Meadow.Foundation.Core.Samples").FirstOrDefault().GetDirectories();
-            
+            var samplesDir = driverProjectFile.Directory.Parent.GetDirectories("Meadow.Foundation.Core.Samples").FirstOrDefault();
+            if (samplesDir == null) return null;
+
+            var directories = samplesDir.GetDirectories();
             var directory = directories.FirstOrDefault(f => f.Name.Contains(driver.Name));
 
             if (directory == null || directory.Name.Length == 0)

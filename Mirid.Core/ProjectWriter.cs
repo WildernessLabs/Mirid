@@ -1,10 +1,19 @@
-﻿namespace Mirid
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+namespace Mirid
 {
     public class ProjectWriter
     {
         public static bool AddOrReplaceReference(FileInfo project, string reference, string lineMatch)
         {
-            var lines = File.ReadAllLines(project.FullName).ToList();
+            if (project == null || !File.Exists(project.FullName)) return false;
+
+            List<string> lines;
+            try { lines = File.ReadAllLines(project.FullName).ToList(); }
+            catch (Exception ex) { Console.WriteLine($"Error reading {project.FullName}: {ex.Message}"); return false; }
 
             var indexes = new List<int>();
 
@@ -40,7 +49,8 @@
 
             if (found == true)
             {
-                File.WriteAllLines(project.FullName, lines.ToArray());
+                try { File.WriteAllLines(project.FullName, lines.ToArray()); }
+                catch (Exception ex) { Console.WriteLine($"Error writing {project.FullName}: {ex.Message}"); return false; }
                 return true;
             }
 
@@ -68,17 +78,22 @@
                 indexItemGroup = indexCloseProject;
             }
 
-            //insert 
+            //insert
             lines.Insert(indexItemGroup + 1, reference);
 
-            File.WriteAllLines(project.FullName, lines.ToArray());
+            try { File.WriteAllLines(project.FullName, lines.ToArray()); }
+            catch (Exception ex) { Console.WriteLine($"Error writing {project.FullName}: {ex.Message}"); return false; }
 
             return true;
         }
 
         public static bool AddReference(FileInfo project, string reference)
         {
-            var lines = File.ReadAllLines(project.FullName).ToList();
+            if (project == null || !File.Exists(project.FullName)) return false;
+
+            List<string> lines;
+            try { lines = File.ReadAllLines(project.FullName).ToList(); }
+            catch (Exception ex) { Console.WriteLine($"Error reading {project.FullName}: {ex.Message}"); return false; }
 
             for (int i = 0; i < lines.Count; i++)
             {
@@ -112,10 +127,11 @@
                 indexItemGroup = indexCloseProject;
             }
 
-            //insert 
+            //insert
             lines.Insert(indexItemGroup + 1, reference);
 
-            File.WriteAllLines(project.FullName, lines.ToArray());
+            try { File.WriteAllLines(project.FullName, lines.ToArray()); }
+            catch (Exception ex) { Console.WriteLine($"Error writing {project.FullName}: {ex.Message}"); return false; }
 
             return true;
         }
@@ -133,7 +149,11 @@
 
         public static bool AddNuget(FileInfo project, string packageName)
         {
-            var lines = File.ReadAllLines(project.FullName).ToList();
+            if (project == null || !File.Exists(project.FullName)) return false;
+
+            List<string> lines;
+            try { lines = File.ReadAllLines(project.FullName).ToList(); }
+            catch (Exception ex) { Console.WriteLine($"Error reading {project.FullName}: {ex.Message}"); return false; }
 
             //find references 
             int indexItemGroup = -1;
@@ -160,10 +180,11 @@
 
             var reference = $"   <PackageReference Include=\"{packageName}\" Version=\"0.*\" />";
 
-            //insert 
+            //insert
             lines.Insert(indexItemGroup + 1, reference);
 
-            File.WriteAllLines(project.FullName, lines.ToArray());
+            try { File.WriteAllLines(project.FullName, lines.ToArray()); }
+            catch (Exception ex) { Console.WriteLine($"Error writing {project.FullName}: {ex.Message}"); return false; }
 
             return true;
         }
@@ -175,7 +196,9 @@
                 return false;
             }
 
-            var lines = File.ReadAllLines(project.FullName).ToList();
+            List<string> lines;
+            try { lines = File.ReadAllLines(project.FullName).ToList(); }
+            catch (Exception ex) { Console.WriteLine($"Error reading {project.FullName}: {ex.Message}"); return false; }
 
             //find references 
             for (int i = 0; i < lines.Count; i++)
@@ -186,15 +209,19 @@
                 }
             }
 
-            File.WriteAllLines(project.FullName, lines.ToArray());
+            try { File.WriteAllLines(project.FullName, lines.ToArray()); }
+            catch (Exception ex) { Console.WriteLine($"Error writing {project.FullName}: {ex.Message}"); return false; }
 
             return true;
         }
 
         public static bool DeleteProperty(FileInfo file, string property)
         {
-            //load project
-            var lines = File.ReadAllLines(file.FullName).ToList();
+            if (file == null || !File.Exists(file.FullName)) return false;
+
+            List<string> lines;
+            try { lines = File.ReadAllLines(file.FullName).ToList(); }
+            catch (Exception ex) { Console.WriteLine($"Error reading {file.FullName}: {ex.Message}"); return false; }
 
             //find property
             for (int i = 0; i < lines.Count; i++)
@@ -206,15 +233,19 @@
                 }
             }
 
-            File.WriteAllLines(file.FullName, lines.ToArray());
+            try { File.WriteAllLines(file.FullName, lines.ToArray()); }
+            catch (Exception ex) { Console.WriteLine($"Error writing {file.FullName}: {ex.Message}"); return false; }
 
             return true;
         }
 
         public static bool AddUpdateProperty(FileInfo file, string property, string value)
         {
-            //load project
-            var lines = File.ReadAllLines(file.FullName).ToList();
+            if (file == null || !File.Exists(file.FullName)) return false;
+
+            List<string> lines;
+            try { lines = File.ReadAllLines(file.FullName).ToList(); }
+            catch (Exception ex) { Console.WriteLine($"Error reading {file.FullName}: {ex.Message}"); return false; }
 
             List<int> indexes = new();
 
@@ -264,15 +295,19 @@
                 lines.Insert(indexProperyGroup + 1, $"    <{property}>{value}</{property}>");
             }
 
-            File.WriteAllLines(file.FullName, lines.ToArray());
+            try { File.WriteAllLines(file.FullName, lines.ToArray()); }
+            catch (Exception ex) { Console.WriteLine($"Error writing {file.FullName}: {ex.Message}"); return false; }
 
             return true;
         }
 
         public static bool RemoveMeadowConfig(FileInfo file)
         {
-            //load project
-            var lines = File.ReadAllLines(file.FullName).ToList();
+            if (file == null || !File.Exists(file.FullName)) return false;
+
+            List<string> lines;
+            try { lines = File.ReadAllLines(file.FullName).ToList(); }
+            catch (Exception ex) { Console.WriteLine($"Error reading {file.FullName}: {ex.Message}"); return false; }
 
             for (int i = 0; i < lines.Count; i++)
             {
@@ -285,7 +320,8 @@
                     //delete 5 lines
                     lines.RemoveRange(i, 5);
 
-                    File.WriteAllLines(file.FullName, lines.ToArray());
+                    try { File.WriteAllLines(file.FullName, lines.ToArray()); }
+                    catch (Exception ex) { Console.WriteLine($"Error writing {file.FullName}: {ex.Message}"); return false; }
                 }
             }
 

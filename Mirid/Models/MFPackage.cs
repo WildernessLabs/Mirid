@@ -56,10 +56,10 @@ namespace Mirid.Models
         {
             ProjectDirectory = driverProjectFile.Directory;
 
-            LoadDriverResouces(driverProjectFile, docsOverridePath);
+            LoadDriverResources(driverProjectFile, docsOverridePath);
         }
 
-        protected virtual void LoadDriverResouces(FileInfo driverProjectFile, string docsOverridePath)
+        protected virtual void LoadDriverResources(FileInfo driverProjectFile, string docsOverridePath)
         {
             if (File.Exists(driverProjectFile.FullName) == false)
             {

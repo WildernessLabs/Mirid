@@ -60,7 +60,15 @@ namespace Mirid.Models
                 throw new FileNotFoundException($"Couldn't find driver project {path}");
             }
 
-            projectText = File.ReadAllText(path);
+            try
+            {
+                projectText = File.ReadAllText(path);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading project file {path}: {ex.Message}");
+                projectText = string.Empty;
+            }
         }
 
         string GetElement(string element)
@@ -69,12 +77,16 @@ namespace Mirid.Models
 
             if (index == -1)
             {
-                //    Console.WriteLine($"Could not find {element} for {name}");
                 return string.Empty;
             }
 
             int start = projectText.IndexOf(">", index) + 1;
             int end = projectText.IndexOf("<", start);
+
+            if (start <= 0 || end < 0 || end <= start)
+            {
+                return string.Empty;
+            }
 
             return projectText.Substring(start, end - start);
         }
