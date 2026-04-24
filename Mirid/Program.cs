@@ -32,7 +32,11 @@ namespace Mirid
             Console.Clear();
             Console.WriteLine("Hello Mirid!");
 
-            var configPath = Path.Combine(AppContext.BaseDirectory, "mirid.config.json");
+            // Look next to the project source first (survives clean builds), fall back to bin
+            var projectDirConfig = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "mirid.config.json");
+            var configPath = File.Exists(projectDirConfig)
+                ? Path.GetFullPath(projectDirConfig)
+                : Path.Combine(AppContext.BaseDirectory, "mirid.config.json");
             var config = MiridConfig.Load(configPath);
 
             LoadDriverSets(config);

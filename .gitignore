@@ -5,6 +5,9 @@
 
 *.ds_store
 
+# Local machine config (paths are machine-specific)
+mirid.config.json
+
 # User-specific files
 *.rsuser
 *.suo
