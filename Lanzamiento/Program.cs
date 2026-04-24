@@ -385,9 +385,6 @@ namespace Lanzamiento
                 UpdateConsoleStatus($"{directory} does not exist - creating");
                 Directory.CreateDirectory(directory);
             }
-            else
-            {
-            }
         }
 
         static void UpdateConsoleStatus(string status)
