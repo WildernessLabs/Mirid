@@ -22,9 +22,5 @@
             return exists;
         }
 
-        public static bool IsProjectInMatchingFolder(FileInfo projectFile)
-        {
-            return false;
-        }
     }
 }

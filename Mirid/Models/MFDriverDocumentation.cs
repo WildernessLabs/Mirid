@@ -21,7 +21,6 @@ namespace Mirid.Models
         readonly MFDriver driver;
         readonly string documentationPath;
         string text;
-        string simpleNamespace;
 
 
         public MFDriverDocumentation(MFDriver driver, string docsPath)
@@ -34,19 +33,7 @@ namespace Mirid.Models
 
         public void ReadDocsFile()
         {
-            //  var override = Path.Combine()
             var simpleName = driver.SimpleName;
-
-            var index = "Meadow.Foundation.".Length;
-
-            if (driver.Namespace.Contains("Grove"))
-            {
-                simpleNamespace = driver.Name;
-            }
-            else
-            {
-                simpleNamespace = driver.Namespace[index..] + "." + driver.SimpleName;
-            }
 
             DocsFileName = driver.Namespace + "." + simpleName + ".md";
             FullPath = Path.Combine(documentationPath, DocsFileName);

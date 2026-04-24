@@ -171,14 +171,19 @@ namespace Mirid
             try { doc = XDocument.Load(file.FullName); }
             catch (Exception ex) { Console.WriteLine($"Error loading {file.FullName}: {ex.Message}"); return false; }
 
-            var meadowConfigGroup = doc.Descendants("None")
+            var meadowConfigElement = doc.Descendants("None")
                 .Where(e => e.Attribute("Update")?.Value == "meadow.config.yaml")
-                .Select(e => e.Parent)
                 .FirstOrDefault();
 
-            if (meadowConfigGroup != null)
+            if (meadowConfigElement != null)
             {
-                meadowConfigGroup.Remove();
+                var parent = meadowConfigElement.Parent;
+                meadowConfigElement.Remove();
+
+                // Clean up the ItemGroup if it's now empty
+                if (parent != null && !parent.HasElements)
+                    parent.Remove();
+
                 return SaveDocument(doc, file.FullName);
             }
 
