@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/Notes/">
+    <File Path="Release_steps.md" />
+    <File Path="version.md" />
+  </Folder>
+  <Project Path="ActionGen/ActionGen.csproj" />
+  <Project Path="Contribuir/Contribuir.csproj" />
+  <Project Path="ExternalRefReaper/ExternalRefReaper.csproj" />
+  <Project Path="Lanzamiento/Lanzamiento.csproj" />
+  <Project Path="Lectura/Lectura.csproj" />
+  <Project Path="MeadowRepos/MeadowRepos.csproj" />
+  <Project Path="Metafire/Metafire.csproj" />
+  <Project Path="Mirid.Core/Mirid.Core.csproj" />
+  <Project Path="Mirid/Mirid.csproj" />
+  <Project Path="ReferenceSwitcher/ReferenceSwitcher.csproj" />
+</Solution>
