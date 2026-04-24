@@ -71,7 +71,7 @@ namespace Mirid
         static void UpdateDocs()
         {
             if (driverSets.TryGetValue(CORE_PERIPHERALS, out var core)) UpdatePeripheralDocs(core);
-            //if (driverSets.TryGetValue(LIBRARIES_AND_FRAMEWORKS, out var frameworks)) UpdatePeripheralDocs(frameworks);
+            if (driverSets.TryGetValue(LIBRARIES_AND_FRAMEWORKS, out var frameworks)) UpdatePeripheralDocs(frameworks);
             if (driverSets.TryGetValue(EXTERNAL_PERIPHERALS, out var external)) UpdatePeripheralDocs(external);
             if (driverSets.TryGetValue(FEATHERWINGS, out var feather)) UpdatePeripheralDocs(feather);
             if (driverSets.TryGetValue(SEEED_STUDIO_GROVE, out var grove)) UpdatePeripheralDocs(grove);
@@ -89,15 +89,13 @@ namespace Mirid
                 githubUrl: MFCoreGitHubUrl);
             Console.WriteLine($"Processed {coreDriverSet.DriverPackages.Count} packages with {GetDriverCount(coreDriverSet)} drivers");
 
-            /*
             Console.WriteLine($"Load {LIBRARIES_AND_FRAMEWORKS} driver set");
-            var frameworksDriverSet = new MFDriverSet(LIBRARIES_AND_FRAMEWORKS,
+            var frameworksDriverSet = new MFLibraryDriverSet(LIBRARIES_AND_FRAMEWORKS,
                 config.MFSourcePath,
                 config.MFFrameworksPath,
                 config.MFDocsOverridePath,
                 MFFrameworksGitHubUrl);
             Console.WriteLine($"Processed {frameworksDriverSet.DriverPackages.Count} packages with {GetDriverCount(frameworksDriverSet)} drivers");
-            */
 
             Console.WriteLine($"Load {EXTERNAL_PERIPHERALS} driver set");
             var peripheralsDriverSet = new MFDriverSet(EXTERNAL_PERIPHERALS,
@@ -121,7 +119,7 @@ namespace Mirid
 
             //common location so we can turn em off and on ... order counts
             driverSets.Add(CORE_PERIPHERALS, coreDriverSet);
-            //driverSets.Add(LIBRARIES_AND_FRAMEWORKS, frameworksDriverSet);
+            driverSets.Add(LIBRARIES_AND_FRAMEWORKS, frameworksDriverSet);
             driverSets.Add(EXTERNAL_PERIPHERALS, peripheralsDriverSet);
             driverSets.Add(SEEED_STUDIO_GROVE, groveDriverSet);
             driverSets.Add(FEATHERWINGS, featherDriverSet);
