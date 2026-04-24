@@ -80,9 +80,32 @@ Still have hardcoded paths at the top of `Program.cs` — edit before running. C
 
 Open `Mirid.sln` and run the tool you need. Each is a standalone console app.
 
+## Running Mirid (main tool)
+
+Mirid supports four run modes via command-line flags:
+
+| Mode | Flag | What it does |
+|------|------|-------------|
+| Full run (default) | _(no flags)_ | Updates all driver doc headers + code examples, regenerates peripheral tables in Documentation |
+| Update metadata | `--update-metadata` | Writes `.csproj` metadata (LangVersion, Authors, icon, etc.) to all driver packages, then runs full doc update |
+| Metadata only | `--metadata-only` | Writes `.csproj` metadata only — no doc updates |
+| Driver report | `--driver-report` | Writes `AllPeripherals.csv`, `AllDrivers.csv`, `InProgressPeripherals.csv` to the working directory |
+
+Visual Studio launch profiles are configured for all four modes.
+
+### Config file location
+
+Mirid looks for `mirid.config.json` in the project source directory first (next to the `.csproj`), then falls back to the output directory. Place your config next to the `.csproj` so it survives clean builds.
+
+On first run with no config file present, a template is written and the tool exits — edit the paths then re-run.
+
+### Libraries and Frameworks
+
+L&F packages (`Meadow.Foundation.Libraries_and_Frameworks/`) use `MFLibraryDriverSet` / `MFLibraryPackage` instead of the standard `MFDriverSet` / `MFPackage`. Each L&F package is represented as a single row in the peripheral table (linking to the package-level API page), not expanded per class. The primary class is chosen by matching the package's leaf name; if not found, the first class file alphabetically is used as a placeholder.
+
 ## Refactor history
 
-The codebase was significantly cleaned up in 2026 (Phases 1–8):
+The codebase was significantly cleaned up in 2026 (Phases 1–10):
 
 | Phase | What changed |
 |-------|-------------|
@@ -95,3 +118,5 @@ The codebase was significantly cleaned up in 2026 (Phases 1–8):
 | 6 | Seven null-ref and bounds-check crash fixes across core models |
 | 7 | Hardcoded paths in satellite tools (Lectura, Contribuir, Lanzamiento) replaced with CLI args/env vars; ActionGen XML parsing replaced with XDocument; Lectura CRLF split fixed |
 | 8 | Remaining string XML parsing in RefSwitcher (4 methods) replaced with XDocument |
+| 9 | CLI flags (`--update-metadata`, `--metadata-only`, `--driver-report`); config at project source dir; icon path walks up directory tree; `RepositoryUrl` derived from `GitHubUrl`; `Constants.GetDocsApiPrefix` consolidates namespace→URL mapping; `MFPackageProject.FileInfo` exposed; MikroBus removed; dead code deleted |
+| 10 | `MFLibraryPackage` / `MFLibraryDriverSet` for L&F flat folder structure; peripheral tables written to configured Documentation path with header preservation; lazy group table headers eliminate empty orphan tables; `MFPackageProject` default PackageId won't double-prefix if csproj name already starts with `Meadow.Foundation.` |
