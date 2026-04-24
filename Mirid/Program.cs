@@ -37,7 +37,8 @@ namespace Mirid
 
             LoadDriverSets(config);
 
-            UpdateProjectMetadata();
+            if (args.Contains("--update-metadata"))
+                UpdateProjectMetadata();
 
             UpdateDocs();
 

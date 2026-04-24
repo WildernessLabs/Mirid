@@ -156,9 +156,15 @@ namespace Mirid
             for (int i = 1; i < existing.Count; i++) existing[i].Remove();
 
             if (existing.Any())
+            {
+                if (existing[0].Value == value && existing.Count == 1)
+                    return true; // already correct, nothing to write
                 existing[0].Value = value;
+            }
             else
+            {
                 propGroup.AddFirst(new XElement(property, value));
+            }
 
             return SaveDocument(doc, file.FullName);
         }
