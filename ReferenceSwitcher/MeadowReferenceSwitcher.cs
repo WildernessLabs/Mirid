@@ -20,7 +20,6 @@ namespace ReferenceSwitcher
         FoundationSamples,
         FoundationFeatherwings,
         FoundationGrove,
-        FoundationMikroBus,
         Maple,
 
         ProjectLab,
@@ -55,7 +54,6 @@ namespace ReferenceSwitcher
                 { MeadowRepo.FoundationCore, repoLoader.LoadRepo("Meadow.Foundation.Core", "Meadow.Foundation/Source/Meadow.Foundation.Core/") },
                 { MeadowRepo.FoundationFeatherwings, repoLoader.LoadRepo("Meadow.Foundation.Featherwings", "Meadow.Foundation.Featherwings/Source/", ProjectType.All) },
                 { MeadowRepo.FoundationGrove, repoLoader.LoadRepo("Meadow.Foundation.Grove", "Meadow.Foundation.Grove/Source/", ProjectType.All) },
-                { MeadowRepo.FoundationMikroBus, repoLoader.LoadRepo("Meadow.Foundation.mikroBus", "Meadow.Foundation.mikroBus/Source/", ProjectType.All) },
                 { MeadowRepo.Maple, repoLoader.LoadRepo("Maple", "Maple/Source/", ProjectType.All) },
                 { MeadowRepo.ProjectLab, repoLoader.LoadRepo("Meadow.ProjectLab", "Meadow.ProjectLab/Source/") },
                 { MeadowRepo.GPS_Tracker, repoLoader.LoadRepo("GNSS_Tracker", "GNSS_Sensor_Tracker/Source/", ProjectType.All) },
@@ -140,15 +138,6 @@ namespace ReferenceSwitcher
                 publish);
         }
 
-        public void SwitchMeadowFoundationMikroBus(bool publish)
-        {
-            SwitchRepo(Repos[MeadowRepo.FoundationMikroBus].ProjectFiles,
-                new IEnumerable<FileInfo>[] {
-                    Repos[MeadowRepo.Foundation].ProjectFiles,
-                    Repos[MeadowRepo.Core].ProjectFiles },
-                publish);
-        }
-
         public void SwitchMeadowFoundationGrove(bool publish)
         {
             SwitchRepo(Repos[MeadowRepo.FoundationGrove].ProjectFiles,
@@ -211,7 +200,7 @@ namespace ReferenceSwitcher
                     Repos[MeadowRepo.MQTTnet].ProjectFiles,
                     Repos[MeadowRepo.Foundation].ProjectFiles,
                     Repos[MeadowRepo.FoundationGrove].ProjectFiles,
-                    Repos[MeadowRepo.FoundationMikroBus].ProjectFiles },
+                    Repos[MeadowRepo.FoundationGrove].ProjectFiles },
                 publish);
         }
     }

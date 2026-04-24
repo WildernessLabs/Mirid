@@ -22,8 +22,6 @@ namespace Mirid
         public string MFGroveDocsOverridePath { get; set; } = "../../../../../Documentation/docs/api/Meadow.Foundation.Grove";
         public string MFFeatherwingPath { get; set; } = "../../../../../Meadow.Foundation.Featherwings/Source/";
         public string MFFeatherwingDocsOverridePath { get; set; } = "../../../../../Documentation/docs/api/Meadow.Foundation.Featherwings";
-        public string MFMikroBusPath { get; set; } = "../../../../../Meadow.Foundation.mikroBUS/Source/";
-        public string MFMikroBusDocsOverridePath { get; set; } = "../../../../../Documentation/docs/api/Meadow.Foundation.MikroBus";
         public string MFCompositePath { get; set; } = "../../../../../Meadow.Foundation.CompositeDevices/Source/";
         public string MFCompositeDocsOverridePath { get; set; } = "../../../../../Documentation/docs/api/Meadow.Foundation.CompositeDevices";
 

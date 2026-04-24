@@ -7,7 +7,6 @@
             if (identifier.Contains(".CompositeDevices")) return "/docs/api/Meadow.Foundation.CompositeDevices/";
             if (identifier.Contains(".Grove"))            return "/docs/api/Meadow.Foundation.Grove/";
             if (identifier.Contains(".FeatherWings"))     return "/docs/api/Meadow.Foundation.FeatherWings/";
-            if (identifier.Contains(".mikroBUS"))         return "/docs/api/Meadow.Foundation.mikroBUS/";
             if (identifier.Contains(".MBus"))             return "/docs/api/Meadow.Foundation.MBus/";
             return "/docs/api/Meadow.Foundation/";
         }
