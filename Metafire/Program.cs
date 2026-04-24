@@ -6,11 +6,22 @@ namespace Metafire;
 
 internal class Program
 {
-    static readonly string ROOT_DIRECTORY = @"h:\WL";
+    static string ROOT_DIRECTORY = @"h:\WL";
     static readonly string NUGET_VERSION = "2.2.0";
 
     static void Main(string[] args)
     {
+        if (args.Length > 0)
+            ROOT_DIRECTORY = args[0];
+        else if (Environment.GetEnvironmentVariable("WL_ROOT") is string envRoot)
+            ROOT_DIRECTORY = envRoot;
+        else
+        {
+            Console.WriteLine("Usage: Metafire <wl-root-directory>");
+            Console.WriteLine("  Or set WL_ROOT environment variable");
+            return;
+        }
+
         Console.Clear();
         Console.WriteLine("Meta all the projs!");
 

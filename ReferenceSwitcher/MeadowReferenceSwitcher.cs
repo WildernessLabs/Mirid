@@ -35,7 +35,7 @@ namespace ReferenceSwitcher
 
     public class MeadowReferenceSwitcher
     {
-        Dictionary<MeadowRepo, GitRepo>? Repos;
+        Dictionary<MeadowRepo, GitRepo> Repos = new();
         readonly RepoLoader repoLoader = new RepoLoader();
 
         public void LoadProjects()

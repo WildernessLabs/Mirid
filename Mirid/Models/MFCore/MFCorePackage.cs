@@ -60,11 +60,11 @@ namespace Mirid.Models
             {
                 //hacky
                 if (f.Name.StartsWith("I")) continue;
-                if( ignoreFileList.Any(f.Name.Contains)) continue;
+                if (ignoreFileList.Any(pattern => f.Name.Contains(pattern))) continue;
 
                 var driver = new MFDriverCode(f);
 
-                if(coreDriverNamespaces.Any(driver.Namespace.Contains))
+                if (coreDriverNamespaces.Any(ns => driver.Namespace.Contains(ns)))
                 {
                     Drivers.Add(new MFDriver(this, driver, GetSampleForDriver(driverProjectFile, driver), docsOverridePath));
                 }
