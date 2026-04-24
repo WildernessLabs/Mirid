@@ -72,9 +72,9 @@ namespace Contribuir
             output.AppendLine($"2. Clone your fork locally: `git clone {repoPath}`");
             output.AppendLine("3. Switch to the `develop` branch");
             output.AppendLine("4. Create a new branch: `git checkout -b feature/your-contribution`");
-            output.AppendLine("5. Make your changes and commit: `git commit -m 'Added/Updated [feature/fix]`");
+            output.AppendLine("5. Make your changes and commit: `git commit -m 'Added/Updated [feature/fix]'`");
             output.AppendLine("6. Push to your fork: `git push origin feature/your-contribution`");
-            output.AppendLine($"7. Open a pull request at [{repo.Name}/pulls]({repoPath}/pulls) targetting the `develop` branch");
+            output.AppendLine($"7. Open a pull request at [{repo.Name}/pulls]({repoPath}/pulls) targeting the `develop` branch");
 
             output.AppendLine("## Need Help?");
             output.AppendLine();
