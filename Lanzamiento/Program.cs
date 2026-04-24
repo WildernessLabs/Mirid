@@ -204,8 +204,9 @@ namespace Lanzamiento
 
         static void RemoveExternalReferences(string directory, GitRepo repo)
         {
-            //find the sln
-            var slnFile = Directory.GetFiles(Path.Combine(directory, repo.Name, repo.SourceDirectory), "*.sln").FirstOrDefault();
+            var searchPath = Path.Combine(directory, repo.Name, repo.SourceDirectory);
+            var slnFile = Directory.GetFiles(searchPath, "*.sln").FirstOrDefault()
+                       ?? Directory.GetFiles(searchPath, "*.slnx").FirstOrDefault();
 
             if (string.IsNullOrEmpty(slnFile))
             {

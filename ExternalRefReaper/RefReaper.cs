@@ -1,4 +1,7 @@
-﻿namespace ExternalRefReaper
+﻿using System.Xml;
+using System.Xml.Linq;
+
+namespace ExternalRefReaper
 {
     public class RefReaper
     {
@@ -7,6 +10,12 @@
             if (File.Exists(solutionFilename) == false)
             {
                 throw new FileNotFoundException($"{solutionFilename} does not exist. Cannot remove references.");
+            }
+
+            if (Path.GetExtension(solutionFilename).Equals(".slnx", StringComparison.OrdinalIgnoreCase))
+            {
+                RemoveExternalRefsSlnx(solutionFilename);
+                return;
             }
 
             var lines = File.ReadAllLines(solutionFilename).ToList();
@@ -55,6 +64,25 @@
             File.WriteAllLines(solutionFilename, lines);
         }
 
+
+        static void RemoveExternalRefsSlnx(string solutionFilename)
+        {
+            var doc = XDocument.Load(solutionFilename);
+
+            doc.Descendants("Project")
+               .Where(p => (p.Attribute("Path")?.Value ?? "").StartsWith("../../"))
+               .ToList()
+               .ForEach(p => p.Remove());
+
+            doc.Descendants("Folder")
+               .Where(f => !f.HasElements)
+               .ToList()
+               .ForEach(f => f.Remove());
+
+            var settings = new XmlWriterSettings { OmitXmlDeclaration = true, Indent = true, IndentChars = "  " };
+            using var writer = XmlWriter.Create(solutionFilename, settings);
+            doc.Save(writer);
+        }
 
         static string GetGuidString(string line, bool skipFirst = false)
         {
