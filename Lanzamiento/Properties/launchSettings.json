@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Lanzamiento": {
+      "commandName": "Project",
+      "commandLineArgs": "2.5.0 G:\\2500 G:\\LocalNuget YOUR_NUGET_TOKEN_HERE"
+    }
+  }
+}

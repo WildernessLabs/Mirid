@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Lectura": {
+      "commandName": "Project",
+      "commandLineArgs": "H:\\WL"
+    }
+  }
+}
