@@ -70,7 +70,7 @@ namespace Mirid.Models
             foreach (var proj in driverProjectFiles)
             {
                 ProjectWriter.AddUpdateProperty(proj, "Nullable", "enable");
-                ProjectWriter.AddUpdateProperty(proj, "LangVersion", "10.0");
+                ProjectWriter.AddUpdateProperty(proj, "LangVersion", "12.0");
                 ProjectWriter.AddUpdateProperty(proj, "PackageLicenseExpression", "Apache-2.0");
                 ProjectWriter.AddUpdateProperty(proj, "GenerateDocumentationFile", "true");
                 ProjectWriter.AddUpdateProperty(proj, "Authors", "Wilderness Labs, Inc");
