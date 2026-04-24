@@ -1,4 +1,6 @@
-﻿namespace ActionGen
+﻿using System.Xml.Linq;
+
+namespace ActionGen
 {
     class Program
     {
@@ -65,38 +67,21 @@
 
         static (int refCount, string packageId) GetMetaData(FileInfo projectFile)
         {
-            string text = string.Empty;
+            if (!File.Exists(projectFile.FullName))
+                return (0, string.Empty);
 
-            //load file
-            if (File.Exists(projectFile.FullName))
+            XDocument doc;
+            try { doc = XDocument.Load(projectFile.FullName); }
+            catch (Exception ex)
             {
-                text = File.ReadAllText(projectFile.FullName);
-
-                if (string.IsNullOrWhiteSpace(text))
-                {
-                    return (0, string.Empty);
-                }
+                Console.WriteLine($"Error parsing {projectFile.Name}: {ex.Message}");
+                return (0, string.Empty);
             }
 
-            var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+            int count = doc.Descendants("ProjectReference")
+                .Count(r => r.Attribute("Include")?.Value?.Contains("Meadow.Foundation.Core") != true);
 
-            int count = 0;
-            string packageId = string.Empty;
-
-            foreach (var line in lines)
-            {
-                //does it reference another peripheral or a library
-                if (line.Contains("ProjectReference") &&
-                    line.Contains("Meadow.Foundation.Core") == false)
-                {
-                    count++;
-                }
-                else if (line.Contains("<PackageId>"))
-                {
-                    var index = line.IndexOf('>') + 1;
-                    packageId = line.Substring(index, line.IndexOf('<', index) - index);
-                }
-            }
+            var packageId = doc.Descendants("PackageId").FirstOrDefault()?.Value ?? string.Empty;
 
             return (count, packageId);
         }
