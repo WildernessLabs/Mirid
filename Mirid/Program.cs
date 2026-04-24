@@ -55,12 +55,12 @@ namespace Mirid
 
         static void UpdateDocs()
         {
-            UpdatePeripheralDocs(driverSets[CORE_PERIPHERALS]);
-            //UpdatePeripheralDocs(driverSets[LIBRARIES_AND_FRAMEWORKS]);
-            UpdatePeripheralDocs(driverSets[EXTERNAL_PERIPHERALS]);
-            UpdatePeripheralDocs(driverSets[FEATHERWINGS]);
-            UpdatePeripheralDocs(driverSets[SEEED_STUDIO_GROVE]);
-            UpdatePeripheralDocs(driverSets[COMPOSITE_DEVICES]);
+            if (driverSets.TryGetValue(CORE_PERIPHERALS, out var core)) UpdatePeripheralDocs(core);
+            //if (driverSets.TryGetValue(LIBRARIES_AND_FRAMEWORKS, out var frameworks)) UpdatePeripheralDocs(frameworks);
+            if (driverSets.TryGetValue(EXTERNAL_PERIPHERALS, out var external)) UpdatePeripheralDocs(external);
+            if (driverSets.TryGetValue(FEATHERWINGS, out var feather)) UpdatePeripheralDocs(feather);
+            if (driverSets.TryGetValue(SEEED_STUDIO_GROVE, out var grove)) UpdatePeripheralDocs(grove);
+            if (driverSets.TryGetValue(COMPOSITE_DEVICES, out var composite)) UpdatePeripheralDocs(composite);
         }
 
         static void LoadDriverSets(MiridConfig config)
