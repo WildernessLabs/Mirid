@@ -37,7 +37,7 @@ namespace Mirid.Models
         {
         }
 
-        protected override void LoadDriverResouces(FileInfo driverProjectFile, string docsOverridePath)
+        protected override void LoadDriverResources(FileInfo driverProjectFile, string docsOverridePath)
         {
             if (File.Exists(driverProjectFile.FullName) == false)
             {

@@ -13,7 +13,7 @@ namespace Mirid
         public static string MCFullPath = "../../../../../Meadow.Core/source/";
         public static string MFSourcePath = "../../../../../Meadow.Foundation/Source/";
 
-        public static string MFCorePerihperalsPath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Core";
+        public static string MFCorePeripheralsPath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Core";
         public static string MFCoreGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation/tree/main/Source/Meadow.Foundation.Core/";
 
         public static string MFPeripheralsPath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Peripherals";
@@ -88,7 +88,7 @@ namespace Mirid
             var coreDriverSet = new MFCoreDriverSet(
                 name: CORE_PERIPHERALS,
                 MFSourcePath: MFSourcePath,
-                driverSourcePath: MFCorePerihperalsPath,
+                driverSourcePath: MFCorePeripheralsPath,
                 docsOverridePath: MFDocsOverridePath,
                 githubUrl: MFCoreGitHubUrl);
             Console.WriteLine($"Processed {coreDriverSet.DriverPackages.Count} packages with {GetDriverCount(coreDriverSet)} drivers");
