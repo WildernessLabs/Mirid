@@ -11,6 +11,10 @@
     "Mirid (metadata only)": {
       "commandName": "Project",
       "commandLineArgs": "--metadata-only"
+    },
+    "Mirid (driver report)": {
+      "commandName": "Project",
+      "commandLineArgs": "--driver-report"
     }
   }
 }

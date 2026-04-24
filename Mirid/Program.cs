@@ -46,6 +46,12 @@ namespace Mirid
             if (args.Contains("--update-metadata") || metadataOnly)
                 UpdateProjectMetadata();
 
+            if (args.Contains("--driver-report"))
+            {
+                RunDriverReport(driverSets.Values.ToList());
+                return;
+            }
+
             if (!metadataOnly)
             {
                 UpdateDocs();
@@ -149,32 +155,18 @@ namespace Mirid
             PeripheralDocsOutput.WritePeripheralTables(driverSets);
         }
 
-        //ToDo - rework in the context of doc sets
-        static void RunDriverReport(MFDriverSet docSet)
+        static void RunDriverReport(List<MFDriverSet> driverSets)
         {
             Console.Clear();
             Console.WriteLine("Driver Report");
 
-            CsvOutput.WritePackagesCSV(docSet.DriverPackages, "AllPeripherals.csv");
-            CsvOutput.WriteDriversCSV(docSet.DriverPackages, "AllDrivers.csv");
+            var allPackages = driverSets.SelectMany(s => s.DriverPackages).ToList();
 
-            CsvOutput.WritePackagesCSV(docSet.DriverPackages.Where(d => d.IsPublished == false).ToList(), "InProgressPeripherals.csv");
+            CsvOutput.WritePackagesCSV(allPackages, "AllPeripherals.csv");
+            CsvOutput.WriteDriversCSV(allPackages, "AllDrivers.csv");
+            CsvOutput.WritePackagesCSV(allPackages.Where(d => d.IsPublished == false).ToList(), "InProgressPeripherals.csv");
 
-            return;
-            //need to standardize the folder and naming convensions for the libs and frameworks first s
-
-            //Libraries and frameworks
-            var frameworkFiles = FileCrawler.GetAllProjectsInFolders(string.Empty);
-            var frameworkProjectFiles = FileCrawler.GetDriverProjects(frameworkFiles);
-
-            /*
-            foreach (var file in frameworkProjectFiles)
-            {
-                frameworkNugets.Add(new MFPackage(file, MFDocsOverridePath));
-            }
-
-            CsvOutput.WritePackagesCSV(frameworkNugets, "AllFrameworks.csv");
-            */
+            Console.WriteLine($"Report written: {allPackages.Count} packages, {allPackages.Sum(p => p.NumberOfDrivers)} drivers");
         }
 
         static void UpdatePeripheralDocs(MFDriverSet driverSet)

@@ -14,11 +14,11 @@ namespace Mirid.Models
         public string Version { get; private set; }
         public string Authors { get; private set; }
 
-        readonly FileInfo fileInfo;
+        public FileInfo FileInfo { get; private set; }
 
         public MFPackageProject(FileInfo fileInfo)
         {
-            this.fileInfo = fileInfo;
+            FileInfo = fileInfo;
             ParseElements();
         }
 
@@ -36,19 +36,19 @@ namespace Mirid.Models
 
         void ParseElements()
         {
-            if (!File.Exists(fileInfo.FullName))
+            if (!File.Exists(FileInfo.FullName))
             {
-                throw new FileNotFoundException($"Couldn't find driver project {fileInfo.FullName}");
+                throw new FileNotFoundException($"Couldn't find driver project {FileInfo.FullName}");
             }
 
             XDocument doc;
             try
             {
-                doc = XDocument.Load(fileInfo.FullName);
+                doc = XDocument.Load(FileInfo.FullName);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error parsing project file {fileInfo.FullName}: {ex.Message}");
+                Console.WriteLine($"Error parsing project file {FileInfo.FullName}: {ex.Message}");
                 return;
             }
 
@@ -62,7 +62,7 @@ namespace Mirid.Models
 
             if (string.IsNullOrWhiteSpace(PackageId))
             {
-                PackageId = "Meadow.Foundation." + Path.GetFileNameWithoutExtension(fileInfo.Name);
+                PackageId = "Meadow.Foundation." + Path.GetFileNameWithoutExtension(FileInfo.Name);
             }
         }
 

@@ -66,19 +66,14 @@ namespace Mirid.Models
             DriverPackages = DriverPackages.OrderBy(x => x.PackageName).ToList();
         }
 
-        //this entire method needs to be dynamic
-        //pass in what to process and what to apply
         public void UpdateProjectMetadata()
         {
-            Console.WriteLine("Update project metadata");
+            Console.WriteLine($"Update project metadata: {SetName}");
 
-            //Drivers
-            var projectFiles = FileCrawler.GetAllProjectsInFolders(DriverSetSourcePath);
-
-            var driverProjectFiles = FileCrawler.GetDriverProjects(projectFiles);
-
-            //to process samples
-            //var driverSamples = FileCrawler.GetSampleProjects(projectFiles);
+            var driverProjectFiles = DriverPackages
+                .Where(p => p.NugetProject?.FileInfo != null)
+                .Select(p => p.NugetProject.FileInfo)
+                .ToList();
 
             var iconAbsPath = FindIconPath(DriverSetSourcePath);
             var repoUrl = GitHubUrl.Contains("/tree/")
