@@ -62,7 +62,8 @@ namespace Mirid.Models
 
             if (string.IsNullOrWhiteSpace(PackageId))
             {
-                PackageId = "Meadow.Foundation." + Path.GetFileNameWithoutExtension(FileInfo.Name);
+                var stem = Path.GetFileNameWithoutExtension(FileInfo.Name);
+                PackageId = stem.StartsWith("Meadow.Foundation.") ? stem : "Meadow.Foundation." + stem;
             }
         }
 

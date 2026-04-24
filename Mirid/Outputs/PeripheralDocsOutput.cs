@@ -52,6 +52,7 @@ public static class PeripheralDocsOutput
     static void WritePeripheralPackages(List<MFPackage> packages, StringBuilder output, bool writeHeader = true)
     {
         string group = string.Empty;
+        bool groupTableHeaderWritten = false;
 
         List<MFPackage> packagesWithMultipleDrivers = new();
 
@@ -69,13 +70,13 @@ public static class PeripheralDocsOutput
 
                 packagesWithMultipleDrivers.Clear();
                 group = GetPeripheralGroup(package.PackageName);
+                groupTableHeaderWritten = false;
 
                 if (writeHeader)
                 {
                     output.AppendLine();
                     output.AppendLine($"### {group}");
                     output.AppendLine();
-                    WriteTableHeader(output);
                 }
             }
 
@@ -83,6 +84,13 @@ public static class PeripheralDocsOutput
             {
                 packagesWithMultipleDrivers.Add(package);
                 continue;
+            }
+
+            // Write table header lazily — only when there's a row to put in it
+            if (!groupTableHeaderWritten && writeHeader)
+            {
+                WriteTableHeader(output);
+                groupTableHeaderWritten = true;
             }
 
             WriteTableRow(GetStatusText(package.IsPublished),

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -29,8 +30,10 @@ namespace Mirid.Models
             Assets = new MFDriverAssets(parentDir);
 
             var files = driverProjectFile.Directory
-                .EnumerateFiles("*.cs", SearchOption.AllDirectories)
+                .EnumerateFiles("*.cs", SearchOption.TopDirectoryOnly)
                 .ToList();
+
+            var candidates = new List<MFDriver>();
 
             foreach (var file in files)
             {
@@ -42,8 +45,16 @@ namespace Mirid.Models
 
                 var driverCode = new MFDriverCode(file);
                 var sample = Assets.GetSampleForName(stem + "_Sample");
-                Drivers.Add(new MFDriver(this, driverCode, sample, docsOverridePath));
+                candidates.Add(new MFDriver(this, driverCode, sample, docsOverridePath));
             }
+
+            if (candidates.Count == 0) return;
+
+            // Each L&F package = one row in the table. Pick the primary class (matching
+            // the package leaf name), falling back to the first candidate alphabetically.
+            var leafName = PackageName.Split('.').Last();
+            var primary = candidates.FirstOrDefault(d => d.Name == leafName) ?? candidates[0];
+            Drivers.Add(primary);
         }
     }
 }
