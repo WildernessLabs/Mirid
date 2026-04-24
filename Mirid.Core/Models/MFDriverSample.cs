@@ -37,6 +37,9 @@
 
             snipIndex += SNIP.Length;
 
+            if (snopIndex <= snipIndex)
+                return string.Empty;
+
             return text.Substring(snipIndex, snopIndex - snipIndex);
         }
     }
