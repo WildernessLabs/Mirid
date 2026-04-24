@@ -4,7 +4,7 @@
     {
         public static bool DoesProjectContainMatchingClass(FileInfo projectFile)
         {
-            var driverName = projectFile.Name.Substring(0, projectFile.Name.IndexOf(".csproj"));
+            var driverName = Path.GetFileNameWithoutExtension(projectFile.Name);
             driverName = driverName.Substring(driverName.LastIndexOf(".") + 1);
 
             var directory = projectFile.Directory;

@@ -37,11 +37,12 @@
                     {
                         lines.RemoveAt(index);
 
-                        if (lines[index].Contains("EndProject"))
+                        if (index < lines.Count && lines[index].Contains("EndProject"))
                         {
                             lines.RemoveAt(index);
                         }
                         foundGuid = true;
+                        break;
                     }
                 }
 

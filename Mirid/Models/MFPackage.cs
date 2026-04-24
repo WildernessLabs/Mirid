@@ -104,6 +104,9 @@ namespace Mirid.Models
         {
             var nameChunks = Name.Split('.');
 
+            if (nameChunks.Length < 2)
+                return Path.GetFileNameWithoutExtension(Name);
+
             return nameChunks[nameChunks.Length - 2];
         }
     }

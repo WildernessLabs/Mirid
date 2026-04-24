@@ -222,7 +222,7 @@ namespace ReferenceSwitcher
         {
             if (fileInfoToModify == null)
             {
-                Console.WriteLine($"{fileInfoToModify} is null");
+                Console.WriteLine($"fileInfoToModify is null (packageId: {packageId})");
                 return;
             }
 

@@ -221,7 +221,8 @@ namespace Mirid.Models
             }
 
             //remove the trailing empty line
-            lines.RemoveAt(lines.Count - 1);
+            if (lines.Count > 0)
+                lines.RemoveAt(lines.Count - 1);
 
             try { File.WriteAllLines(FullPath, lines); }
             catch (Exception ex) { Console.WriteLine($"Error writing docs file {FullPath}: {ex.Message}"); return; }

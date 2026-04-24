@@ -47,7 +47,7 @@ namespace Mirid.Models
         public string DatasheetPath => "";
 
         [Ignore]
-        public string SamplePath => driverSample.DirectoryInfo.FullName;
+        public string SamplePath => driverSample?.DirectoryInfo.FullName ?? string.Empty;
 
         [Ignore]
         public string SimpleName => driverCode.Name.Split('.').LastOrDefault();
