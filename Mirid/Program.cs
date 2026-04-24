@@ -16,7 +16,7 @@ namespace Mirid
         static readonly string MFGroveGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.Grove/tree/main/Source/";
         static readonly string MFFeatherGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.FeatherWings/tree/main/Source/";
         static readonly string MFMikroBusGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.MikroBus/tree/main/Source/";
-        static readonly string MFCompositeGitHubUrl = "https://github.com/wildernesslabs/meadow.foundation.compositedevices/tree/main/Source/";
+        static readonly string MFCompositeGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.CompositeDevices/tree/main/Source/";
 
         static readonly Dictionary<string, MFDriverSet> driverSets = new();
 
