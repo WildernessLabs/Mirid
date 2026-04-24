@@ -2,6 +2,17 @@
 {
     public static class Constants
     {
+        public static string GetDocsApiPrefix(string identifier)
+        {
+            if (identifier.Contains(".CompositeDevices")) return "/docs/api/Meadow.Foundation.CompositeDevices/";
+            if (identifier.Contains(".Grove"))            return "/docs/api/Meadow.Foundation.Grove/";
+            if (identifier.Contains(".FeatherWings"))     return "/docs/api/Meadow.Foundation.FeatherWings/";
+            if (identifier.Contains(".mikroBUS"))         return "/docs/api/Meadow.Foundation.mikroBUS/";
+            if (identifier.Contains(".MBus"))             return "/docs/api/Meadow.Foundation.MBus/";
+            return "/docs/api/Meadow.Foundation/";
+        }
+
+
         public static string BlockedBadgeHtml => $"<img alt=\"{blockedAltText}\" src=\"{blockedBadgeLink}\"/>";
         public static string InProgressBadgeHtml => $"<img alt=\"{inProgressAltText}\" src=\"{inProgressBadgeLink}\"/>";
         public static string WorkingBadgeHtml => $"<img alt=\"{workingAltText}\" src=\"{workingBadgeLink}\"/>";

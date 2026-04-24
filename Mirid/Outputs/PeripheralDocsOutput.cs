@@ -161,32 +161,7 @@ public static class PeripheralDocsOutput
     static string GetPeripheralLink(MFPackage package, bool hasMultipleDrivers)
     {
         var name = GetDriverNameFromPackage(package.PackageName);
-        string prefix;
-
-        if (package.ProjectDirectory.FullName.Contains(".CompositeDevices"))
-        {
-            prefix = "/docs/api/Meadow.Foundation.CompositeDevices/";
-        }
-        else if (package.PackageName.Contains(".Grove"))
-        {
-            prefix = "/docs/api/Meadow.Foundation.Grove/";
-        }
-        else if (package.PackageName.Contains(".FeatherWings"))
-        {
-            prefix = "/docs/api/Meadow.Foundation.FeatherWings/";
-        }
-        else if (package.PackageName.Contains(".mikroBUS"))
-        {
-            prefix = "/docs/api/Meadow.Foundation.mikroBUS/";
-        }
-        else if (package.PackageName.Contains(".MBus"))
-        {
-            prefix = "/docs/api/Meadow.Foundation.MBus/";
-        }
-        else
-        {
-            prefix = "/docs/api/Meadow.Foundation/";
-        }
+        var prefix = Constants.GetDocsApiPrefix(package.ProjectDirectory.FullName + package.PackageName);
 
         string modifiedPackageName = package.PackageName;
 

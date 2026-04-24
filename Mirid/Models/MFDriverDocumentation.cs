@@ -64,33 +64,7 @@ namespace Mirid.Models
 
         string GetRootDocsPath(MFDriver driver)
         {
-            string rootPath;
-
-            if (driver.FilePath.Contains(".CompositeDevices"))
-            {
-                rootPath = "/docs/api/Meadow.Foundation.CompositeDevices/";
-            }
-            else if (driver.Namespace.Contains(".Grove"))
-            {
-                rootPath = "/docs/api/Meadow.Foundation.Grove/";
-            }
-            else if (driver.Namespace.Contains(".FeatherWings"))
-            {
-                rootPath = "/docs/api/Meadow.Foundation.FeatherWings/";
-            }
-            else if (driver.Namespace.Contains(".mikroBUS"))
-            {
-                rootPath = "/docs/api/Meadow.Foundation.mikroBUS/";
-            }
-            else if (driver.Namespace.Contains(".MBus"))
-            {
-                rootPath = "/docs/api/Meadow.Foundation.MBus/";
-            }
-            else
-            {
-                rootPath = "/docs/api/Meadow.Foundation/";
-            }
-            return rootPath;
+            return Constants.GetDocsApiPrefix(driver.FilePath + driver.Namespace);
         }
 
         public void CreateOverride()
