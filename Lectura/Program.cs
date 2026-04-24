@@ -142,7 +142,7 @@ namespace Lectura
             output.AppendLine($"**{packageProject.Description}**");
             output.AppendLine();
 
-            output.AppendLine($"The **{packageProject.AssemblyName}** library is included in the **{packageProject.PackageId}** nuget package and is designed for the [Wilderness Labs](www.wildernesslabs.co) Meadow .NET IoT platform.");
+            output.AppendLine($"The **{packageProject.AssemblyName}** library is included in the **{packageProject.PackageId}** nuget package and is designed for the [Wilderness Labs](https://www.wildernesslabs.co) Meadow .NET IoT platform.");
             output.AppendLine();
             output.AppendLine("This driver is part of the [Meadow.Foundation](https://developer.wildernesslabs.co/Meadow/Meadow.Foundation/) peripherals library, an open-source repository of drivers and libraries that streamline and simplify adding hardware to your C# .NET Meadow IoT applications.");
             output.AppendLine();
@@ -153,7 +153,7 @@ namespace Lectura
 
             output.AppendLine("## Installation");
             output.AppendLine();
-            output.AppendLine("You can install the library from within Visual Studio using the the NuGet Package Manager or from the command line using the .NET CLI:");
+            output.AppendLine("You can install the library from within Visual Studio using the NuGet Package Manager or from the command line using the .NET CLI:");
             output.AppendLine();
             output.AppendLine($"`dotnet add package {packageProject.PackageId}`");
 
@@ -180,7 +180,7 @@ namespace Lectura
 
             output.AppendLine("## About Meadow");
             output.AppendLine();
-            output.AppendLine("Meadow is a complete, IoT platform with defense-grade security that runs full .NET applications on embeddable microcontrollers and Linux single-board computers including Raspberry Pi and NVIDIA Jetson.");
+            output.AppendLine("Meadow is a complete IoT platform with defense-grade security that runs full .NET applications on embeddable microcontrollers and Linux single-board computers including Raspberry Pi and NVIDIA Jetson.");
             output.AppendLine();
             output.AppendLine("### Build");
             output.AppendLine();
@@ -192,7 +192,7 @@ namespace Lectura
             output.AppendLine();
             output.AppendLine("### Deploy");
             output.AppendLine();
-            output.AppendLine("Instantly deploy and manage your fleet in the cloud for OtA, health-monitoring, logs, command + control, and enterprise backend integrations.");
+            output.AppendLine("Instantly deploy and manage your fleet in the cloud for OTA, health-monitoring, logs, command + control, and enterprise backend integrations.");
             output.AppendLine();
 
             output.AppendLine();
