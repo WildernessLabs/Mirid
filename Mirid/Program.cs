@@ -1,4 +1,4 @@
-﻿using Mirid.Models;
+using Mirid.Models;
 using Mirid.Output;
 using Mirid.Outputs;
 using System;
@@ -10,35 +10,13 @@ namespace Mirid
 {
     class Program
     {
-        public static string MCFullPath = "../../../../../Meadow.Core/source/";
-        public static string MFSourcePath = "../../../../../Meadow.Foundation/Source/";
-
-        public static string MFCorePeripheralsPath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Core";
-        public static string MFCoreGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation/tree/main/Source/Meadow.Foundation.Core/";
-
-        public static string MFPeripheralsPath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Peripherals";
-        public static string MFDocsOverridePath = "../../../../../Documentation/docs/api/Meadow.Foundation";
-        public static string MFGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation/tree/main/Source/Meadow.Foundation.Peripherals/";
-
-        public static string MFFrameworksPath = "../../../../../Meadow.Foundation/Source/Meadow.Foundation.Libraries_and_Frameworks";
-        public static string MFFrameworksGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation/tree/main/Source/Meadow.Foundation.Libraries_and_Frameworks/";
-
-        public static string MFGrovePath = "../../../../../Meadow.Foundation.Grove/Source/";
-        public static string MFGroveDocsOverridePath = "../../../../../Documentation/docs/api/Meadow.Foundation.Grove";
-        public static string MFGroveGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.Grove/tree/main/Source/";
-
-        public static string MFFeatherwingPath = "../../../../../Meadow.Foundation.Featherwings/Source/";
-        public static string MFFeatherwingDocsOverridePath = "../../../../../Documentation/docs/api/Meadow.Foundation.Featherwings";
-        public static string MFFeatherGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.FeatherWings/tree/main/Source/";
-
-        public static string MFMikroBusPath = "../../../../../Meadow.Foundation.mikroBUS/Source/";
-        public static string MFMikroBusDocsOverridePath = "../../../../../Documentation/docs/api/Meadow.Foundation.MikroBus";
-        public static string MFMikroBusGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.MikroBus/tree/main/Source/";
-
-        public static string MFCompositePath = "../../../../../Meadow.Foundation.CompositeDevices/Source/";
-        public static string MFCompositeDocsOverridePath = "../../../../../Documentation/docs/api/Meadow.Foundation.CompositeDevices";
-        public static string MFCompositeGitHubUrl = "https://github.com/wildernesslabs/meadow.foundation.compositedevices/tree/main/Source/";
-
+        static readonly string MFCoreGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation/tree/main/Source/Meadow.Foundation.Core/";
+        static readonly string MFGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation/tree/main/Source/Meadow.Foundation.Peripherals/";
+        static readonly string MFFrameworksGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation/tree/main/Source/Meadow.Foundation.Libraries_and_Frameworks/";
+        static readonly string MFGroveGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.Grove/tree/main/Source/";
+        static readonly string MFFeatherGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.FeatherWings/tree/main/Source/";
+        static readonly string MFMikroBusGitHubUrl = "https://github.com/WildernessLabs/Meadow.Foundation.MikroBus/tree/main/Source/";
+        static readonly string MFCompositeGitHubUrl = "https://github.com/wildernesslabs/meadow.foundation.compositedevices/tree/main/Source/";
 
         static readonly Dictionary<string, MFDriverSet> driverSets = new();
 
@@ -54,7 +32,10 @@ namespace Mirid
             Console.Clear();
             Console.WriteLine("Hello Mirid!");
 
-            LoadDriverSets();
+            var configPath = Path.Combine(AppContext.BaseDirectory, "mirid.config.json");
+            var config = MiridConfig.Load(configPath);
+
+            LoadDriverSets(config);
 
             UpdateProjectMetadata();
 
@@ -82,48 +63,46 @@ namespace Mirid
             UpdatePeripheralDocs(driverSets[COMPOSITE_DEVICES]);
         }
 
-        static void LoadDriverSets()
+        static void LoadDriverSets(MiridConfig config)
         {
             Console.WriteLine($"Load {CORE_PERIPHERALS} driver set");
             var coreDriverSet = new MFCoreDriverSet(
                 name: CORE_PERIPHERALS,
-                MFSourcePath: MFSourcePath,
-                driverSourcePath: MFCorePeripheralsPath,
-                docsOverridePath: MFDocsOverridePath,
+                MFSourcePath: config.MFSourcePath,
+                driverSourcePath: config.MFCorePeripheralsPath,
+                docsOverridePath: config.MFDocsOverridePath,
                 githubUrl: MFCoreGitHubUrl);
             Console.WriteLine($"Processed {coreDriverSet.DriverPackages.Count} packages with {GetDriverCount(coreDriverSet)} drivers");
 
             /*
             Console.WriteLine($"Load {LIBRARIES_AND_FRAMEWORKS} driver set");
             var frameworksDriverSet = new MFDriverSet(LIBRARIES_AND_FRAMEWORKS,
-                MFSourcePath,
-                MFFrameworksPath,
-                MFDocsOverridePath,
+                config.MFSourcePath,
+                config.MFFrameworksPath,
+                config.MFDocsOverridePath,
                 MFFrameworksGitHubUrl);
             Console.WriteLine($"Processed {frameworksDriverSet.DriverPackages.Count} packages with {GetDriverCount(frameworksDriverSet)} drivers");
             */
 
-
             Console.WriteLine($"Load {EXTERNAL_PERIPHERALS} driver set");
             var peripheralsDriverSet = new MFDriverSet(EXTERNAL_PERIPHERALS,
-                MFSourcePath,
-                MFPeripheralsPath,
-                MFDocsOverridePath,
+                config.MFSourcePath,
+                config.MFPeripheralsPath,
+                config.MFDocsOverridePath,
                 MFGitHubUrl);
             Console.WriteLine($"Processed {peripheralsDriverSet.DriverPackages.Count} packages with {GetDriverCount(peripheralsDriverSet)} drivers");
 
             Console.WriteLine($"Load {SEEED_STUDIO_GROVE} driver set");
-            var groveDriverSet = new MFDriverSet(SEEED_STUDIO_GROVE, MFSourcePath, MFGrovePath, MFGroveDocsOverridePath, MFGroveGitHubUrl);
+            var groveDriverSet = new MFDriverSet(SEEED_STUDIO_GROVE, config.MFSourcePath, config.MFGrovePath, config.MFGroveDocsOverridePath, MFGroveGitHubUrl);
             Console.WriteLine($"Processed {groveDriverSet.DriverPackages.Count} packages with {GetDriverCount(groveDriverSet)} drivers");
 
             Console.WriteLine($"Load {FEATHERWINGS} driver set");
-            var featherDriverSet = new MFDriverSet(FEATHERWINGS, MFSourcePath, MFFeatherwingPath, MFFeatherwingDocsOverridePath, MFFeatherGitHubUrl);
+            var featherDriverSet = new MFDriverSet(FEATHERWINGS, config.MFSourcePath, config.MFFeatherwingPath, config.MFFeatherwingDocsOverridePath, MFFeatherGitHubUrl);
             Console.WriteLine($"Processed {featherDriverSet.DriverPackages.Count} packages with {GetDriverCount(featherDriverSet)} drivers");
 
             Console.WriteLine($"Load {COMPOSITE_DEVICES} driver set");
-            var compositeDriverSet = new MFDriverSet(COMPOSITE_DEVICES, MFSourcePath, MFCompositePath, MFCompositeDocsOverridePath, MFCompositeGitHubUrl);
+            var compositeDriverSet = new MFDriverSet(COMPOSITE_DEVICES, config.MFSourcePath, config.MFCompositePath, config.MFCompositeDocsOverridePath, MFCompositeGitHubUrl);
             Console.WriteLine($"Processed {compositeDriverSet.DriverPackages.Count} packages packages with {GetDriverCount(compositeDriverSet)} drivers");
-
 
             //common location so we can turn em off and on ... order counts
             driverSets.Add(CORE_PERIPHERALS, coreDriverSet);
@@ -176,7 +155,7 @@ namespace Mirid
             //need to standardize the folder and naming convensions for the libs and frameworks first s
 
             //Libraries and frameworks
-            var frameworkFiles = FileCrawler.GetAllProjectsInFolders(MFFrameworksPath);
+            var frameworkFiles = FileCrawler.GetAllProjectsInFolders(string.Empty);
             var frameworkProjectFiles = FileCrawler.GetDriverProjects(frameworkFiles);
 
             /*
@@ -249,7 +228,7 @@ namespace Mirid
             Console.WriteLine($"Found {count} drivers in {driverSet.SetName}");
 
             /*
-             * 
+             *
             var drivers = driverSet.DriverPackages.SelectMany(p => p.Drivers).ToList();
 
             foreach(var driver in drivers)
@@ -267,9 +246,9 @@ namespace Mirid
                 var relativePath = Path.GetRelativePath(docSet.DriverSetSourcePath, driver.FilePath);
                 relativePath = Path.GetDirectoryName(relativePath);
                 var uri = new Uri(docSet.GitHubUrl);
-                var sourceUri = new Uri(uri, relativePath); 
+                var sourceUri = new Uri(uri, relativePath);
 
-                driver.UpdateDocHeader($"{driverSet.GitHubUrl}");  
+                driver.UpdateDocHeader($"{driverSet.GitHubUrl}");
             }*/
         }
     }
