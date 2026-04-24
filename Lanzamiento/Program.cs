@@ -21,17 +21,24 @@ namespace Lanzamiento
 
         static void Main(string[] args)
         {
-            if (args.Length >= 4)
+            if (args.Length >= 3)
             {
                 VERSION = args[0];
                 ROOT_DEV_DIRECTORY = args[1];
                 NUGET_DIRECTORY = args[2];
-                NUGET_TOKEN = args[3];
+                NUGET_TOKEN = args.Length >= 4 ? args[3] : Environment.GetEnvironmentVariable("NUGET_TOKEN") ?? "";
             }
             else
             {
-                Console.WriteLine("Usage: Lanzamiento <version> <root-dev-directory> <nuget-directory> <nuget-token>");
-                Console.WriteLine("  Example: Lanzamiento 2.5.0 G:\\2500 G:\\LocalNuget abc123token");
+                Console.WriteLine("Usage: Lanzamiento <version> <root-dev-directory> <nuget-directory> [nuget-token]");
+                Console.WriteLine("  nuget-token can also be set via the NUGET_TOKEN environment variable");
+                Console.WriteLine("  Example: Lanzamiento 2.5.0 G:\\2500 G:\\LocalNuget");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(NUGET_TOKEN) && publishNugets)
+            {
+                Console.WriteLine("Error: NuGet token required for publishing. Pass as 4th arg or set NUGET_TOKEN environment variable.");
                 return;
             }
 
