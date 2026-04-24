@@ -6,7 +6,7 @@ Internal Wilderness Labs toolkit for Meadow.Foundation release automation and do
 
 ## What it does
 
-Mirid is a solution of eight tools that together handle the full Meadow.Foundation release and docs pipeline:
+Mirid is a solution of six tools that together handle the full Meadow.Foundation release and docs pipeline:
 
 | Tool | Purpose |
 |------|---------|
@@ -14,10 +14,8 @@ Mirid is a solution of eight tools that together handle the full Meadow.Foundati
 | **Lectura** | Generates `Readme.md` for every driver package |
 | **Contribuir** | Generates `Contributing.md` for every repo |
 | **Lanzamiento** | Full release pipeline — clones repos, switches local refs → NuGet refs, builds, packs, publishes to NuGet.org, tags releases |
-| **ActionGen** | Generates GitHub Actions workflow YAMLs for NuGet publishing, split by dependency level (level 1 = no local deps, level 2 = has deps) |
-| **Metafire** | Bulk csproj property updates across all repos (LangVersion, Authors, readme refs, etc.) |
 | **ReferenceSwitcher** | Library — switches csproj files between `ProjectReference` (dev mode) and `PackageReference` (publishing mode) |
-| **ExternalRefReaper** | Strips external/relative project references from `.sln` files before publishing |
+| **ExternalRefReaper** | Library — strips external/relative project references from `.sln` files before publishing |
 
 ## Prerequisites
 
@@ -72,13 +70,10 @@ Lanzamiento <version> <root-dev-directory> <nuget-output-directory> <nuget-api-t
 Lanzamiento 2.5.0 G:\2500 G:\LocalNuget abc123token
 ```
 
-### Metafire and ActionGen
-
-Still have hardcoded paths at the top of `Program.cs` — edit before running. Candidates for the same config treatment as Lectura/Contribuir.
 
 ## Running
 
-Open `Mirid.sln` and run the tool you need. Each is a standalone console app.
+Open `Mirid.slnx` and run the tool you need. Each is a standalone console app.
 
 ## Running Mirid (main tool)
 
@@ -120,3 +115,4 @@ The codebase was significantly cleaned up in 2026 (Phases 1–10):
 | 8 | Remaining string XML parsing in RefSwitcher (4 methods) replaced with XDocument |
 | 9 | CLI flags (`--update-metadata`, `--metadata-only`, `--driver-report`); config at project source dir; icon path walks up directory tree; `RepositoryUrl` derived from `GitHubUrl`; `Constants.GetDocsApiPrefix` consolidates namespace→URL mapping; `MFPackageProject.FileInfo` exposed; MikroBus removed; dead code deleted |
 | 10 | `MFLibraryPackage` / `MFLibraryDriverSet` for L&F flat folder structure; peripheral tables written to configured Documentation path with header preservation; lazy group table headers eliminate empty orphan tables; `MFPackageProject` default PackageId won't double-prefix if csproj name already starts with `Meadow.Foundation.` |
+| 11 | Deleted ActionGen and Metafire (unused); ExternalRefReaper converted from exe to library; Contribuir namespace fix and launchSettings cleanup; Lanzamiento dead method removal (`SyncFolder`, `CreateNewBranch`, `GetCommitForTimeStamp`, `SetHeadToCommit`, `Process_OutputDataReceived`) |

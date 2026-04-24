@@ -12,8 +12,6 @@ namespace Lanzamiento
         static string NUGET_DIRECTORY = @"G:\LocalNuget";
         static string VERSION = "2.5.0";
         static string NUGET_TOKEN = "";
-        static readonly string TIMESTAMP = "2023-10-31 6:52:00";
-
         static readonly bool testBuild = false;
         static readonly bool buildNugets = true;
         static readonly bool cloneRepos = true;
@@ -53,7 +51,7 @@ namespace Lanzamiento
 
             foreach (var repo in Repos.Repositories)
             {
-                if (cloneRepos == true)
+                if (cloneRepos)
                 {
                     CloneRepo(ROOT_DEV_DIRECTORY, repo.Value.GitHubOrg, repo.Value.Name);
                     SetLocalRepoBranch(ROOT_DEV_DIRECTORY, repo.Value.Name, sourceBranch);
@@ -102,13 +100,13 @@ namespace Lanzamiento
                 }
             }
 
-            if (publishNugets == true && testBuild == false)
+            if (publishNugets && !testBuild)
             {
                 PublishNugets(NUGET_DIRECTORY, VERSION);
 
                 foreach (var repo in Repos.Repositories)
                 {
-                    if (testBuild == false && tagRelease == true)
+                    if (!testBuild && tagRelease)
                     {
                         TagBranch(ROOT_DEV_DIRECTORY, repo.Value.Name, VERSION);
                     }
@@ -124,7 +122,7 @@ namespace Lanzamiento
                         continue;
                     }
 
-                    if (testBuild == false)
+                    if (!testBuild)
                     {
                         PushVersionBranch(ROOT_DEV_DIRECTORY, repo.Value.Name, VERSION);
                     }
@@ -132,14 +130,6 @@ namespace Lanzamiento
             }
 
             Console.WriteLine($"Complete - took {DateTime.Now - now}");
-        }
-
-        static void SyncFolder(string sourceDirectory, string targetDirectory, string githubRepo)
-        {
-            var fullPathSource = Path.Combine(sourceDirectory, githubRepo);
-            var fullPathTarget = Path.Combine(targetDirectory, githubRepo);
-
-            FolderManager.CopyAndDeleteFiles(fullPathSource, fullPathTarget);
         }
 
         static void UpdateProjectVersionMetaData()
@@ -181,8 +171,6 @@ namespace Lanzamiento
         static void PublishNugets(string directory, string version)
         {
             var files = Directory.GetFiles(directory, $"*{version}*.nupkg");
-
-
 
             foreach (var file in files)
             {
@@ -244,19 +232,6 @@ namespace Lanzamiento
             return projects;
         }
 
-        static void CreateNewBranch(string directory, string githubRepo, string branch)
-        {
-            var fullPath = Path.Combine(directory, githubRepo);
-
-            if (Directory.Exists(Path.Combine(directory, githubRepo)) == false)
-            {
-                throw new Exception($"{Path.Combine(directory, githubRepo)} doesn't exist, cannot set branch: {branch}");
-            }
-
-            Console.Write($"Created new branch {branch} on {githubRepo}");
-            ExecuteCommand(fullPath, $"git branch {branch}");
-        }
-
         static void SetLocalRepoBranch(string directory, string githubRepo, string branch)
         {
             var fullPath = Path.Combine(directory, githubRepo);
@@ -280,21 +255,6 @@ namespace Lanzamiento
                 ExecuteCommand(fullPath, $"git push origin --tags");
                 Console.WriteLine($"Tagged {githubRepo}/{githubRepo}");
             }
-        }
-
-        //git rev-list -n 1 --before="2023-10-31 17:24:22" develop
-
-        static string GetCommitForTimeStamp(string directory, string githubRepo, string branch, string timeStampString)
-        {
-            var fullPath = Path.Combine(directory, githubRepo);
-            ExecuteCommand(fullPath, $"git rev-list -n 1 --before=\"{timeStampString}\" {branch}", out string output);
-            return output.Trim('\n');
-        }
-
-        static void SetHeadToCommit(string directory, string githubRepo, string commit)
-        {
-            var fullPath = Path.Combine(directory, githubRepo);
-            ExecuteCommand(fullPath, $"git reset --hard {commit}");
         }
 
         static void CloneRepo(string directory, string githubOrg, string githubRepo)
@@ -373,11 +333,6 @@ namespace Lanzamiento
             return exitCode;
         }
 
-        private static void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            UpdateConsoleMessage(e.Data);
-        }
-
         static void ValidateDirectory(string directory)
         {
             if (Directory.Exists(directory) == false)
@@ -389,15 +344,11 @@ namespace Lanzamiento
 
         static void UpdateConsoleStatus(string status)
         {
-            //    Console.CursorTop = 1;
-            //    Console.CursorLeft = 0;
             Console.WriteLine(status.PadRight(80));
         }
 
         static void UpdateConsoleMessage(string message)
         {
-            //    Console.CursorTop = 3;
-            //    Console.CursorLeft = 0;
             Console.WriteLine(message.PadRight(80));
         }
     }
