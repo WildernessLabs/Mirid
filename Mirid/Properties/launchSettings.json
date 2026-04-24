@@ -7,6 +7,10 @@
     "Mirid (update metadata)": {
       "commandName": "Project",
       "commandLineArgs": "--update-metadata"
+    },
+    "Mirid (metadata only)": {
+      "commandName": "Project",
+      "commandLineArgs": "--metadata-only"
     }
   }
 }

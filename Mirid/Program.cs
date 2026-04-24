@@ -37,12 +37,16 @@ namespace Mirid
 
             LoadDriverSets(config);
 
-            if (args.Contains("--update-metadata"))
+            bool metadataOnly = args.Contains("--metadata-only");
+
+            if (args.Contains("--update-metadata") || metadataOnly)
                 UpdateProjectMetadata();
 
-            UpdateDocs();
-
-            WritePeripheralTables(driverSets.Values.ToList());
+            if (!metadataOnly)
+            {
+                UpdateDocs();
+                WritePeripheralTables(driverSets.Values.ToList());
+            }
             //RunDriverReport();
         }
 
